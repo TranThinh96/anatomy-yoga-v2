@@ -7,6 +7,8 @@ chuyển động với các cơ được tác động được tô sáng theo th
 
 ### Giải phẫu
 - **17 nhóm xương, 33 cơ/nhóm cơ, 14 khớp** – nhấp trên mô hình hoặc chọn trong danh sách.
+- Cơ sâu bị che (cơ trên gai dưới cơ thang, cơ hình lê dưới cơ mông lớn, cơ vuông thắt lưng…): **nhấp lại
+  đúng điểm đó** để chọn lần lượt các lớp nằm bên dưới (cơ nông → cơ sâu → xương → khớp).
 - Bật/tắt từng lớp (xương, cơ, khớp), chỉnh độ trong suốt của cơ.
 - Mỗi mục có: nguyên uỷ – bám tận – chức năng (cơ), mốc giải phẫu (xương),
   loại khớp & biên độ vận động (khớp) và phần **Ứng dụng trong yoga**.
@@ -68,7 +70,8 @@ bao nhiêu % sức tối đa** và **kiểu co**: đồng tâm (ngắn lại khi
 
 Kiểm tra (`npm run check`): cánh tay đòn giải tích = sai phân hữu hạn; dấu tác dụng của 44 cặp cơ–khớp đúng sách
 giải phẫu ở tư thế giải phẫu và giữ đúng trên tầm vận động; mô-men cơ + dự phòng tái tạo đúng mô-men khớp ở cả
-33 tư thế; mức hoạt động trong [0, 1].
+33 tư thế; mức hoạt động trong [0, 1]. Mọi cơ vẫn nhấp chọn được sau khi đổi tư thế (tia chiếu vào bụng từng cơ ở mọi tư thế
+phải trúng cơ đó).
 
 Giới hạn: chỉ tính tư thế giữ yên (không tính lực quán tính khi chuyển động); chưa tính dây chằng, mô mềm
 và tiếp xúc giữa các phần cơ thể (vd. đùi tựa lên bắp chân trong Balasana); tải hiển thị là mức tối thiểu
@@ -111,7 +114,7 @@ Liên kết có thể chia sẻ: `#asana/adho_mukha_svanasana`, `#muscle/hamstri
 npm install
 npm run dev        # http://localhost:5173
 npm run build      # xuất bản tĩnh vào dist/ (dùng được trên GitHub Pages / Netlify / Vercel)
-npm run check      # kiểm tra vật lý mọi tư thế + mô hình cơ (cánh tay đòn, tối ưu tĩnh)
+npm run check      # kiểm tra vật lý mọi tư thế + mô hình cơ (cánh tay đòn, tối ưu tĩnh) + nhấp chọn cơ
 npm run fit-poses  # tự chỉnh góc khớp để đúng bộ phận chạm sàn (ghi vào src/data/poses.js)
 npm run build-model -- <thư mục BodyParts3D_data>  # dựng lại khung xương, cơ, mốc từ BodyParts3D
 ```
@@ -129,7 +132,7 @@ src/
   data/body-model.gen.js    Tâm khớp, điểm bám & đường đi cơ, điểm chạm sàn, mốc (sinh tự động)
   data/anthropometry.js     Khối lượng / trọng tâm đoạn cơ thể (de Leva 1996)
   data/muscle-strength.js   Sức tối đa từng bó cơ (PCSA, có nguồn)
-tools/                      bp3d-build, fit-poses, check-physics, check-muscles
+tools/                      bp3d-build, fit-poses, check-physics, check-muscles, check-picking
   data/poses.js             Góc khớp của từng tư thế
   data/asanas.js            Asana: chuỗi chuyển động, vai trò cơ, cue, lưu ý
   data/{bones,muscles,joints}.js  Nội dung giải phẫu tiếng Việt
