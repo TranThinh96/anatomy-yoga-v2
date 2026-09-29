@@ -1,4 +1,4 @@
-// Thông tin xương (tiếng Việt). id khớp với userData.id của mesh trong skeleton.js.
+// Thông tin xương (tiếng Việt). id khớp với userData.id của các mesh xương (BONE_GROUPS trong tools/bp3d-build.mjs).
 export const BONES = {
   skull: {
     name: 'Xương sọ',

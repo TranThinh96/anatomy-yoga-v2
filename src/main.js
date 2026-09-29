@@ -199,11 +199,6 @@ $$('.layer-toggles input').forEach((inp) =>
     applyVisuals();
   }),
 );
-$('#real-bones').addEventListener('change', (e) => {
-  body.setRealBones(e.target.checked);
-  applyVisuals();
-  if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
-});
 $('#muscle-opacity').addEventListener('input', (e) => {
   state.muscleOpacity = parseFloat(e.target.value);
   applyVisuals();
@@ -345,24 +340,31 @@ function renderInfo(sel) {
   $('#info').innerHTML = html;
 }
 
-const BP3D_IDS = new Set(['pelvis', 'sacrum', 'femur', 'patella']);
 function realBoneHtml(id) {
-  const man = body.bp3d;
-  if (!man || !body.realBones || !BP3D_IDS.has(id)) return '';
-  const m = man.measurements;
-  const rows =
-    id === 'femur' || id === 'pelvis'
-      ? `<table class="rom-table">
-          <tr><td>Bán kính chỏm xương đùi (fit mặt cầu)</td><td>${m.L.femoralHeadRadiusMm} / ${m.R.femoralHeadRadiusMm} mm</td></tr>
-          <tr><td>Sai số fit (RMS)</td><td>${m.L.sphereFitRmsMm} / ${m.R.sphereFitRmsMm} mm</td></tr>
-          <tr><td>Lệch tâm ổ cối ↔ tâm chỏm xương đùi</td><td>${m.L.acetabulumOffsetMm} / ${m.R.acetabulumOffsetMm} mm</td></tr>
-          <tr><td>Bán kính lồi cầu đùi (trong / ngoài)</td><td>${m.L.condyleRadiiMm.join(' / ')} mm</td></tr>
-        </table>
-        <p class="hint" style="margin-top:6px">Số liệu trái / phải. Tâm khớp háng của khung xương được lấy từ các mặt cầu này.</p>`
-      : '';
+  const m = body.model.measurements;
+  const parts = body.bones.filter((b) => b.userData.id === id && b.userData.side >= 0).map((b) => b.userData.name);
+  const names = [...new Set(parts)];
+  let rows = '';
+  if (id === 'femur' || id === 'pelvis') {
+    rows = `<tr><td>Bán kính chỏm xương đùi (fit mặt cầu)</td><td>${m.femoralHead.radiusMm} mm</td></tr>
+      <tr><td>Sai số fit (RMS)</td><td>${m.femoralHead.rmsMm} mm</td></tr>
+      <tr><td>Lệch tâm ổ cối ↔ tâm chỏm xương đùi</td><td>${m.femoralHead.acetabulumOffsetMm} mm</td></tr>
+      <tr><td>Bán kính lồi cầu đùi (trong / ngoài)</td><td>${m.condyleRadiiMm.join(' / ')} mm</td></tr>
+      <tr><td>Chiều dài đùi (tâm háng → tâm gối)</td><td>${m.segmentLengthsMm.thigh} mm</td></tr>`;
+  } else if (id === 'humerus' || id === 'scapula') {
+    rows = `<tr><td>Bán kính chỏm xương cánh tay (fit mặt cầu)</td><td>${m.humeralHead.radiusMm} mm</td></tr>
+      <tr><td>Sai số fit (RMS)</td><td>${m.humeralHead.rmsMm} mm</td></tr>
+      <tr><td>Lệch tâm ổ chảo ↔ tâm chỏm</td><td>${m.humeralHead.glenoidOffsetMm} mm</td></tr>
+      <tr><td>Chiều dài cánh tay (tâm vai → tâm khuỷu)</td><td>${m.segmentLengthsMm.upperArm} mm</td></tr>`;
+  } else if (id === 'tibia_fibula') {
+    rows = `<tr><td>Chiều dài cẳng chân (tâm gối → tâm cổ chân)</td><td>${m.segmentLengthsMm.shank} mm</td></tr>`;
+  } else if (id === 'radius_ulna') {
+    rows = `<tr><td>Chiều dài cẳng tay (tâm khuỷu → tâm cổ tay)</td><td>${m.segmentLengthsMm.forearm} mm</td></tr>`;
+  }
   return `<div class="info-section"><h4>Mô hình xương thật</h4>
-    <p style="font-size:13px;color:var(--muted)">Hình dạng xương từ BodyParts3D (dữ liệu chụp cơ thể người thật), © DBCLS, giấy phép CC BY-SA 2.1 JP.</p>
-    ${rows}</div>`;
+    <p style="font-size:13px;color:var(--muted)">Hình dạng từ BodyParts3D (dữ liệu chụp cơ thể người thật, cao ${m.statureM} m), © DBCLS, giấy phép CC BY-SA 2.1 JP.
+    ${names.length > 1 ? `Gồm ${names.length} bộ phận.` : ''}</p>
+    ${rows ? `<table class="rom-table">${rows}</table><p class="hint" style="margin-top:6px">Tâm khớp của khung xương được tính từ chính các bề mặt xương này.</p>` : ''}</div>`;
 }
 
 function asanasUsingMuscle(id) {
@@ -1091,22 +1093,8 @@ renderAsanaList();
 readHash();
 window.addEventListener('hashchange', readHash);
 
-// Real (BodyParts3D) bones for the pelvis–thigh region.
-body
-  .loadRealBones(`${import.meta.env.BASE_URL}models/bp3d/`)
-  .then(() => {
-    viewer.pickables = body.pickables;
-    $('#real-bones').disabled = false;
-    applyVisuals();
-    if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
-  })
-  .catch((err) => {
-    console.warn('BodyParts3D bones unavailable', err);
-    $('#real-bones').closest('label').hidden = true;
-  });
-
-// Asana silhouettes for the list, generated after the first frames.
-setTimeout(() => {
+// Skeleton (BodyParts3D), then the asana silhouettes for the list.
+function makeThumbnails() {
   try {
     const thumbAnim = new Animator(body.rig, () => body.update(), { prepare: balance });
     const maker = new ThumbnailMaker(viewer, body, thumbAnim);
@@ -1117,6 +1105,22 @@ setTimeout(() => {
   }
   anim.render();
   renderAsanaList();
-}, 400);
+}
+$('#loading').hidden = false;
+body
+  .loadBones(`${import.meta.env.BASE_URL}models/bp3d/skeleton.bin`)
+  .then(() => {
+    viewer.pickables = body.pickables;
+    applyVisuals();
+    if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
+  })
+  .catch((err) => {
+    console.warn('Skeleton unavailable', err);
+    $('#loading').textContent = 'Không tải được mô hình xương.';
+  })
+  .finally(() => {
+    if (body.bones.length) $('#loading').hidden = true;
+    setTimeout(makeThumbnails, 50);
+  });
 
 window.__app = { viewer, body, anim, state, loadAsana, setMode, select, physics };

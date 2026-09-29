@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import { MUSCLE_GEOMETRY } from './muscleGeometry.js';
+import { MODEL } from '../data/body-model.gen.js';
+
+// Muscle paths measured on the BodyParts3D muscle meshes (tools/bp3d-build.mjs):
+// stations = origin, via points (cross-section centroids), insertion; one polyline point per fibre.
+const MUSCLE_GEOMETRY = MODEL.muscles;
 
 const SIDED = new Set(['scapula', 'shoulder', 'elbow', 'wrist', 'hip', 'knee', 'ankle']);
 const SAMPLES = 18;
@@ -121,9 +125,9 @@ export class MuscleSystem {
       m.length = total / m.fibers.length;
       m.ratio = m.restLength ? m.length / m.restLength : 1;
       const bulge = THREE.MathUtils.clamp(Math.sqrt(1 / m.ratio), 0.72, 1.4);
-      const R = m.def.r * bulge;
 
       m.fibers.forEach((fb, f) => {
+        const R = (m.def.rs ? m.def.rs[f] : m.def.r) * bulge;
         for (let i = 0; i < SAMPLES; i++) fb.curve.getPoint(i / (SAMPLES - 1), samples[i]);
         const base = f * SAMPLES * (RADIAL + 1);
         for (let i = 0; i < SAMPLES; i++) {

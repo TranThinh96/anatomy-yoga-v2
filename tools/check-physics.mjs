@@ -33,8 +33,9 @@ for (const pose of poses) {
   if (Math.abs(sum.y - r.W) > 0.01 * r.W) fail(pose, `vertical force ${sum.y.toFixed(0)} N ≠ weight ${r.W.toFixed(0)} N`);
   if (Math.hypot(sum.x, sum.z) > 0.01 * r.W) fail(pose, `horizontal forces do not cancel (${Math.hypot(sum.x, sum.z).toFixed(1)} N)`);
   if (r.margin < -0.005) fail(pose, `centre of mass ${(-r.margin * 100).toFixed(1)} cm outside the base of support`);
-  for (const seg of POSE_FIT[pose]?.support || []) {
-    if (!r.contacts.some((c) => c.seg === seg)) fail(pose, `${seg} should touch the floor`);
+  for (const spec of POSE_FIT[pose]?.support || []) {
+    const segs = spec.split('|');
+    if (!r.contacts.some((c) => segs.includes(c.seg))) fail(pose, `${spec} should touch the floor`);
   }
   if (!ASYMMETRIC.test(pose)) {
     const by = Object.fromEntries(r.joints.map((j) => [j.joint, j.total]));

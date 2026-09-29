@@ -1,21 +1,24 @@
 import * as THREE from 'three';
 
-// Rest pose ("Tadasana", anatomical position, palms forward).
-// All coordinates are world-space metres in the rest pose; the body faces +Z,
-// the body's LEFT side is +X, Y is up and the floor is y = 0.
+import { MODEL } from '../data/body-model.gen.js';
+
+// Rest pose (anatomical position, palms forward) derived from the BodyParts3D bones by
+// tools/bp3d-build.mjs. World-space metres; the body faces +Z, its LEFT side is +X,
+// Y is up and the floor is y = 0. Sided joints are defined on the left and mirrored.
+const JP = MODEL.joints;
 export const JOINT_DEFS = [
-  { name: 'pelvis', parent: null, pos: [0, 0.95, 0] },
-  { name: 'lumbar', parent: 'pelvis', pos: [0, 1.03, -0.05] },
-  { name: 'thorax', parent: 'lumbar', pos: [0, 1.2, -0.06] },
-  { name: 'neck', parent: 'thorax', pos: [0, 1.47, -0.06] },
-  { name: 'head', parent: 'neck', pos: [0, 1.58, -0.03] },
-  ...sided('scapula', 'thorax', [0.03, 1.43, 0.06]),
-  ...sided('shoulder', 'scapula', [0.19, 1.4, -0.01]),
-  ...sided('elbow', 'shoulder', [0.2, 1.1, -0.02]),
-  ...sided('wrist', 'elbow', [0.21, 0.84, 0.0]),
-  ...sided('hip', 'pelvis', [0.087, 0.93, 0.0]), // x from the BodyParts3D femoral head centres
-  ...sided('knee', 'hip', [0.095, 0.5, 0.0]),
-  ...sided('ankle', 'knee', [0.09, 0.085, -0.01]),
+  { name: 'pelvis', parent: null, pos: JP.pelvis },
+  { name: 'lumbar', parent: 'pelvis', pos: JP.lumbar },
+  { name: 'thorax', parent: 'lumbar', pos: JP.thorax },
+  { name: 'neck', parent: 'thorax', pos: JP.neck },
+  { name: 'head', parent: 'neck', pos: JP.head },
+  ...sided('scapula', 'thorax', JP.scapula),
+  ...sided('shoulder', 'scapula', JP.shoulder),
+  ...sided('elbow', 'shoulder', JP.elbow),
+  ...sided('wrist', 'elbow', JP.wrist),
+  ...sided('hip', 'pelvis', JP.hip),
+  ...sided('knee', 'hip', JP.knee),
+  ...sided('ankle', 'knee', JP.ankle),
 ];
 
 function sided(base, parent, [x, y, z]) {
@@ -92,46 +95,15 @@ export function semanticToQuat(name, a = {}, out = new THREE.Quaternion()) {
   return out.setFromEuler(e);
 }
 
-// Points used to keep the body on the floor: [segment, rest position, radius].
-const CONTACTS = [
-  ...both('ankle', [0.09, 0.0, -0.06], 0.012), // heel
-  ...both('ankle', [0.105, 0.0, 0.17], 0.01), // toe tip
-  ...both('ankle', [0.09, 0.075, 0.1], 0.015), // top of foot
-  ...both('ankle', [0.09, 0.02, 0.12], 0.0), // ball of foot
-  ...both('ankle', [0.07, 0.0, 0.12], 0.012), // ball of big toe (medial)
-  ...both('ankle', [0.135, 0.0, 0.1], 0.012), // ball of little toe (lateral)
-  ...both('ankle', [0.076, 0.0, -0.05], 0.012), // heel medial
-  ...both('ankle', [0.105, 0.0, -0.05], 0.012), // heel lateral
-  ...both('knee', [0.095, 0.5, 0.06], 0.012), // patella front
-  ...both('knee', [0.095, 0.3, 0.05], 0.01), // shin
-  ...both('hip', [0.1, 0.7, -0.07], 0.0), // back of thigh
-  ...both('hip', [0.1, 0.7, 0.08], 0.0), // front of thigh
-  ...both('wrist', [0.21, 0.67, 0.0], 0.004), // finger tips
-  ...both('wrist', [0.21, 0.8, 0.0], 0.02), // heel of hand
-  ...both('wrist', [0.19, 0.76, 0.0], 0.012), // base of index finger
-  ...both('wrist', [0.235, 0.765, 0.0], 0.012), // base of little finger
-  ...both('elbow', [0.205, 1.1, -0.045], 0.01), // elbow
-  ...both('elbow', [0.21, 0.95, 0.0], 0.02), // forearm
-  ...both('scapula', [0.1, 1.35, -0.1], 0.015), // shoulder blade
-  ['pelvis', [0.06, 0.87, -0.05], 0.02], // sit bones
-  ['pelvis', [-0.06, 0.87, -0.05], 0.02],
-  ['pelvis', [0, 0.97, -0.1], 0.015], // sacrum
-  ['pelvis', [0, 0.9, 0.08], 0.02], // pubis
-  ['pelvis', [0.065, 0.9, -0.125], 0.0], // buttocks (gluteal soft tissue)
-  ['pelvis', [-0.065, 0.9, -0.125], 0.0],
-  ['lumbar', [0, 1.1, 0.115], 0.0], // belly
-  ['thorax', [0, 1.3, -0.12], 0.015], // mid back
-  ['thorax', [0, 1.3, 0.12], 0.015], // chest
-  ['head', [0, 1.66, -0.1], 0.005], // back of head
-  ['head', [0, 1.7, 0.1], 0.005], // forehead
-  ['head', [0, 1.77, 0.0], 0.005], // crown
-];
-function both(base, [x, y, z], r) {
-  return [
-    [`${base}_L`, [x, y, z], r],
-    [`${base}_R`, [-x, y, z], r],
-  ];
-}
+const SIDED_SEGS = new Set(['scapula', 'shoulder', 'elbow', 'wrist', 'hip', 'knee', 'ankle']);
+// Points used to keep the body on the floor: [segment, rest position, soft-tissue radius].
+// Generated from bone / muscle surfaces (heel, balls of the feet, sit bones, buttocks …).
+const CONTACTS = MODEL.contacts.flatMap(({ seg, p, r, mirror }) => {
+  const [x, y, z] = p;
+  if (SIDED_SEGS.has(seg)) return [[`${seg}_L`, [x, y, z], r], [`${seg}_R`, [-x, y, z], r]];
+  if (mirror) return [[seg, [x, y, z], r], [seg, [-x, y, z], r]];
+  return [[seg, [x, y, z], r]];
+});
 
 export class Rig {
   constructor() {

@@ -48,15 +48,21 @@ Giới hạn: chỉ tính tư thế giữ yên (không tính lực quán tính k
 và tiếp xúc giữa các phần cơ thể (vd. đùi tựa lên bắp chân trong Balasana); tải hiển thị là mức tối thiểu
 khi người tập đẩy sàn khéo léo. Dùng để **so sánh xu hướng**, không phải số đo lâm sàng.
 
-### Xương thật (BodyParts3D) — thử nghiệm vùng chậu – đùi
-Xương chậu, xương cùng, xương đùi và xương bánh chè được thay bằng mô hình từ **BodyParts3D**
-(dữ liệu chụp cơ thể người thật). Công cụ `tools/bp3d-import.mjs`:
-- fit **mặt cầu bình phương tối thiểu** vào chỏm xương đùi → tâm khớp háng (bán kính 23 mm,
-  sai số RMS 0,7 mm); kiểm chứng bằng mặt cầu ổ cối trên xương chậu (lệch 1,2–1,5 mm);
-- fit mặt cầu vào hai lồi cầu sau → trục gập gối;
-- co giãn đồng dạng + đặt khớp vào khung xương, giảm đa giác (4,5 MB → 280 KB), lượng tử hoá 16 bit.
-
-Bật/tắt ở mục **Lớp hiển thị → Xương thật vùng chậu – đùi**.
+### Mô hình từ xương & cơ thật (BodyParts3D)
+Toàn bộ khung xương (117 bộ phận: sọ, từng đốt sống, 24 xương sườn, xương cổ tay, đốt ngón…)
+và đường đi của 33 cơ được dựng từ **BodyParts3D** (dữ liệu chụp cơ thể người thật, nam, cao 1,64 m)
+bằng `tools/bp3d-build.mjs`:
+- **Tâm khớp tính từ bề mặt xương**: mặt cầu bình phương tối thiểu trên chỏm xương đùi (r 23 mm,
+  sai số 0,7 mm; kiểm chứng với ổ cối: lệch 1,5 mm) và chỏm xương cánh tay (r 21,5 mm; lệch ổ chảo 2,9 mm);
+  mặt cầu hai lồi cầu đùi → trục gối; trung điểm hai mắt cá / hai mỏm trên lồi cầu / hai mỏm trâm → cổ chân,
+  khuỷu, cổ tay; tâm đĩa đệm L5/S1, T12/L1, C7/T1 → các khớp cột sống.
+- **Điểm bám cơ** = nơi mesh cơ chạm mesh xương nguyên uỷ / bám tận; **đường đi** = trọng tâm các lát
+  cắt ngang của mesh cơ; **độ dày bụng cơ** = bán kính trung bình các lát cắt. Cơ nhiều đầu / hình quạt
+  (cơ delta, cơ ngực lớn, cơ thang, gân kheo, cơ khép, cơ lưng rộng…) được tách thành nhiều bó.
+- **Điểm chạm sàn** (gót, ụ đốt bàn chân, ụ ngồi, mông, bụng, bả vai…) và **mốc nhân trắc** cho lớp
+  cơ sinh học cũng lấy từ bề mặt xương / cơ.
+- Cánh tay được xoay quanh tâm vai cho thẳng đứng (tư thế trung tính của khung xương); bên phải là ảnh
+  gương của bên trái. Mesh xương giảm từ 1,13 triệu còn 124 nghìn tam giác (1,1 MB).
 
 ### Phím tắt
 | Phím | Chức năng |
@@ -76,7 +82,7 @@ npm run dev        # http://localhost:5173
 npm run build      # xuất bản tĩnh vào dist/ (dùng được trên GitHub Pages / Netlify / Vercel)
 npm run check      # kiểm tra vật lý mọi tư thế (cân bằng lực, trọng tâm, tiếp đất, đối xứng)
 npm run fit-poses  # tự chỉnh góc khớp để đúng bộ phận chạm sàn (ghi vào src/data/poses.js)
-npm run import-bp3d -- <thư mục STL BodyParts3D>   # tạo lại public/models/bp3d/
+npm run build-model -- <thư mục BodyParts3D_data>  # dựng lại khung xương, cơ, mốc từ BodyParts3D
 ```
 
 ## Cấu trúc
@@ -84,14 +90,13 @@ npm run import-bp3d -- <thư mục STL BodyParts3D>   # tạo lại public/model
 ```
 src/
   anatomy/rig.js            Khung xương khớp (FK), quy ước góc khớp, tiếp đất
-  anatomy/skeleton.js       Mô hình xương dựng bằng hình học thủ tục
-  anatomy/muscleGeometry.js Đường đi của từng cơ (nguyên uỷ → điểm vòng → bám tận)
   anatomy/muscles.js        Cơ dạng ống bám theo xương: tự dài/ngắn/phình theo tư thế
   anatomy/animator.js       Nội suy tư thế (quaternion), neo tay/chân trên sàn
   anatomy/physics.js        Trọng tâm, chân đế, lực sàn (có ma sát), mô-men khớp, tự cân bằng
-  anatomy/bp3d.js           Nạp xương BodyParts3D
+  anatomy/bp3d.js           Nạp mesh xương (public/models/bp3d/skeleton.bin)
+  data/body-model.gen.js    Tâm khớp, điểm bám & đường đi cơ, điểm chạm sàn, mốc (sinh tự động)
   data/anthropometry.js     Khối lượng / trọng tâm đoạn cơ thể (de Leva 1996)
-tools/                      fit-poses, check-physics, bp3d-import
+tools/                      bp3d-build, fit-poses, check-physics
   data/poses.js             Góc khớp của từng tư thế
   data/asanas.js            Asana: chuỗi chuyển động, vai trò cơ, cue, lưu ý
   data/{bones,muscles,joints}.js  Nội dung giải phẫu tiếng Việt
@@ -107,10 +112,10 @@ tools/                      fit-poses, check-physics, bp3d-import
 
 ## Giấy phép & ghi nguồn
 - Mã nguồn của dự án này.
-- Mô hình xương trong `public/models/bp3d/`: **BodyParts3D, © The Database Center for Life Science,
+- Mô hình xương trong `public/models/bp3d/` và dữ liệu giải phẫu trong `src/data/body-model.gen.js`: **BodyParts3D, © The Database Center for Life Science,
   licensed under CC Attribution-Share Alike 2.1 Japan** (qua bản STL của
   [Kevin-Mattheus-Moerman/BodyParts3D](https://github.com/Kevin-Mattheus-Moerman/BodyParts3D)).
-  Các mesh đã chỉnh sửa được phân phối theo cùng giấy phép CC BY-SA 2.1 JP — xem `public/models/bp3d/LICENSE.txt`.
+  Các dữ liệu dẫn xuất được phân phối theo cùng giấy phép CC BY-SA 2.1 JP — xem `public/models/bp3d/LICENSE.txt`.
 
 > Mô hình là mô hình giáo dục đã được đơn giản hoá (cơ biểu diễn bằng các bó sợi),
 > không thay thế tài liệu giải phẫu chuyên sâu hay tư vấn y khoa.

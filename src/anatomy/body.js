@@ -1,35 +1,19 @@
 import * as THREE from 'three';
 import { Rig, baseOf } from './rig.js';
-import { buildSkeleton, BONE_COLOR } from './skeleton.js';
 import { MuscleSystem, MUSCLE_COLOR } from './muscles.js';
-import { loadBP3D } from './bp3d.js';
+import { loadSkeleton } from './bp3d.js';
+import { MODEL } from '../data/body-model.gen.js';
 
-// Which rig joints are shown as clickable joint markers, and their info id.
-const JOINT_MARKERS = [
-  ['lumbar', 'lumbar_spine_joint', 0.022, [0, 0, 0]],
-  ['thorax', 'thoracic_spine_joint', 0.02, [0, 0, 0]],
-  ['neck', 'cervical_spine_joint', 0.017, [0, 0, 0]],
-  ['head', 'atlanto_occipital', 0.016, [0, 0, 0]],
-  ['scapula_L', 'scapulothoracic', 0.016, [0.07, 0.0, -0.15]],
-  ['scapula_R', 'scapulothoracic', 0.016, [-0.07, 0.0, -0.15]],
-  ['scapula_L', 'sternoclavicular', 0.012, [-0.01, 0.0, 0.025]],
-  ['scapula_R', 'sternoclavicular', 0.012, [0.01, 0.0, 0.025]],
-  ['shoulder_L', 'glenohumeral', 0.03, [0, 0, 0]],
-  ['shoulder_R', 'glenohumeral', 0.03, [0, 0, 0]],
-  ['elbow_L', 'elbow', 0.024, [0, 0, 0]],
-  ['elbow_R', 'elbow', 0.024, [0, 0, 0]],
-  ['wrist_L', 'wrist', 0.02, [0, 0, 0]],
-  ['wrist_R', 'wrist', 0.02, [0, 0, 0]],
-  ['pelvis', 'sacroiliac', 0.018, [0.045, 0.05, -0.075]],
-  ['pelvis', 'sacroiliac', 0.018, [-0.045, 0.05, -0.075]],
-  ['pelvis', 'pubic_symphysis', 0.014, [0, -0.05, 0.08]],
-  ['hip_L', 'hip', 0.034, [0, 0, 0]],
-  ['hip_R', 'hip', 0.034, [0, 0, 0]],
-  ['knee_L', 'knee', 0.032, [0, 0.01, 0]],
-  ['knee_R', 'knee', 0.032, [0, 0.01, 0]],
-  ['ankle_L', 'ankle', 0.025, [0, 0, 0]],
-  ['ankle_R', 'ankle', 0.025, [0, 0, 0]],
-];
+export const BONE_COLOR = new THREE.Color('#e9dfc8');
+const SIDED = new Set(['scapula', 'shoulder', 'elbow', 'wrist', 'hip', 'knee', 'ankle']);
+
+// Clickable joint markers (positions measured on the bones by tools/bp3d-build.mjs).
+const JOINT_MARKERS = MODEL.markers.flatMap(({ seg, id, r, p, mirror }) => {
+  const [x, y, z] = p;
+  if (SIDED.has(seg)) return [[`${seg}_L`, id, r, [x, y, z], 'L'], [`${seg}_R`, id, r, [-x, y, z], 'R']];
+  if (mirror) return [[seg, id, r, [x, y, z], 'L'], [seg, id, r, [-x, y, z], 'R']];
+  return [[seg, id, r, [x, y, z], '']];
+});
 
 export const JOINT_COLOR = new THREE.Color('#39c6b5');
 
@@ -37,12 +21,12 @@ export class Body {
   constructor(scene) {
     this.rig = new Rig();
     scene.add(this.rig.root);
-    this.bones = buildSkeleton(this.rig);
+    this.bones = []; // filled by loadBones()
     this.muscleSystem = new MuscleSystem(this.rig);
     scene.add(this.muscleSystem.group);
     this.muscles = this.muscleSystem.muscles.map((m) => m.mesh);
 
-    this.jointMarkers = JOINT_MARKERS.map(([seg, id, r, off]) => {
+    this.jointMarkers = JOINT_MARKERS.map(([seg, id, r, world, side]) => {
       const m = new THREE.Mesh(
         new THREE.SphereGeometry(r, 20, 14),
         new THREE.MeshStandardMaterial({
@@ -54,48 +38,34 @@ export class Body {
           depthTest: true,
         }),
       );
-      m.position.set(...off);
+      m.position.set(...world);
       m.renderOrder = 2;
-      const side = seg.endsWith('_L') ? 'L' : seg.endsWith('_R') ? 'R' : off[0] > 0 ? 'L' : off[0] < 0 ? 'R' : '';
       m.userData = { kind: 'joint', id, side, rigJoint: seg };
-      this.rig.joints[seg].add(m);
+      this.rig.attach(seg, m);
       return m;
     });
 
     this.layers = { bones: true, muscles: true, joints: true };
-    this.realBones = false; // BodyParts3D meshes replace the procedural ones they cover
-    this.bp3d = null;
+    this.model = MODEL;
   }
 
-  /** Loads the BodyParts3D bones; resolves to the manifest (or null if unavailable). */
-  async loadRealBones(baseUrl) {
-    const { manifest, parts } = await loadBP3D(baseUrl);
-    const covered = new Set(parts.map((p) => p.id));
-    for (const m of this.bones) if (covered.has(m.userData.id)) m.userData.variant = 'proc';
-    for (const p of parts) {
+  /** Loads the BodyParts3D skeleton and attaches every bone to its rig segment. */
+  async loadBones(url) {
+    const parts = await loadSkeleton(url);
+    for (const { part, geometry, mirrored } of parts) {
+      const side = SIDED.has(part.seg) ? (mirrored ? 'R' : 'L') : '';
+      const seg = side ? `${part.seg}_${side}` : part.seg;
       const m = new THREE.Mesh(
-        p.geometry,
+        geometry,
         new THREE.MeshStandardMaterial({ color: BONE_COLOR, roughness: 0.62, metalness: 0, emissive: new THREE.Color(0) }),
       );
       m.castShadow = true;
-      m.userData = { kind: 'bone', id: p.id, side: p.side === 'L' ? 1 : p.side === 'R' ? -1 : 0, variant: 'bp3d', fma: p.fma };
-      this.rig.attach(p.seg, m);
+      m.userData = { kind: 'bone', id: part.id, side: side === 'L' ? 1 : side === 'R' ? -1 : 0, fma: part.fma, name: part.name };
+      this.rig.attach(seg, m);
+      m.visible = this.layers.bones;
       this.bones.push(m);
     }
-    this.bp3d = manifest;
-    this.setRealBones(true);
-    return manifest;
-  }
-
-  setRealBones(on) {
-    this.realBones = on && !!this.bp3d;
-    this.setLayer('bones', this.layers.bones);
-  }
-
-  _boneVisible(m) {
-    const v = m.userData.variant;
-    if (!v) return true;
-    return this.realBones ? v === 'bp3d' : v === 'proc';
+    return this.bones;
   }
 
   get pickables() {
@@ -109,7 +79,7 @@ export class Body {
   setLayer(layer, on) {
     this.layers[layer] = on;
     const list = layer === 'bones' ? this.bones : layer === 'muscles' ? this.muscles : this.jointMarkers;
-    for (const m of list) m.visible = on && (layer !== 'bones' || this._boneVisible(m));
+    for (const m of list) m.visible = on;
   }
 
   /** Resets all materials to their neutral colours. */

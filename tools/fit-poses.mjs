@@ -4,6 +4,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
+import { Physics, convexHull, signedMargin } from '../src/anatomy/physics.js';
 import { poseToQuats } from '../src/anatomy/animator.js';
 import { POSES, POSE_FIT } from '../src/data/poses.js';
 
@@ -12,13 +13,16 @@ const args = process.argv.slice(2);
 const dry = args.includes('--dry');
 const only = args.filter((a) => !a.startsWith('--'));
 const rig = new Rig();
+const physics = new Physics(rig, { mass: 60, sex: 'f' });
 
 function supportHeights(pose, support) {
   rig.applyQuats(poseToQuats(pose));
   rig.ground();
-  return support.map((seg) => {
+  // "hip_L|knee_L" = either segment may touch (e.g. kneecap or tibial tuberosity)
+  return support.map((spec) => {
+    const segs = spec.split('|');
     let h = Infinity;
-    for (const c of rig.contacts) if (c.seg === seg) h = Math.min(h, rig.worldPoint(c.seg, c.local).y - c.r);
+    for (const c of rig.contacts) if (segs.includes(c.seg)) h = Math.min(h, rig.worldPoint(c.seg, c.local).y - c.r);
     return h;
   });
 }
@@ -49,7 +53,7 @@ const ROM = {
   knee: { flex: [0, 160] },
   lumbar: { flex: [-35, 50] },
   thorax: { flex: [-30, 45] },
-  shoulder: { flex: [-60, 180] },
+  shoulder: { flex: [-60, 185] },
   elbow: { flex: [0, 150] },
   ankle: { dorsi: [-60, 40] },
 };
@@ -75,8 +79,14 @@ const wdir = (seg, v) => new THREE.Vector3(...v).transformDirection(rig.joints[s
 //   rel:   [segA, segB, [dx, dz]] horizontal offset of joint B from joint A (m)
 //   dir:   [seg, localVector, worldVector] a segment axis should point this way
 //   above: [upper, lower] joint `upper` stacked vertically over joint `lower`
+//   balance: centre of mass at least 3 cm inside the base of support
 function goals(fit) {
   let e = 0;
+  if (fit.balance) {
+    const com = physics.centerOfMass();
+    const margin = signedMargin({ x: com.x, z: com.z }, convexHull(physics.touchingContacts()));
+    if (margin < 0.03) e += ((0.03 - Math.max(margin, -0.5)) * 100) ** 2 * 3;
+  }
   for (const seg of fit.flat || []) {
     for (const c of rig.contacts) if (c.seg === seg) e += ((rig.worldPoint(c.seg, c.local).y - c.r) * 100) ** 2 * 0.3;
   }
