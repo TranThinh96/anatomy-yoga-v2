@@ -307,16 +307,64 @@ function flyToMeshes(meshes) {
   viewer.flyTo(c.toArray(), dir.normalize().toArray(), THREE.MathUtils.clamp(size * 2.2, 1.1, 3.8));
 }
 
-viewer.onPick = (obj) => {
+const structureKey = (kind, id, side) => `${kind}:${id}:${sideKey(side) || ''}`;
+const cameraKey = () => [...viewer.camera.position.toArray(), ...viewer.controls.target.toArray()].map((v) => v.toFixed(3)).join();
+let lastClick = null; // { x, y, view, layers, index }: the drill-down in progress
+
+/**
+ * Deep structures (supraspinatus under the trapezius, piriformis under gluteus maximus…) are
+ * mostly hidden, so clicking the same spot again moves on to the next structure under the pointer:
+ * superficial muscle → deeper muscle → bone …, and back to the top after the last one.
+ * The order is fixed at the first click: selecting a joint enlarges its marker, which would
+ * otherwise reshuffle the stack and send the cycle in circles.
+ */
+function pickLayer(stack, e) {
+  const view = cameraKey();
+  const sel = state.selection;
+  const c = lastClick;
+  const current = c && c.layers[c.index].userData;
+  if (
+    c &&
+    sel &&
+    c.view === view &&
+    Math.hypot(e.clientX - c.x, e.clientY - c.y) < 6 &&
+    structureKey(sel.kind, sel.id, sel.side) === structureKey(current.kind, current.id, current.side)
+  ) {
+    // skip layers hidden since the first click (layer toggles)
+    for (let i = 1; i <= c.layers.length; i++) {
+      const k = (c.index + i) % c.layers.length;
+      if (c.layers[k].visible) {
+        c.index = k;
+        return c.layers[k];
+      }
+    }
+  }
+  const layers = []; // one mesh per structure (a rib and its neighbours are one), nearest first
+  const keys = new Set();
+  for (const o of stack) {
+    const k = structureKey(o.userData.kind, o.userData.id, o.userData.side);
+    if (!keys.has(k)) {
+      keys.add(k);
+      layers.push(o);
+    }
+  }
+  lastClick = { x: e.clientX, y: e.clientY, view, layers, index: 0 };
+  return layers[0];
+}
+
+viewer.onPick = (obj, stack, e) => {
   if (!obj) {
     if (state.mode === 'anatomy') select(null);
     else if (state.selection) select(null);
     return;
   }
+  if (state.mode === 'anatomy') obj = pickLayer(stack, e);
   const { kind, id, side } = obj.userData;
   const s = sideKey(side);
   if (state.mode === 'asana' && kind !== 'muscle') return;
   select({ kind, id, side: s });
+  // the tooltip names what the click selected (a deeper layer after a repeated click)
+  viewer.onHover?.(obj, e);
   if (window.innerWidth <= 860) $('#right-panel').classList.add('open');
 };
 
@@ -352,6 +400,7 @@ function renderWelcome() {
       <ul class="tip-list">
         <li><span class="k">🖱</span><span>Kéo để xoay · cuộn để phóng to · chuột phải để di chuyển</span></li>
         <li><span class="k">◐</span><span>Tắt lớp <b>Cơ</b> hoặc giảm độ trong suốt để nhìn xương và khớp bên dưới.</span></li>
+        <li><span class="k">⇣</span><span>Cơ sâu bị che? <b>Nhấp lại đúng điểm đó</b> để chọn lớp nằm bên dưới (vd. cơ trên gai dưới cơ thang).</span></li>
         <li><span class="k">✦</span><span>Mỗi mục có phần <b>Ứng dụng trong yoga</b> gợi ý cách hướng dẫn học viên.</span></li>
         <li><span class="k">▶</span><span>Chuyển sang tab <b>Asana 3D</b> để xem tư thế chuyển động và các cơ được tác động.</span></li>
       </ul>
@@ -394,7 +443,7 @@ function renderInfo(sel) {
         <table class="rom-table">${d.movements.map(([m, r]) => `<tr><td>${esc(m)}</td><td>${esc(r)}</td></tr>`).join('')}</table></div>
       <div class="info-section yoga-note"><h4>Ứng dụng trong yoga</h4><p>${esc(d.yoga)}</p></div>`;
   }
-  $('#info').innerHTML = html;
+  $('#info').innerHTML = `${html}<p class="hint layer-hint">Mẹo: nhấp lại đúng điểm đó trên mô hình để chọn lớp nằm bên dưới (cơ sâu, xương, khớp).</p>`;
 }
 
 function realBoneHtml(id) {
@@ -969,8 +1018,9 @@ function applyVisuals() {
           m.scale.setScalar(1.45);
         }
       }
-      // fade the other muscles so the selection stands out
-      const fade = sel.kind === 'muscle' ? 0.28 : 0.18;
+      // fade the other muscles so the selection stands out; they stay above the viewer's
+      // click-through opacity (CLICK_THROUGH_OPACITY) so they can still be clicked
+      const fade = 0.28;
       for (const m of body.muscles) {
         if (selMeshes.has(m)) continue;
         m.material.opacity = Math.min(m.material.opacity, fade);

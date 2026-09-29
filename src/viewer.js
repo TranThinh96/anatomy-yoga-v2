@@ -2,6 +2,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
+// Meshes drawn at or below this opacity are treated as invisible by picking (clicks reach what is
+// behind them). Anything that should stay clickable while dimmed must stay above it.
+export const CLICK_THROUGH_OPACITY = 0.2;
+
 export class Viewer {
   constructor(container) {
     this.container = container;
@@ -72,12 +76,15 @@ export class Viewer {
     this.onPick = null;
     this.onHover = null;
     const el = this.renderer.domElement;
-    el.addEventListener('pointerdown', (e) => (this._down = { x: e.clientX, y: e.clientY }));
+    // only a primary-button / first-finger tap picks: right-drag pans and pinch zooms
+    el.addEventListener('pointerdown', (e) => (this._down = e.isPrimary && e.button === 0 ? { x: e.clientX, y: e.clientY } : null));
     el.addEventListener('pointerup', (e) => {
       if (!this._down) return;
       const moved = Math.hypot(e.clientX - this._down.x, e.clientY - this._down.y);
       this._down = null;
-      if (moved < 5) this.onPick?.(this.pick(e));
+      if (moved >= 5) return;
+      const stack = this.pickAll(e);
+      this.onPick?.(stack[0] ?? null, stack, e);
     });
     el.addEventListener('pointermove', (e) => {
       if (e.buttons) return;
@@ -101,13 +108,19 @@ export class Viewer {
     this.camera.updateProjectionMatrix();
   }
 
-  pick(e) {
+  /** Everything pickable under the pointer, nearest first. Nearly invisible meshes let clicks through. */
+  pickAll(e) {
     const rect = this.renderer.domElement.getBoundingClientRect();
     this._pointer.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
     this.raycaster.setFromCamera(this._pointer, this.camera);
-    const hits = this.raycaster.intersectObjects(this.pickables.filter((o) => o.visible && o.parentVisible !== false), false);
-    const hit = hits.find((h) => isVisible(h.object) && h.object.material.opacity > 0.2);
-    return hit ? hit.object : null;
+    return this.raycaster
+      .intersectObjects(this.pickables.filter((o) => o.visible && o.parentVisible !== false), false)
+      .map((h) => h.object)
+      .filter((o) => isVisible(o) && o.material.opacity > CLICK_THROUGH_OPACITY);
+  }
+
+  pick(e) {
+    return this.pickAll(e)[0] ?? null;
   }
 
   /** Smoothly moves the camera. dir is a unit-ish vector from target to camera. */

@@ -371,6 +371,8 @@ export class MuscleSystem {
       });
       m.mesh.geometry.attributes.position.needsUpdate = true;
       m.mesh.geometry.computeVertexNormals();
+      // the tube moves with the pose; a stale bounding sphere makes the raycaster (clicks, hover) miss it
+      m.mesh.geometry.computeBoundingSphere();
     }
   }
 }
