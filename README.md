@@ -114,8 +114,8 @@ Liên kết có thể chia sẻ: `#asana/adho_mukha_svanasana`, `#muscle/hamstri
 npm install
 npm run dev        # http://localhost:5173
 npm run build      # xuất bản tĩnh vào dist/ (dùng được trên GitHub Pages / Netlify / Vercel)
-npm run check      # kiểm tra vật lý mọi tư thế + mô hình cơ (cánh tay đòn, tối ưu tĩnh) + nhấp chọn cơ
-npm run fit-poses  # tự chỉnh góc khớp để đúng bộ phận chạm sàn (ghi vào src/data/poses.js)
+npm run check      # kiểm tra dữ liệu, vật lý mọi tư thế, mô hình cơ, nhấp chọn cơ trên mô hình
+npm run fit-poses -- <tư thế…>  # tự chỉnh góc khớp để đúng bộ phận chạm sàn (ghi vào src/data/poses.js)
 npm run build-model -- <thư mục BodyParts3D_data>  # dựng lại khung xương, cơ, mốc từ BodyParts3D
 ```
 
@@ -132,19 +132,23 @@ src/
   data/body-model.gen.js    Tâm khớp, điểm bám & đường đi cơ, điểm chạm sàn, mốc (sinh tự động)
   data/anthropometry.js     Khối lượng / trọng tâm đoạn cơ thể (de Leva 1996)
   data/muscle-strength.js   Sức tối đa từng bó cơ (PCSA, có nguồn)
-tools/                      bp3d-build, fit-poses, check-physics, check-muscles, check-picking
   data/poses.js             Góc khớp của từng tư thế
   data/asanas.js            Asana: chuỗi chuyển động, vai trò cơ, cue, lưu ý
   data/{bones,muscles,joints}.js  Nội dung giải phẫu tiếng Việt
+tools/                      bp3d-build, fit-poses, check-*, shot (chụp màn hình)
 ```
 
 ### Thêm một asana mới
 1. Khai báo góc khớp trong `src/data/poses.js` (độ; xem chú thích `semanticToQuat` trong `rig.js`
    về dấu của từng góc – vd. `hip: { flex, abd, rot }`, `knee: { flex }`), thêm mục `POSE_FIT`
-   (bộ phận phải chạm sàn + góc được phép chỉnh) rồi chạy `npm run fit-poses` và `npm run check`.
+   (bộ phận phải chạm sàn + góc được phép chỉnh) rồi chạy `npm run fit-poses -- <tên tư thế>` và `npm run check`.
 2. Thêm mục trong `src/data/asanas.js` với `steps` (tư thế bắt đầu → tư thế đích, `anchor` là khớp
    giữ cố định trên sàn) và `roles` (`contract` / `stretch` / `stabilize`; thêm hậu tố `_L`/`_R`
    cho cơ một bên).
+3. Xem thử: `node tools/shot.mjs asana/<id> anh.png --hold`.
+
+Quy trình đầy đủ (kèm các lỗi hay gặp) nằm trong skill `.claude/skills/add-asana/SKILL.md`;
+với Claude Code chỉ cần gõ `/add-asana <tên tư thế>`. `CLAUDE.md` tóm tắt kiến trúc và quy ước cho các phiên làm việc với Claude.
 
 ## Giấy phép & ghi nguồn
 - Mã nguồn của dự án này.
