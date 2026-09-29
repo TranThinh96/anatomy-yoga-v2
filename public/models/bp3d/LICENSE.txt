@@ -1,0 +1,12 @@
+The 3D bone meshes in this folder are derived from BodyParts3D
+(FMA16586, FMA16587, FMA16202, FMA24474, FMA24475, FMA24486, FMA24487; via the STL
+conversion at https://github.com/Kevin-Mattheus-Moerman/BodyParts3D).
+
+"BodyParts3D, © The Database Center for Life Science licensed under
+CC Attribution-Share Alike 2.1 Japan"
+https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en
+
+Modifications: converted to metres and to the app's axes, uniformly scaled and
+translated to the app's skeleton, femora rotated about the femoral head centre to the
+skeleton's thigh axis, simplified and quantised (tools/bp3d-import.mjs).
+These derived meshes are distributed under the same CC BY-SA 2.1 JP licence.

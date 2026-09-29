@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Rig, baseOf } from './rig.js';
 import { buildSkeleton, BONE_COLOR } from './skeleton.js';
 import { MuscleSystem, MUSCLE_COLOR } from './muscles.js';
+import { loadBP3D } from './bp3d.js';
 
 // Which rig joints are shown as clickable joint markers, and their info id.
 const JOINT_MARKERS = [
@@ -62,6 +63,39 @@ export class Body {
     });
 
     this.layers = { bones: true, muscles: true, joints: true };
+    this.realBones = false; // BodyParts3D meshes replace the procedural ones they cover
+    this.bp3d = null;
+  }
+
+  /** Loads the BodyParts3D bones; resolves to the manifest (or null if unavailable). */
+  async loadRealBones(baseUrl) {
+    const { manifest, parts } = await loadBP3D(baseUrl);
+    const covered = new Set(parts.map((p) => p.id));
+    for (const m of this.bones) if (covered.has(m.userData.id)) m.userData.variant = 'proc';
+    for (const p of parts) {
+      const m = new THREE.Mesh(
+        p.geometry,
+        new THREE.MeshStandardMaterial({ color: BONE_COLOR, roughness: 0.62, metalness: 0, emissive: new THREE.Color(0) }),
+      );
+      m.castShadow = true;
+      m.userData = { kind: 'bone', id: p.id, side: p.side === 'L' ? 1 : p.side === 'R' ? -1 : 0, variant: 'bp3d', fma: p.fma };
+      this.rig.attach(p.seg, m);
+      this.bones.push(m);
+    }
+    this.bp3d = manifest;
+    this.setRealBones(true);
+    return manifest;
+  }
+
+  setRealBones(on) {
+    this.realBones = on && !!this.bp3d;
+    this.setLayer('bones', this.layers.bones);
+  }
+
+  _boneVisible(m) {
+    const v = m.userData.variant;
+    if (!v) return true;
+    return this.realBones ? v === 'bp3d' : v === 'proc';
   }
 
   get pickables() {
@@ -75,7 +109,7 @@ export class Body {
   setLayer(layer, on) {
     this.layers[layer] = on;
     const list = layer === 'bones' ? this.bones : layer === 'muscles' ? this.muscles : this.jointMarkers;
-    for (const m of list) m.visible = on;
+    for (const m of list) m.visible = on && (layer !== 'bones' || this._boneVisible(m));
   }
 
   /** Resets all materials to their neutral colours. */

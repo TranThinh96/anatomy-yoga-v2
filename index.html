@@ -46,6 +46,10 @@
               <span>Độ trong suốt cơ</span>
               <input type="range" id="muscle-opacity" min="0.1" max="1" step="0.05" value="1" />
             </label>
+            <label class="check-row" title="Xương chậu, xương cùng, xương đùi, xương bánh chè từ BodyParts3D (© DBCLS, CC BY-SA 2.1 JP)">
+              <input type="checkbox" id="real-bones" checked disabled />
+              <span>Xương thật vùng chậu – đùi <small>(BodyParts3D)</small></span>
+            </label>
           </div>
           <div class="panel-block grow">
             <div class="seg-tabs" id="anat-tabs">
@@ -88,6 +92,7 @@
           <div class="seg-tabs small" id="color-mode">
             <button class="seg active" data-cm="roles">Theo vai trò</button>
             <button class="seg" data-cm="length">Theo độ dài</button>
+            <button class="seg" data-cm="load">Theo tải</button>
           </div>
           <div class="legend-items" data-cm="roles">
             <label><input type="checkbox" data-role="contract" checked /><i class="sw contract"></i>Co cơ (chủ động)</label>
@@ -99,8 +104,21 @@
             <div class="gradient-labels"><span>Ngắn lại</span><span>Như Tadasana</span><span>Dài ra</span></div>
             <p class="hint">Màu tính trực tiếp từ độ dài cơ so với tư thế đứng Tadasana.</p>
           </div>
+          <div class="legend-items" data-cm="load" hidden>
+            <div class="gradient-bar load"></div>
+            <div class="gradient-labels"><span>Không tải</span><span>Tải lớn</span></div>
+            <p class="hint">Nhóm cơ phải chống lại trọng lực, tính từ cân bằng mô-men tại từng khớp.</p>
+          </div>
+          <div class="legend-phys">
+            <div class="legend-sub">Cơ sinh học</div>
+            <label><input type="checkbox" data-phys="com" checked /><i class="dot com"></i>Trọng tâm &amp; chân đế</label>
+            <label><input type="checkbox" data-phys="grf" checked /><i class="dot grf"></i>Lực đỡ từ sàn</label>
+            <label><input type="checkbox" data-phys="loads" checked /><i class="dot load"></i>Tải khớp</label>
+          </div>
           <label class="legend-opt"><input type="checkbox" id="show-bones-asana" checked /> Hiện xương</label>
         </div>
+
+        <div class="phys-hud" id="phys-hud" hidden></div>
 
         <div class="player" id="player" hidden>
           <button class="play-btn" id="play-btn" aria-label="Phát / Dừng">❚❚</button>

@@ -13,7 +13,7 @@ export const JOINT_DEFS = [
   ...sided('shoulder', 'scapula', [0.19, 1.4, -0.01]),
   ...sided('elbow', 'shoulder', [0.2, 1.1, -0.02]),
   ...sided('wrist', 'elbow', [0.21, 0.84, 0.0]),
-  ...sided('hip', 'pelvis', [0.09, 0.93, 0.0]),
+  ...sided('hip', 'pelvis', [0.087, 0.93, 0.0]), // x from the BodyParts3D femoral head centres
   ...sided('knee', 'hip', [0.095, 0.5, 0.0]),
   ...sided('ankle', 'knee', [0.09, 0.085, -0.01]),
 ];
@@ -98,12 +98,18 @@ const CONTACTS = [
   ...both('ankle', [0.105, 0.0, 0.17], 0.01), // toe tip
   ...both('ankle', [0.09, 0.075, 0.1], 0.015), // top of foot
   ...both('ankle', [0.09, 0.02, 0.12], 0.0), // ball of foot
+  ...both('ankle', [0.07, 0.0, 0.12], 0.012), // ball of big toe (medial)
+  ...both('ankle', [0.135, 0.0, 0.1], 0.012), // ball of little toe (lateral)
+  ...both('ankle', [0.076, 0.0, -0.05], 0.012), // heel medial
+  ...both('ankle', [0.105, 0.0, -0.05], 0.012), // heel lateral
   ...both('knee', [0.095, 0.5, 0.06], 0.012), // patella front
   ...both('knee', [0.095, 0.3, 0.05], 0.01), // shin
   ...both('hip', [0.1, 0.7, -0.07], 0.0), // back of thigh
   ...both('hip', [0.1, 0.7, 0.08], 0.0), // front of thigh
   ...both('wrist', [0.21, 0.67, 0.0], 0.004), // finger tips
   ...both('wrist', [0.21, 0.8, 0.0], 0.02), // heel of hand
+  ...both('wrist', [0.19, 0.76, 0.0], 0.012), // base of index finger
+  ...both('wrist', [0.235, 0.765, 0.0], 0.012), // base of little finger
   ...both('elbow', [0.205, 1.1, -0.045], 0.01), // elbow
   ...both('elbow', [0.21, 0.95, 0.0], 0.02), // forearm
   ...both('scapula', [0.1, 1.35, -0.1], 0.015), // shoulder blade
@@ -111,6 +117,9 @@ const CONTACTS = [
   ['pelvis', [-0.06, 0.87, -0.05], 0.02],
   ['pelvis', [0, 0.97, -0.1], 0.015], // sacrum
   ['pelvis', [0, 0.9, 0.08], 0.02], // pubis
+  ['pelvis', [0.065, 0.9, -0.125], 0.0], // buttocks (gluteal soft tissue)
+  ['pelvis', [-0.065, 0.9, -0.125], 0.0],
+  ['lumbar', [0, 1.1, 0.115], 0.0], // belly
   ['thorax', [0, 1.3, -0.12], 0.015], // mid back
   ['thorax', [0, 1.3, 0.12], 0.015], // chest
   ['head', [0, 1.66, -0.1], 0.005], // back of head

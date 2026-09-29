@@ -3,6 +3,8 @@ import { Viewer } from './viewer.js';
 import { Body } from './anatomy/body.js';
 import { Animator } from './anatomy/animator.js';
 import { ThumbnailMaker } from './ui/thumbnails.js';
+import { Physics } from './anatomy/physics.js';
+import { PhysicsOverlay } from './ui/physicsOverlay.js';
 import { BONES } from './data/bones.js';
 import { MUSCLES, MUSCLE_GROUPS } from './data/muscles.js';
 import { JOINTS } from './data/joints.js';
@@ -14,8 +16,30 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const app = $('#app');
 const viewer = new Viewer($('#viewport'));
 const body = new Body(viewer.scene);
-const anim = new Animator(body.rig, () => body.update());
+const subject = loadSubject();
+const physics = new Physics(body.rig, subject);
+// every pose is statically balanced (centre of mass over the feet) before it is played
+const balance = (q) => physics.balance(q);
+const anim = new Animator(body.rig, () => body.update(), { prepare: balance });
+const overlay = new PhysicsOverlay(viewer.scene);
 viewer.pickables = body.pickables;
+
+function loadSubject() {
+  try {
+    const s = JSON.parse(localStorage.getItem('yoga3d.subject'));
+    if (s && s.mass > 20 && (s.sex === 'm' || s.sex === 'f')) return s;
+  } catch {
+    /* storage unavailable */
+  }
+  return { mass: 60, sex: 'f' };
+}
+function saveSubject() {
+  try {
+    localStorage.setItem('yoga3d.subject', JSON.stringify({ mass: physics.mass, sex: physics.sex }));
+  } catch {
+    /* ignore */
+  }
+}
 
 const ROLE_COLORS = {
   contract: new THREE.Color('#ff5a3c'),
@@ -39,6 +63,9 @@ const state = {
   muscleOpacity: 1,
   layers: { bones: true, muscles: true, joints: true },
   lastStep: -1,
+  variant: 0, // 0 = standard form, n = asana.variants[n - 1]
+  phys: null, // latest static analysis
+  compare: null, // variant comparison table (html)
 };
 
 // ---------------------------------------------------------------- helpers
@@ -89,6 +116,8 @@ function setMode(mode) {
   $$('.mode-section').forEach((s) => (s.hidden = s.dataset.for !== mode));
   $('#legend').hidden = mode !== 'asana';
   $('#player').hidden = mode !== 'asana';
+  $('#phys-hud').hidden = mode !== 'asana';
+  overlay.setVisible(mode === 'asana');
   state.selection = null;
   if (mode === 'anatomy') {
     anim.setSequence([{ pose: 'tadasana', hold: 1 }], { loop: 'static' });
@@ -170,6 +199,11 @@ $$('.layer-toggles input').forEach((inp) =>
     applyVisuals();
   }),
 );
+$('#real-bones').addEventListener('change', (e) => {
+  body.setRealBones(e.target.checked);
+  applyVisuals();
+  if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
+});
 $('#muscle-opacity').addEventListener('input', (e) => {
   state.muscleOpacity = parseFloat(e.target.value);
   applyVisuals();
@@ -206,6 +240,7 @@ function select(sel, { fly = false } = {}) {
 }
 
 function flyToMeshes(meshes) {
+  meshes = meshes.filter((m) => m.visible);
   if (!meshes.length) return;
   const box = new THREE.Box3();
   for (const m of meshes) box.expandByObject(m);
@@ -284,7 +319,8 @@ function renderInfo(sel) {
       <div class="info-meta">${sidePill}</div>
       <div class="info-section"><p>${esc(d.desc)}</p></div>
       <div class="info-section"><h4>Mốc giải phẫu</h4><ul>${d.landmarks.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
-      <div class="info-section yoga-note"><h4>Ứng dụng trong yoga</h4><p>${esc(d.yoga)}</p></div>`;
+      <div class="info-section yoga-note"><h4>Ứng dụng trong yoga</h4><p>${esc(d.yoga)}</p></div>
+      ${realBoneHtml(sel.id)}`;
   } else if (sel.kind === 'muscle') {
     const used = asanasUsingMuscle(sel.id);
     html = `<div class="info-kicker">Cơ · ${esc(d.group)}</div>
@@ -307,6 +343,26 @@ function renderInfo(sel) {
       <div class="info-section yoga-note"><h4>Ứng dụng trong yoga</h4><p>${esc(d.yoga)}</p></div>`;
   }
   $('#info').innerHTML = html;
+}
+
+const BP3D_IDS = new Set(['pelvis', 'sacrum', 'femur', 'patella']);
+function realBoneHtml(id) {
+  const man = body.bp3d;
+  if (!man || !body.realBones || !BP3D_IDS.has(id)) return '';
+  const m = man.measurements;
+  const rows =
+    id === 'femur' || id === 'pelvis'
+      ? `<table class="rom-table">
+          <tr><td>Bán kính chỏm xương đùi (fit mặt cầu)</td><td>${m.L.femoralHeadRadiusMm} / ${m.R.femoralHeadRadiusMm} mm</td></tr>
+          <tr><td>Sai số fit (RMS)</td><td>${m.L.sphereFitRmsMm} / ${m.R.sphereFitRmsMm} mm</td></tr>
+          <tr><td>Lệch tâm ổ cối ↔ tâm chỏm xương đùi</td><td>${m.L.acetabulumOffsetMm} / ${m.R.acetabulumOffsetMm} mm</td></tr>
+          <tr><td>Bán kính lồi cầu đùi (trong / ngoài)</td><td>${m.L.condyleRadiiMm.join(' / ')} mm</td></tr>
+        </table>
+        <p class="hint" style="margin-top:6px">Số liệu trái / phải. Tâm khớp háng của khung xương được lấy từ các mặt cầu này.</p>`
+      : '';
+  return `<div class="info-section"><h4>Mô hình xương thật</h4>
+    <p style="font-size:13px;color:var(--muted)">Hình dạng xương từ BodyParts3D (dữ liệu chụp cơ thể người thật), © DBCLS, giấy phép CC BY-SA 2.1 JP.</p>
+    ${rows}</div>`;
 }
 
 function asanasUsingMuscle(id) {
@@ -348,12 +404,50 @@ $('#info').addEventListener('click', (e) => {
     select(null);
     return;
   }
+  const vchip = e.target.closest('[data-variant]');
+  if (vchip) {
+    loadAsana(state.asanaId, parseInt(vchip.dataset.variant, 10), { keepCamera: true });
+    return;
+  }
+  if (e.target.closest('[data-compare]')) {
+    state.compare = compareVariants();
+    renderAsanaInfo();
+    return;
+  }
   const step = e.target.closest('[data-step]');
   if (step) {
     anim.seekStep(parseInt(step.dataset.step, 10));
     anim.playing = false;
     syncPlayButton();
   }
+});
+
+$('#info').addEventListener('change', (e) => {
+  if (e.target.id === 'phys-friction') {
+    physics.friction = e.target.checked;
+    if (state.compare) state.compare = compareVariants();
+    renderAsanaInfo();
+  } else if (e.target.id === 'subj-mass') {
+    const v = THREE.MathUtils.clamp(parseFloat(e.target.value) || 60, 30, 150);
+    physics.setSubject({ mass: v });
+    saveSubject();
+    if (state.compare) state.compare = compareVariants();
+    renderAsanaInfo();
+  } else if (e.target.id === 'subj-sex') {
+    physics.setSubject({ sex: e.target.value });
+    saveSubject();
+    anim.clearCache(); // balance depends on the segment mass distribution
+    if (state.compare) state.compare = null;
+    loadAsana(state.asanaId, state.variant, { keepCamera: true });
+  }
+});
+// hovering a joint-load row highlights the muscles that must supply that moment
+$('#info').addEventListener('mouseover', (e) => {
+  const row = e.target.closest('[data-load-muscles]');
+  const key = row ? `${row.dataset.loadMuscles}|${row.dataset.side}` : null;
+  if (key === state.hoverLoad) return;
+  state.hoverLoad = key;
+  applyVisuals();
 });
 
 // ---------------------------------------------------------------- asana list
@@ -394,19 +488,32 @@ $('#asana-list').addEventListener('click', (e) => {
 });
 
 // ---------------------------------------------------------------- asana loading & roles
-function loadAsana(id) {
+function targetPose(a) {
+  return a.steps[a.steps.length - 1].pose;
+}
+function stepsFor(a, variant) {
+  const v = variant > 0 && a.variants ? a.variants[variant - 1] : null;
+  if (!v) return a.steps;
+  const target = targetPose(a);
+  return a.steps.map((s) => (s.pose === target ? { ...s, pose: v.pose } : s));
+}
+
+function loadAsana(id, variant = 0, { keepCamera = false } = {}) {
   const a = ASANA_BY_ID[id];
   if (!a) return;
+  if (id !== state.asanaId) state.compare = null;
   state.asanaId = id;
+  state.variant = a.variants && variant <= a.variants.length ? variant : 0;
   state.selection = null;
   state.lastStep = -1;
-  anim.setSequence(a.steps, { loop: a.loop === 'pingpong' ? 'pingpong' : 'cycle' });
+  anim.setSequence(stepsFor(a, state.variant), { loop: a.loop === 'pingpong' ? 'pingpong' : 'cycle' });
   anim.playing = a.loop !== 'static';
   if (!a.flow && a.loop !== 'static') {
     // start on the finished pose so teachers immediately see it, then keep moving
     anim.seekStep(Math.floor(anim.steps.length / 2));
   }
-  frameAsana(a);
+  if (!keepCamera) frameAsana(a);
+  state.phys = physics.compute();
   renderTimelineMarks();
   renderAsanaList();
   renderAsanaInfo();
@@ -527,6 +634,7 @@ function renderAsanaInfo() {
     <div class="info-title">${esc(a.sanskrit)}</div>
     <div class="info-latin">${esc(a.vi)} · ${esc(a.en)}</div>
     ${selected}
+    ${physicsSectionHtml(a)}
     <div class="info-section"><h4>Cơ được tác động${a.flow ? ' (bước hiện tại)' : ''}</h4>${roleBlocks}
       <p class="hint" style="margin-top:8px">Nhấp vào tên cơ hoặc trực tiếp trên mô hình để xem chi tiết. Số % = độ dài cơ hiện tại so với Tadasana.</p></div>
     ${steps}
@@ -535,6 +643,113 @@ function renderAsanaInfo() {
     ${list('Lợi ích', a.benefits)}
     ${list('Lưu ý & chống chỉ định', a.cautions, 'caution')}`;
   updateLiveNumbers(true);
+}
+
+function physicsSectionHtml(a) {
+  const variants = a.variants
+    ? `<div class="chips variant-chips">${['Chuẩn', ...a.variants.map((v) => v.label)]
+        .map((l, i) => `<button class="chip${i === state.variant ? ' active' : ''}" data-variant="${i}">${esc(l)}</button>`)
+        .join('')}</div>`
+    : '';
+  const compare = a.variants
+    ? `<button class="ghost-btn small" data-compare>${state.compare ? 'Cập nhật bảng so sánh' : 'So sánh tải giữa các biến thể'}</button>
+       <div id="ph-compare">${state.compare || ''}</div>`
+    : '';
+  return `<div class="info-section phys-card">
+    <h4>Cơ sinh học · tải trọng tĩnh</h4>
+    <div class="subject-row">
+      <label>Cân nặng <input type="number" id="subj-mass" min="30" max="150" step="1" value="${physics.mass}" /> kg</label>
+      <label>Tỷ lệ cơ thể <select id="subj-sex"><option value="f"${physics.sex === 'f' ? ' selected' : ''}>Nữ</option><option value="m"${physics.sex === 'm' ? ' selected' : ''}>Nam</option></select></label>
+    </div>
+    ${variants}
+    <label class="check-row" style="margin:0 0 10px"><input type="checkbox" id="phys-friction"${physics.friction ? ' checked' : ''} />
+      <span>Tính ma sát với thảm <small>(đẩy/kéo sàn theo chiều ngang)</small></span></label>
+    <div class="phys-stats">
+      <div><span>Trọng tâm</span><b id="ph-com">—</b></div>
+      <div><span>Biên ổn định</span><b id="ph-margin">—</b></div>
+    </div>
+    <div class="phys-sub">Phân bố trọng lượng lên sàn</div>
+    <div id="ph-support"></div>
+    <div class="phys-sub">Tải khớp · mô-men cơ phải tạo ra</div>
+    <div id="ph-loads"></div>
+    ${compare}
+    <p class="hint">Tính từ tư thế trên mô hình: khối lượng từng đoạn cơ thể theo de Leva (1996), cân bằng tĩnh (ΣF = 0, ΣM = 0). Khi có nhiều điểm tựa, lực đứng được chia theo ước lượng; lực ma sát được chọn sao cho tổng tải khớp nhỏ nhất (giả định người tập đẩy sàn khéo léo, nên tải hiển thị là mức thấp). Chưa tính dây chằng và mô mềm (phần tải chúng gánh bị tính hết cho cơ). Số liệu dùng để so sánh xu hướng, không phải số đo lâm sàng.</p>
+  </div>`;
+}
+
+const LOAD_SCALE = 150; // N·m shown as a full bar (fixed so variants are comparable)
+function renderPhysicsLive() {
+  const r = state.phys;
+  if (!r || !$('#ph-loads')) return;
+  $('#ph-com').textContent = `${Math.round(r.com.y * 100)} cm từ sàn`;
+  const m = $('#ph-margin');
+  const cm = r.margin * 100;
+  // static analysis is exact only while a pose is held; in-between frames are not balanced
+  const { index, alpha } = anim.locate(anim.time);
+  const moving = index > 0 && alpha < 1;
+  const status = moving ? 'đang chuyển tư thế' : cm >= 0 ? 'ổn định' : 'mất cân bằng';
+  m.textContent = isFinite(cm) ? `${cm >= 0 ? '+' : ''}${cm.toFixed(1)} cm · ${status}` : '—';
+  m.className = moving ? '' : cm >= 0 ? 'ok' : 'bad';
+  $('#ph-support').innerHTML = r.support
+    .map(
+      (g) =>
+        `<div class="bar-row"><span>${esc(g.label)}${g.shear >= 3 ? ` <small class="shear" title="Lực ngang (ma sát) tính theo % trọng lượng">↔ ${Math.round(g.shear)}%</small>` : ''}</span><span class="bar"><i style="width:${Math.min(g.pct, 100)}%;background:var(--stabilize)"></i></span><b>${Math.round(g.pct)}%</b></div>`,
+    )
+    .join('');
+  $('#ph-loads').innerHTML = r.joints
+    .filter((j) => j.total >= 3 && j.demands.length)
+    .slice(0, 8)
+    .map((j) => {
+      const d = j.demands[0];
+      const w = Math.min(j.total / LOAD_SCALE, 1) * 100;
+      return `<div class="load-row" data-load-muscles="${d.muscles.join(',')}" data-side="${j.side}">
+        <div class="bar-row"><span>${esc(j.name)}</span><span class="bar"><i style="width:${w}%"></i></span><b>${Math.round(j.total)} N·m</b></div>
+        <div class="lr-need">→ ${esc(d.label)}${j.demands[1] && j.demands[1].value > 0.35 * d.value ? ` · ${esc(j.demands[1].label.split(' (')[0])}` : ''}</div>
+      </div>`;
+    })
+    .join('') || '<p class="empty-note">Gần như không có tải đáng kể.</p>';
+  const hud = $('#phys-hud');
+  if (hud) {
+    const top = r.joints.find((j) => j.demands.length);
+    hud.innerHTML = `<div><i class="dot com"></i>Trọng tâm · biên <b class="${moving ? '' : cm >= 0 ? 'ok' : 'bad'}">${cm >= 0 ? '+' : ''}${cm.toFixed(1)} cm</b>${moving ? ' <small>(đang chuyển)</small>' : ''}</div>
+      <div><i class="dot grf"></i>${r.support.slice(0, 4).map((g) => `${esc(g.label)} <b>${Math.round(g.pct)}%</b>`).join(' · ')}</div>
+      ${top ? `<div><i class="dot load"></i>Tải lớn nhất: ${esc(top.name)} <b>${Math.round(top.total)} N·m</b></div>` : ''}`;
+  }
+}
+
+/** Static analysis of each variant of the current asana, as an HTML table. */
+function compareVariants() {
+  const a = ASANA_BY_ID[state.asanaId];
+  if (!a.variants) return '';
+  const cols = [{ label: 'Chuẩn', pose: targetPose(a) }, ...a.variants];
+  const res = cols.map((c) => {
+    body.rig.applyQuats(anim.quatsFor(c.pose));
+    body.rig.ground();
+    return physics.compute();
+  });
+  anim.render();
+  const byJoint = res.map((r) => Object.fromEntries(r.joints.map((j) => [j.joint, j])));
+  const keys = [];
+  for (const r of res) for (const j of r.joints.slice(0, 6)) if (!keys.includes(j.joint) && j.total >= 3) keys.push(j.joint);
+  const sumSupport = (r, word) => r.support.filter((g) => g.label.startsWith(word)).reduce((x, g) => x + g.pct, 0);
+  const cell = (v, base, unit, lowerIsBetter = true) => {
+    if (base === undefined || base === v || Math.abs(base) < 1e-6) return `<td>${Math.round(v)}${unit}</td>`;
+    const d = ((v - base) / Math.abs(base)) * 100;
+    const good = lowerIsBetter ? d < 0 : d > 0;
+    return `<td>${Math.round(v)}${unit} <small class="${good ? 'ok' : 'bad'}">${d > 0 ? '+' : ''}${Math.round(d)}%</small></td>`;
+  };
+  let html = `<table class="cmp-table"><thead><tr><th></th>${cols.map((c) => `<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>`;
+  for (const k of keys) {
+    const name = (byJoint[0][k] || byJoint[1][k]).name;
+    html += `<tr><td>${esc(name)}</td>${res.map((_, i) => cell(byJoint[i][k]?.total ?? 0, i ? byJoint[0][k]?.total ?? 0 : undefined, ' N·m')).join('')}</tr>`;
+  }
+  for (const [label, word] of [['Tay chịu', 'Bàn tay'], ['Chân chịu', 'Bàn chân'], ['Gối chịu', 'Gối']]) {
+    const vals = res.map((r) => sumSupport(r, word));
+    if (vals.every((v) => v < 1)) continue;
+    html += `<tr><td>${label}</td>${vals.map((v, i) => cell(v, i ? vals[0] : undefined, '%')).join('')}</tr>`;
+  }
+  html += `<tr><td>Biên ổn định</td>${res.map((r, i) => cell(r.margin * 100, i ? res[0].margin * 100 : undefined, ' cm', false)).join('')}</tr>`;
+  return `${html}</tbody></table><p class="hint">% = chênh lệch so với bản chuẩn (xanh: tải nhẹ hơn / vững hơn).</p>`;
 }
 
 let lastLiveUpdate = 0;
@@ -557,6 +772,7 @@ function updateLiveNumbers(force = false) {
     bar.style.width = `${w}%`;
     bar.style.background = p >= 0 ? 'var(--stretch)' : 'var(--contract)';
   }
+  renderPhysicsLive();
   // flow step highlight
   const cur = anim.currentStep;
   $$('.steps-list li').forEach((li) => li.classList.toggle('current', parseInt(li.dataset.step, 10) === cur));
@@ -633,6 +849,29 @@ function applyVisuals() {
 }
 
 const tmpColor = new THREE.Color();
+const LOAD_HOT = new THREE.Color('#ff7a2f');
+const LOAD_COLOR_SCALE = 80; // N·m that saturates the "Theo tải" colour
+// spine muscles are driven by trunk joints on both sides; limb muscles only by their own side
+const SIDED_MUSCLE_JOINT = (id) =>
+  !['rectus_abdominis', 'external_oblique', 'erector_spinae', 'quadratus_lumborum', 'rhomboids', 'sternocleidomastoid', 'trapezius', 'levator_scapulae'].includes(id);
+/** muscle|side -> 0..1: share of the largest joint moment that muscle group must resist */
+let loadIntensity = new Map();
+function computeLoadIntensity(r) {
+  const out = new Map();
+  if (!r) return out;
+  for (const j of r.joints) {
+    for (const d of j.demands) {
+      const k = d.value / LOAD_COLOR_SCALE;
+      for (const id of d.muscles) {
+        for (const side of j.side && SIDED_MUSCLE_JOINT(id) ? [j.side] : ['L', 'R']) {
+          const key = `${id}|${side}`;
+          out.set(key, Math.max(out.get(key) || 0, k));
+        }
+      }
+    }
+  }
+  return out;
+}
 const LEN_SHORT = new THREE.Color('#ff3b2f');
 const LEN_LONG = new THREE.Color('#2f8fff');
 const LEN_MID = new THREE.Color('#7d6f6c');
@@ -643,7 +882,21 @@ function animateVisuals(time) {
   for (const ms of body.muscleSystem.muscles) {
     const mat = ms.mesh.material;
     const isSel = sel && ms.id === sel.id && (!sel.side || ms.side === sel.side);
-    if (state.colorMode === 'length') {
+    if (state.hoverLoad) {
+      const [ids, side] = state.hoverLoad.split('|');
+      const hit = ids.split(',').includes(ms.id) && (!side || side === ms.side || !SIDED_MUSCLE_JOINT(ms.id));
+      mat.color.copy(hit ? LOAD_HOT : DIM_MUSCLE);
+      mat.opacity = hit ? 1 : 0.12;
+      mat.depthWrite = hit;
+      mat.emissive.copy(hit ? LOAD_HOT : DIM_MUSCLE).multiplyScalar(hit ? 0.2 + 0.3 * pulse : 0);
+    } else if (state.colorMode === 'load') {
+      const k = loadIntensity.get(`${ms.id}|${ms.side}`) || 0;
+      tmpColor.copy(DIM_MUSCLE).lerp(LOAD_HOT, Math.min(1, k * 1.2));
+      mat.color.copy(tmpColor);
+      mat.opacity = 0.14 + 0.86 * Math.min(1, k * 1.5);
+      mat.depthWrite = mat.opacity > 0.95;
+      mat.emissive.copy(LOAD_HOT).multiplyScalar(0.3 * k);
+    } else if (state.colorMode === 'length') {
       const d = THREE.MathUtils.clamp((ms.ratio - 1) / 0.3, -1, 1);
       tmpColor.copy(LEN_MID).lerp(d > 0 ? LEN_LONG : LEN_SHORT, Math.abs(d));
       mat.color.copy(tmpColor);
@@ -673,6 +926,9 @@ $$('.legend-items input[data-role]').forEach((inp) =>
     state.roleFilter[inp.dataset.role] = inp.checked;
     applyVisuals();
   }),
+);
+$$('[data-phys]').forEach((inp) =>
+  inp.addEventListener('change', () => overlay.setOptions({ [inp.dataset.phys]: inp.checked })),
 );
 $('#show-bones-asana').addEventListener('change', (e) => {
   state.showBonesAsana = e.target.checked;
@@ -818,6 +1074,9 @@ viewer.onTick = (dt) => {
       renderAsanaInfo();
     }
   }
+  state.phys = physics.compute();
+  loadIntensity = computeLoadIntensity(state.phys);
+  overlay.update(state.phys, clockTime);
   animateVisuals(clockTime);
   updateLiveNumbers();
   const p = anim.duration > 0 ? anim.time / anim.duration : 0;
@@ -832,10 +1091,24 @@ renderAsanaList();
 readHash();
 window.addEventListener('hashchange', readHash);
 
+// Real (BodyParts3D) bones for the pelvis–thigh region.
+body
+  .loadRealBones(`${import.meta.env.BASE_URL}models/bp3d/`)
+  .then(() => {
+    viewer.pickables = body.pickables;
+    $('#real-bones').disabled = false;
+    applyVisuals();
+    if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
+  })
+  .catch((err) => {
+    console.warn('BodyParts3D bones unavailable', err);
+    $('#real-bones').closest('label').hidden = true;
+  });
+
 // Asana silhouettes for the list, generated after the first frames.
 setTimeout(() => {
   try {
-    const thumbAnim = new Animator(body.rig, () => body.update());
+    const thumbAnim = new Animator(body.rig, () => body.update(), { prepare: balance });
     const maker = new ThumbnailMaker(viewer, body, thumbAnim);
     for (const a of ASANAS) if (!a.hidden) thumbs[a.id] = maker.make(a);
     maker.dispose();
@@ -846,4 +1119,4 @@ setTimeout(() => {
   renderAsanaList();
 }, 400);
 
-window.__app = { viewer, body, anim, state, loadAsana, setMode, select };
+window.__app = { viewer, body, anim, state, loadAsana, setMode, select, physics };

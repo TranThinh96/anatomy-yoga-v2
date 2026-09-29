@@ -77,6 +77,7 @@ export const ASANAS = [
     en: 'Standing Forward Fold',
     category: 'Gập người',
     level: 'Cơ bản',
+    variants: [{ label: 'Chùng gối', pose: 'uttanasana_bent' }],
     steps: [{ pose: 'tadasana' }, { pose: 'uttanasana', anchor: FEET, move: 2.2 }],
     loop: 'pingpong',
     roles: {
@@ -127,6 +128,7 @@ export const ASANAS = [
     en: 'Chair Pose',
     category: 'Đứng',
     level: 'Cơ bản',
+    variants: [{ label: 'Ngồi nông', pose: 'utkatasana_shallow' }],
     steps: [{ pose: 'tadasana' }, { pose: 'utkatasana', anchor: FEET, move: 2 }],
     loop: 'pingpong',
     roles: {
@@ -348,6 +350,7 @@ export const ASANAS = [
     en: 'Downward-Facing Dog',
     category: 'Chống tay',
     level: 'Cơ bản',
+    variants: [{ label: 'Chùng gối', pose: 'adho_mukha_svanasana_bent' }],
     steps: [{ pose: 'tabletop' }, { pose: 'adho_mukha_svanasana', anchor: HANDS, move: 2.2, hold: 2 }],
     loop: 'pingpong',
     roles: {
@@ -377,6 +380,7 @@ export const ASANAS = [
     en: 'Plank Pose',
     category: 'Chống tay',
     level: 'Cơ bản',
+    variants: [{ label: 'Hạ gối', pose: 'phalakasana_knees' }],
     steps: [{ pose: 'tabletop' }, { pose: 'phalakasana', anchor: HANDS, move: 1.8 }],
     loop: 'pingpong',
     roles: {
@@ -404,6 +408,7 @@ export const ASANAS = [
     en: 'Four-Limbed Staff',
     category: 'Chống tay',
     level: 'Trung bình',
+    variants: [{ label: 'Hạ gối', pose: 'chaturanga_knees' }],
     steps: [{ pose: 'phalakasana' }, { pose: 'chaturanga', anchor: FEET, move: 2 }],
     loop: 'pingpong',
     roles: {
@@ -620,6 +625,7 @@ export const ASANAS = [
     en: 'Boat Pose',
     category: 'Ngồi & nằm',
     level: 'Trung bình',
+    variants: [{ label: 'Gập gối (Ardha)', pose: 'navasana_bent' }],
     steps: [{ pose: 'dandasana' }, { pose: 'navasana', anchor: HIPS, move: 2.2, hold: 2 }],
     loop: 'pingpong',
     roles: {

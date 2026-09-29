@@ -21,9 +21,12 @@ const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
  * which is what makes a transition read like a real movement.
  */
 export class Animator {
-  constructor(rig, onFrame) {
+  constructor(rig, onFrame, { prepare = null } = {}) {
     this.rig = rig;
     this.onFrame = onFrame;
+    // optional hook to post-process a pose's quaternions (e.g. static balance)
+    this.prepare = prepare;
+    this._cache = new Map();
     this.speed = 1;
     this.playing = true;
     this.time = 0;
@@ -32,7 +35,7 @@ export class Animator {
 
   setSequence(steps, { loop = 'cycle' } = {}) {
     this.loop = loop;
-    this.steps = steps.map((s) => ({ move: 1.6, hold: 1.5, anchor: null, ...s, quats: poseToQuats(s.pose) }));
+    this.steps = steps.map((s) => ({ move: 1.6, hold: 1.5, anchor: null, ...s, quats: this.quatsFor(s.pose) }));
     if (loop === 'pingpong' && this.steps.length > 1) {
       const back = this.steps
         .slice(0, -1)
@@ -52,6 +55,19 @@ export class Animator {
     this._computeOffsets();
     this.time = 0;
     this.render();
+  }
+
+  quatsFor(pose) {
+    if (!this._cache.has(pose)) {
+      const q = poseToQuats(pose);
+      this._cache.set(pose, this.prepare ? this.prepare(q) : q);
+    }
+    return this._cache.get(pose);
+  }
+
+  /** Call after changing anything that affects `prepare` (e.g. body mass model). */
+  clearCache() {
+    this._cache.clear();
   }
 
   _anchorXZ(quats, offset, anchor) {
