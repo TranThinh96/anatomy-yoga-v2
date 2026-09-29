@@ -60,7 +60,7 @@ export const LOAD_JOINTS = {
 
 // Rough joint strength scale (N·m) used to normalise joint moments when choosing
 // how the body pushes on the floor; only the ratios matter.
-const STRENGTH = { lumbar: 200, thorax: 200, neck: 40, shoulder: 80, elbow: 70, wrist: 25, hip: 200, knee: 200, ankle: 150 };
+const STRENGTH = { lumbar: 200, thorax: 200, neck: 40, head: 30, scapula: 60, shoulder: 80, elbow: 70, wrist: 25, hip: 200, knee: 200, ankle: 150 };
 const FRICTION = 0.8; // static friction coefficient of a yoga mat
 
 const GROUP_OF_SEG = {
@@ -71,7 +71,7 @@ const GROUP_OF_SEG = {
 const SIDE_VI = { 1: ' trái', '-1': ' phải', 0: '' };
 
 const TOUCH = 0.02; // a contact closer than 2 cm to the floor counts as support
-// relative willingness of each body part to carry weight (see solveSupport)
+// relative willingness of each body part to carry weight (see solveSupport / solveContacts)
 const SUPPORT_WEIGHT = {
   pelvis: 4, thorax: 3, lumbar: 3, scapula: 3, hip: 2, ankle: 2, knee: 2,
   elbow: 1.5, wrist: 1, shoulder: 1, head: 0.4, neck: 0.4,
@@ -212,100 +212,141 @@ function solveDense(M, rhs) {
 }
 
 /**
- * Horizontal (friction) ground forces. The vertical forces come from solveSupport;
- * any horizontal forces that sum to zero (ΣFx = ΣFz = 0, no net twist about the
- * vertical) keep the body in equilibrium, so we choose the ones that minimise the sum
- * of squared joint moments, each divided by a strength scale – the pushing strategy
- * that costs the muscles least (e.g. the feet pressing outward in a wide stance).
- * Equality-constrained least squares solved through its KKT system; forces outside
- * the friction cone (|Fh| ≤ μ·Fy) are penalised and re-solved.
- *   points: [{p, f}], jointRows: [{J, sub: Set(pointIndex), M0: Vector3, c}]
- * M0 = joint moment from gravity and the vertical forces alone.
+ * Floor reaction forces. Static equilibrium (ΣF = 0, ΣM = 0 about the centre of mass) leaves
+ * the forces undetermined as soon as the body touches the floor in more than one place, so
+ * we choose the ones that minimise the sum of squared joint moments, each divided by a
+ * strength scale: the body "relaxes" onto its supports, and a lying body needs (almost) no
+ * muscle work. A small term Σ|F|²/w (w = SUPPORT_WEIGHT) splits the load between points on
+ * the same segment. Forces may only push (Fy ≥ 0, active set) and, with `friction`, have
+ * horizontal parts within the friction cone |Fh| ≤ μ·Fy (penalised, then scaled together).
+ * Equality-constrained least squares, solved through its KKT system.
+ *   points: [{p, w}], rows: [{J, sub: Set(pointIndex), grav: Vector3, c}]
+ * Returns [[Fx, Fy, Fz]] per point, or null if no pushing forces can balance the body.
  */
-export function solveFriction(points, W, jointRows) {
-  const idx = [];
-  points.forEach((pt, i) => pt.f > 1e-3 * W && idx.push(i));
-  const m = idx.length * 2;
-  if (idx.length < 2) return points.map(() => [0, 0]);
-  const pen = idx.map(() => 1);
-  let h = null;
-  for (let iter = 0; iter < 6; iter++) {
-    const Hm = Array.from({ length: m }, () => new Array(m).fill(0));
-    const g = new Array(m).fill(0);
-    for (const row of jointRows) {
+export function solveContacts(points, com, W, rows, friction = true) {
+  let active = points.map((_, i) => i);
+  const dof = friction ? 3 : 1;
+  const comp = friction ? [0, 1, 2] : [1];
+  const pen = points.map(() => 1);
+  const LAMBDA = 0.1 / (W * W);
+  for (let iter = 0; iter < 3 * points.length + 12 && active.length; iter++) {
+    const n = active.length * dof;
+    const H = Array.from({ length: n }, () => new Array(n).fill(0));
+    const g = new Array(n).fill(0);
+    // joint effort: Σ |grav + Σ r × F|² / c²
+    for (const row of rows) {
       for (let k = 0; k < 3; k++) {
-        // (r × (Fx, 0, Fz))_k as a row over (Fx, Fz)
-        const a = new Array(m).fill(0);
+        const a = new Array(n).fill(0);
         let any = false;
-        idx.forEach((pi, col) => {
+        active.forEach((pi, col) => {
           if (!row.sub.has(pi)) return;
           const r = points[pi].p.clone().sub(row.J);
-          const sk = k === 0 ? [0, r.y] : k === 1 ? [r.z, -r.x] : [-r.y, 0];
-          a[col * 2] = sk[0] / row.c;
-          a[col * 2 + 1] = sk[1] / row.c;
+          // (r × F)_k as coefficients of (Fx, Fy, Fz)
+          const cf = k === 0 ? [0, -r.z, r.y] : k === 1 ? [r.z, 0, -r.x] : [-r.y, r.x, 0];
+          comp.forEach((c, j) => (a[col * dof + j] = cf[c] / row.c));
           any = true;
         });
         if (!any) continue;
-        const bk = -row.M0.getComponent(k) / row.c;
-        for (let i = 0; i < m; i++) {
+        const b0 = row.grav.getComponent(k) / row.c;
+        for (let i = 0; i < n; i++) {
           if (!a[i]) continue;
-          g[i] -= a[i] * bk;
-          for (let j = 0; j < m; j++) if (a[j]) Hm[i][j] += a[i] * a[j];
+          g[i] += a[i] * b0;
+          for (let j = 0; j < n; j++) if (a[j]) H[i][j] += a[i] * a[j];
         }
       }
     }
-    // small penalty on horizontal force, larger where the vertical force is small
-    idx.forEach((pi, col) => {
-      const cap = FRICTION * points[pi].f + 1e-3 * W;
-      const w = (1e-6 * pen[col]) / (cap * cap);
-      Hm[col * 2][col * 2] += w;
-      Hm[col * 2 + 1][col * 2 + 1] += w;
+    active.forEach((pi, col) => {
+      const w = points[pi].w ?? 1;
+      comp.forEach((c, j) => {
+        const cap = c === 1 ? 1 : pen[pi];
+        H[col * dof + j][col * dof + j] += (LAMBDA * cap) / w;
+      });
     });
-    // constraints: ΣFx = 0, ΣFz = 0, Σ (z·Fx − x·Fz) = 0
-    const C = [new Array(m).fill(0), new Array(m).fill(0), new Array(m).fill(0)];
-    idx.forEach((pi, col) => {
-      const p = points[pi].p;
-      C[0][col * 2] = 1;
-      C[1][col * 2 + 1] = 1;
-      C[2][col * 2] = p.z;
-      C[2][col * 2 + 1] = -p.x;
-    });
-    const N = m + 3;
-    const K = Array.from({ length: N }, () => new Array(N).fill(0));
-    const rhs = new Array(N).fill(0);
-    for (let i = 0; i < m; i++) {
-      for (let j = 0; j < m; j++) K[i][j] = Hm[i][j];
-      for (let k = 0; k < 3; k++) K[i][m + k] = C[k][i];
-      rhs[i] = -g[i]; // normal equations: AᵀA·h = −Aᵀ·m0
+    // equilibrium: ΣF = (0, W, 0), Σ (p − com) × F = 0
+    const C = [];
+    const d = [];
+    const eqF = friction ? [0, 1, 2] : [1];
+    for (const k of eqF) {
+      const rowC = new Array(n).fill(0);
+      active.forEach((_, col) => comp.forEach((c, j) => c === k && (rowC[col * dof + j] = 1)));
+      C.push(rowC);
+      d.push(k === 1 ? W : 0);
     }
-    for (let k = 0; k < 3; k++) {
-      for (let j = 0; j < m; j++) K[m + k][j] = C[k][j];
-      K[m + k][m + k] = -1e-12;
+    const eqM = friction ? [0, 1, 2] : [0, 2];
+    for (const k of eqM) {
+      const rowC = new Array(n).fill(0);
+      active.forEach((pi, col) => {
+        const r = points[pi].p.clone().sub(com);
+        const cf = k === 0 ? [0, -r.z, r.y] : k === 1 ? [r.z, 0, -r.x] : [-r.y, r.x, 0];
+        comp.forEach((c, j) => (rowC[col * dof + j] = cf[c]));
+      });
+      C.push(rowC);
+      d.push(0);
+    }
+    const m = C.length;
+    const K = Array.from({ length: n + m }, () => new Array(n + m).fill(0));
+    const rhs = new Array(n + m).fill(0);
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) K[i][j] = H[i][j];
+      for (let k = 0; k < m; k++) K[i][n + k] = C[k][i];
+      rhs[i] = -g[i];
+    }
+    for (let k = 0; k < m; k++) {
+      for (let j = 0; j < n; j++) K[n + k][j] = C[k][j];
+      K[n + k][n + k] = -1e-9;
+      rhs[n + k] = d[k];
     }
     const x = solveDense(K, rhs);
-    if (!x) break;
-    h = x;
-    let ok = true;
-    idx.forEach((pi, col) => {
-      if (Math.hypot(x[col * 2], x[col * 2 + 1]) > FRICTION * points[pi].f * 1.02) {
-        pen[col] *= 25;
-        ok = false;
+    if (!x) return null;
+    // equality residual: if the COM cannot be held by these points, give up
+    for (let k = 0; k < m; k++) {
+      let v = -d[k];
+      for (let j = 0; j < n; j++) v += C[k][j] * x[j];
+      if (Math.abs(v) > 1e-3 * W) return null;
+    }
+    const fy = (col) => x[col * dof + (friction ? 1 : 0)];
+    // pushing only: drop the contact pulling hardest and re-solve
+    let worst = -1;
+    let worstVal = -1e-6 * W;
+    active.forEach((pi, col) => {
+      if (fy(col) < worstVal) {
+        worstVal = fy(col);
+        worst = pi;
       }
     });
-    if (ok) break;
+    if (worst >= 0) {
+      active = active.filter((i) => i !== worst);
+      continue;
+    }
+    // friction cone: penalise sliding contacts and re-solve
+    let slide = false;
+    if (friction) {
+      active.forEach((pi, col) => {
+        const h = Math.hypot(x[col * 3], x[col * 3 + 2]);
+        if (h > FRICTION * Math.max(fy(col), 0) * 1.02 + 1e-6 * W) {
+          pen[pi] *= 30;
+          slide = true;
+        }
+      });
+    }
+    if (slide && iter < 3 * points.length + 10) continue;
+    const out = points.map(() => [0, 0, 0]);
+    active.forEach((pi, col) => (out[pi] = friction ? [x[col * 3], x[col * 3 + 1], x[col * 3 + 2]] : [0, x[col], 0]));
+    if (friction) {
+      // final safety: scale all horizontal forces together into the friction cones
+      let k = 1;
+      out.forEach(([fx, fyv, fz]) => {
+        const h = Math.hypot(fx, fz);
+        if (h > FRICTION * fyv) k = Math.min(k, (FRICTION * fyv) / h);
+      });
+      for (const f of out) {
+        f[0] *= k;
+        f[2] *= k;
+      }
+    }
+    return out;
   }
-  const out = points.map(() => [0, 0]);
-  if (!h) return out;
-  // final safety: scale all horizontal forces together (keeps them in equilibrium)
-  // so that every contact is inside its friction cone
-  let k = 1;
-  idx.forEach((pi, col) => {
-    const mag = Math.hypot(h[col * 2], h[col * 2 + 1]);
-    const lim = FRICTION * points[pi].f;
-    if (mag > lim) k = Math.min(k, lim / mag);
-  });
-  idx.forEach((pi, col) => (out[pi] = [h[col * 2] * k, h[col * 2 + 1] * k]));
-  return out;
+  return null;
 }
 
 export class Physics {
@@ -383,8 +424,7 @@ export class Physics {
     // gravity moment on each joint's distal subtree (independent of the floor forces)
     const rows = [];
     for (const name in rig.joints) {
-      const info = LOAD_JOINTS[baseOf(name)];
-      if (!info) continue;
+      if (name === 'pelvis') continue;
       const sub = this.subtree[name];
       const J = rig.joints[name].getWorldPosition(new THREE.Vector3());
       const grav = new THREE.Vector3();
@@ -398,15 +438,21 @@ export class Physics {
       contacts.forEach((c, i) => sub.has(c.seg) && subPts.add(i));
       rows.push({ name, J, sub: subPts, grav, c: STRENGTH[baseOf(name)] || 100 });
     }
-    // floor forces: vertical from equilibrium, then friction that minimises joint effort
-    const fy = solveSupport(contacts, com, W);
-    contacts.forEach((c, i) => (c.f = fy[i]));
-    for (const row of rows) {
-      row.M0 = row.grav.clone();
-      for (const i of row.sub) row.M0.add(new THREE.Vector3().crossVectors(contacts[i].p.clone().sub(row.J), new THREE.Vector3(0, contacts[i].f, 0)));
+    // floor forces: equilibrium with the least joint effort; if the centre of mass is not
+    // over the supports (between two poses) fall back to vertical forces near the COM
+    const F3 = margin > 0 ? solveContacts(contacts, com, W, rows, this.friction) : null;
+    if (F3) {
+      contacts.forEach((c, i) => {
+        c.f = F3[i][1];
+        c.F = new THREE.Vector3(F3[i][0], F3[i][1], F3[i][2]);
+      });
+    } else {
+      const fy = solveSupport(contacts, com, W);
+      contacts.forEach((c, i) => {
+        c.f = fy[i];
+        c.F = new THREE.Vector3(0, fy[i], 0);
+      });
     }
-    const fh = this.friction && margin > 0 ? solveFriction(contacts, W, rows) : contacts.map(() => [0, 0]);
-    contacts.forEach((c, i) => (c.F = new THREE.Vector3(fh[i][0], c.f, fh[i][1])));
 
     // group support forces (per hand, per foot…)
     const groups = new Map();
@@ -433,9 +479,11 @@ export class Physics {
     const tmp = new THREE.Vector3();
     const xAxis = new THREE.Vector3();
     const zAxis = new THREE.Vector3();
+    // moment the muscles (and passive tissue) must supply at every joint, world frame
+    const moments = {};
     for (const name in rig.joints) {
+      if (name === 'pelvis') continue;
       const info = LOAD_JOINTS[baseOf(name)];
-      if (!info) continue;
       const sub = this.subtree[name];
       const J = rig.joints[name].getWorldPosition(new THREE.Vector3());
       M.set(0, 0, 0);
@@ -452,6 +500,8 @@ export class Physics {
       }
       // the muscles must supply the opposite moment
       const Mm = M.clone().negate();
+      moments[name] = Mm;
+      if (!info) continue;
       const e = rig.joints[name].matrixWorld.elements;
       xAxis.set(e[0], e[1], e[2]).normalize();
       const flex = Mm.dot(xAxis) * info.flexSign;
@@ -484,7 +534,7 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0, support, joints };
+    return { W, com, contacts, hull, margin, stable: margin > 0, support, joints, moments };
   }
 
   /**

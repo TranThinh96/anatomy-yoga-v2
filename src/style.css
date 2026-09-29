@@ -201,6 +201,22 @@ button { cursor: pointer; }
 .sw.contract { background: var(--contract); }
 .sw.stretch { background: var(--stretch); }
 .sw.stabilize { background: var(--stabilize); }
+.sw.conc { background: #ff4d2e; }
+.sw.ecc { background: #b25cff; }
+.sw.iso { background: #ffb020; }
+.legend-items > div { display: flex; align-items: center; gap: 8px; }
+.legend-items small { color: var(--muted); }
+.ctype { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 6px; margin-left: 4px; color: #1a1210; white-space: nowrap; }
+.ctype.concentric { background: #ff4d2e; }
+.ctype.eccentric { background: #b25cff; color: #fff; }
+.ctype.isometric { background: #ffb020; }
+.act-row .bar i { background: linear-gradient(90deg, #ffb020, #ff4d2e); }
+.act-row .bar-row { grid-template-columns: 1fr 70px 44px; }
+.act-row .lr-need b { color: var(--text); font-weight: 600; }
+.phys-card .reserve-note { font-size: 12px; color: var(--muted); margin: 6px 0 0; line-height: 1.45; }
+.phys-card .reserve-note b { color: var(--text); font-weight: 600; }
+.arm-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.phys-card .warn-note { font-size: 12px; color: #ffcf8a; margin: 6px 0 0; line-height: 1.45; }
 .gradient-bar { height: 10px; border-radius: 5px; background: linear-gradient(90deg, #ff3b2f, #7d6f6c 50%, #2f8fff); }
 .gradient-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
 .hint { font-size: 12px; color: var(--muted); margin: 4px 0 0; }

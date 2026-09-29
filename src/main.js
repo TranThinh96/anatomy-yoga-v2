@@ -5,6 +5,8 @@ import { Animator } from './anatomy/animator.js';
 import { ThumbnailMaker } from './ui/thumbnails.js';
 import { Physics } from './anatomy/physics.js';
 import { PhysicsOverlay } from './ui/physicsOverlay.js';
+import { MuscleForces, CONTRACTION, contractionOf, JOINT_AXES } from './anatomy/muscleForces.js';
+import { MUSCLE_STRENGTH, fibreStrength } from './data/muscle-strength.js';
 import { BONES } from './data/bones.js';
 import { MUSCLES, MUSCLE_GROUPS } from './data/muscles.js';
 import { JOINTS } from './data/joints.js';
@@ -22,6 +24,9 @@ const physics = new Physics(body.rig, subject);
 const balance = (q) => physics.balance(q);
 const anim = new Animator(body.rig, () => body.update(), { prepare: balance });
 const overlay = new PhysicsOverlay(viewer.scene);
+// muscle moment arms + static optimisation (activation of every muscle)
+const forces = new MuscleForces(body.rig, body.muscleSystem);
+const fibreIndex = new Map(forces.fibres.map((f, i) => [f, i]));
 viewer.pickables = body.pickables;
 
 function loadSubject() {
@@ -65,6 +70,7 @@ const state = {
   lastStep: -1,
   variant: 0, // 0 = standard form, n = asana.variants[n - 1]
   phys: null, // latest static analysis
+  act: null, // latest muscle activation estimate (static optimisation)
   compare: null, // variant comparison table (html)
 };
 
@@ -107,6 +113,56 @@ function lengthPct(id, side) {
 function fmtPct(p) {
   const r = Math.round(p);
   return `${r > 0 ? '+' : ''}${r}%`;
+}
+
+// ---------------------------------------------------------------- muscle activation
+const ACT_COLORS = Object.fromEntries(Object.entries(CONTRACTION).map(([k, v]) => [k, new THREE.Color(v.color)]));
+const SIDE_VI = { L: ' trái', R: ' phải', '': '' };
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+// what the reserve actuators of a joint stand for (muscles / tissue not in the model)
+const MISSING = {
+  lumbar: 'cơ nhiều chân, cơ chéo bụng trong, cơ ngang bụng',
+  thorax: 'cơ nhiều chân, các cơ sâu cột sống',
+  neck: 'cơ sâu vùng cổ (gối, bán gai)',
+  head: 'cơ sâu vùng cổ (gối, bán gai)',
+  scapula: 'tiếp xúc bả vai – lồng ngực, dây chằng',
+  shoulder: 'cơ dưới vai, cơ tròn lớn, cơ quạ cánh tay',
+  elbow: 'cơ cánh tay, cơ cánh tay quay, khoá khớp ở cuối tầm',
+  wrist: 'cơ gập / duỗi ngón dài, dây chằng cổ tay',
+  hip: 'cơ mông bé, nhóm xoay ngoài sâu, bao khớp',
+  knee: 'cơ khoeo, đầu ngắn nhị đầu đùi, dây chằng',
+  ankle: 'cơ mác, cơ chày sau, cơ gập ngón chân',
+};
+/** "Gập háng trái" for a joint axis and the sign of a moment about it */
+function dofLabel(joint, dof, value) {
+  const { id, side } = splitSide(joint);
+  return `${cap(value >= 0 ? dof.pos : dof.neg)} ${JOINT_AXES[id].name}${SIDE_VI[side || '']}`;
+}
+
+let lastAct = 0;
+/** Static optimisation for the current pose + contraction type from the motion ahead. */
+function updateActivation(force = false) {
+  const now = performance.now();
+  if (!state.phys || (!force && now - lastAct < 90)) return;
+  lastAct = now;
+  const sol = forces.solve(state.phys.moments);
+  let vel = null;
+  if (anim.duration > 0 && anim.steps.length > 1) {
+    const dt = 0.06;
+    const t = anim.time + dt;
+    vel = forces.velocities(anim.poseAt(t >= anim.duration ? t - anim.duration : t).quats, dt);
+  }
+  for (const m of sol.muscles.values()) m.type = contractionOf(m, vel, fibreIndex);
+  state.act = sol;
+}
+
+/** Moment arms of a muscle in the rig's current pose, as table rows (largest first). */
+function momentArmRows(id, side, min = 0.004) {
+  return forces
+    .muscleMomentArms(id, side)
+    .filter((a) => Math.abs(a.value) >= min)
+    .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+    .map((a) => `<tr><td>${esc(dofLabel(a.joint, a.dof, a.value))}</td><td>${(Math.abs(a.value) * 100).toFixed(1)} cm</td></tr>`);
 }
 
 // ---------------------------------------------------------------- mode switching
@@ -327,6 +383,7 @@ function renderInfo(sel) {
         <dt>Chức năng</dt><dd>${esc(d.action)}</dd>
       </dl></div>
       <div class="info-section yoga-note"><h4>Ứng dụng trong yoga</h4><p>${esc(d.yoga)}</p></div>
+      ${mechanicsHtml(sel)}
       ${usedHtml(used)}`;
   } else {
     html = `<div class="info-kicker">Khớp · ${esc(d.region)}</div>
@@ -365,6 +422,21 @@ function realBoneHtml(id) {
     <p style="font-size:13px;color:var(--muted)">Hình dạng từ BodyParts3D (dữ liệu chụp cơ thể người thật, cao ${m.statureM} m), © DBCLS, giấy phép CC BY-SA 2.1 JP.
     ${names.length > 1 ? `Gồm ${names.length} bộ phận.` : ''}</p>
     ${rows ? `<table class="rom-table">${rows}</table><p class="hint" style="margin-top:6px">Tâm khớp của khung xương được tính từ chính các bề mặt xương này.</p>` : ''}</div>`;
+}
+
+/** Moment arms in the anatomical position and strength of a muscle (anatomy mode). */
+function mechanicsHtml(sel) {
+  const def = body.model.muscles.find((m) => m.id === sel.id);
+  if (!def) return '';
+  const rows = momentArmRows(sel.id, sel.side || 'L');
+  const st = MUSCLE_STRENGTH[sel.id];
+  const fmax = fibreStrength(def);
+  const total = Math.round(fmax.reduce((a, b) => a + b, 0) / 10) * 10;
+  const parts = st && st.names ? ` (${st.names.map((n, i) => `${n} ${Math.round(fmax[i] / 10) * 10} N`).join(', ')})` : '';
+  return `<div class="info-section"><h4>Cơ học (mô hình)</h4>
+    ${rows.length ? `<p class="hint" style="margin:0 0 4px">Cánh tay đòn ở tư thế giải phẫu – khoảng cách hiệu dụng từ đường kéo của cơ tới tâm khớp (= −dL/dθ). Cơ càng xa tâm khớp càng tạo mô-men lớn.</p>
+    <table class="rom-table arm-table">${rows.slice(0, 6).join('')}</table>` : ''}
+    <p class="hint" style="margin-top:6px">Sức co tối đa ước tính: <b>${total} N</b>${esc(parts)} – theo thiết diện sinh lý (PCSA) trong các mô hình cơ xương đã công bố.</p></div>`;
 }
 
 function asanasUsingMuscle(id) {
@@ -516,6 +588,7 @@ function loadAsana(id, variant = 0, { keepCamera = false } = {}) {
   }
   if (!keepCamera) frameAsana(a);
   state.phys = physics.compute();
+  updateActivation(true);
   renderTimelineMarks();
   renderAsanaList();
   renderAsanaInfo();
@@ -611,6 +684,8 @@ function renderAsanaInfo() {
       <div class="info-latin">${esc(m.latin)}</div>
       <div class="len-bar"><i id="sel-len-bar"></i></div>
       <div class="hint">Độ dài so với Tadasana: <b id="sel-len">—</b></div>
+      <div class="hint" id="sel-act" style="margin-top:6px"></div>
+      <table class="rom-table arm-table" id="sel-arms" style="font-size:13px;margin-top:4px"></table>
       <p style="font-size:13.5px;line-height:1.5;margin:8px 0 0"><b>Chức năng:</b> ${esc(m.action)}</p>
       <p style="font-size:13.5px;line-height:1.5;margin:6px 0 0;color:var(--muted)">${esc(m.yoga)}</p></div>`;
   }
@@ -674,8 +749,11 @@ function physicsSectionHtml(a) {
     <div id="ph-support"></div>
     <div class="phys-sub">Tải khớp · mô-men cơ phải tạo ra</div>
     <div id="ph-loads"></div>
+    <div class="phys-sub">Mức hoạt động cơ · ước lượng bằng mô hình</div>
+    <div id="ph-act"></div>
     ${compare}
-    <p class="hint">Tính từ tư thế trên mô hình: khối lượng từng đoạn cơ thể theo de Leva (1996), cân bằng tĩnh (ΣF = 0, ΣM = 0). Khi có nhiều điểm tựa, lực đứng được chia theo ước lượng; lực ma sát được chọn sao cho tổng tải khớp nhỏ nhất (giả định người tập đẩy sàn khéo léo, nên tải hiển thị là mức thấp). Chưa tính dây chằng và mô mềm (phần tải chúng gánh bị tính hết cho cơ). Số liệu dùng để so sánh xu hướng, không phải số đo lâm sàng.</p>
+    <p class="hint">Tính từ tư thế trên mô hình: khối lượng từng đoạn cơ thể theo de Leva (1996), cân bằng tĩnh (ΣF = 0, ΣM = 0). Khi có nhiều điểm tựa, lực đỡ từ sàn (cả lực đứng và ma sát) được chọn sao cho tổng tải khớp nhỏ nhất – người tập "thả" trọng lượng vào điểm tựa một cách khéo léo, nên tải hiển thị là mức thấp.</p>
+    <p class="hint">Mức hoạt động cơ: mỗi bó cơ có cánh tay đòn (tính giải tích từ đường đi của cơ, có bao quanh khớp) và sức tối đa theo thiết diện sinh lý; tối ưu tĩnh chọn tổ hợp lực cơ cân bằng mọi mô-men khớp với tổng bình phương mức hoạt động nhỏ nhất (Crowninshield &amp; Brand 1981). Kiểu co lấy từ chiều thay đổi độ dài cơ khi chuyển động. Mô hình chưa tính sức căng thụ động của cơ bị kéo giãn và chưa có một số cơ sâu, nên đây là ước lượng xu hướng – không thay thế đo EMG.</p>
   </div>`;
 }
 
@@ -710,13 +788,72 @@ function renderPhysicsLive() {
       </div>`;
     })
     .join('') || '<p class="empty-note">Gần như không có tải đáng kể.</p>';
+  renderActivationLive();
   const hud = $('#phys-hud');
   if (hud) {
     const top = r.joints.find((j) => j.demands.length);
+    const topAct = state.act ? [...state.act.muscles.values()].sort((a, b) => b.a - a.a).find((m) => m.a >= 0.05) : null;
     hud.innerHTML = `<div><i class="dot com"></i>Trọng tâm · biên <b class="${moving ? '' : cm >= 0 ? 'ok' : 'bad'}">${cm >= 0 ? '+' : ''}${cm.toFixed(1)} cm</b>${moving ? ' <small>(đang chuyển)</small>' : ''}</div>
       <div><i class="dot grf"></i>${r.support.slice(0, 4).map((g) => `${esc(g.label)} <b>${Math.round(g.pct)}%</b>`).join(' · ')}</div>
-      ${top ? `<div><i class="dot load"></i>Tải lớn nhất: ${esc(top.name)} <b>${Math.round(top.total)} N·m</b></div>` : ''}`;
+      ${top ? `<div><i class="dot load"></i>Tải lớn nhất: ${esc(top.name)} <b>${Math.round(top.total)} N·m</b></div>` : ''}
+      ${topAct ? `<div><i class="sw ${topAct.type === 'eccentric' ? 'ecc' : topAct.type === 'concentric' ? 'conc' : 'iso'}"></i>Cơ làm việc nhiều nhất: ${esc(MUSCLES[topAct.id]?.name || topAct.id)} <b>${Math.round(topAct.a * 100)}%</b>${topAct.type ? ` <small>(${CONTRACTION[topAct.type].short})</small>` : ''}</div>` : ''}`;
   }
+}
+
+/** Most active muscles (both sides merged when they are alike), for the physics card. */
+function activationRows(act, n = 8) {
+  const byId = new Map();
+  for (const m of act.muscles.values()) {
+    if (!byId.has(m.id)) byId.set(m.id, []);
+    byId.get(m.id).push(m);
+  }
+  const rows = [];
+  for (const [id, list] of byId) {
+    const [a, b] = list;
+    if (b && Math.abs(a.a - b.a) < 0.04 && a.type === b.type) rows.push({ ...(a.a >= b.a ? a : b), side: '', both: true });
+    else rows.push(...list);
+  }
+  return rows.filter((m) => m.a >= 0.03).sort((a, b) => b.a - a.a).slice(0, n);
+}
+
+function renderActivationLive() {
+  const el = $('#ph-act');
+  const act = state.act;
+  if (!el || !act) return;
+  const rows = activationRows(act);
+  let html =
+    rows
+      .map((m) => {
+        const info = MUSCLES[m.id];
+        const pct = Math.round(m.a * 100);
+        const sideTxt = m.both ? ' <small>(2 bên)</small>' : ` <small>(${m.side === 'L' ? 'T' : 'P'})</small>`;
+        return `<div class="load-row act-row" data-load-muscles="${m.id}" data-side="${m.both ? '' : m.side}">
+        <div class="bar-row"><span>${esc(info ? info.name : m.id)}${sideTxt}</span><span class="bar"><i style="width:${Math.min(pct, 100)}%"></i></span><b>${pct}%</b></div>
+        <div class="lr-need">${m.part ? `${esc(m.part)} · ` : ''}${Math.round(m.force)} N${m.type ? ` <span class="ctype ${m.type}">${CONTRACTION[m.type].label}</span>` : ''}</div>
+      </div>`;
+      })
+      .join('') || '<p class="empty-note">Gần như không cơ nào phải làm việc – cơ thể được sàn đỡ.</p>';
+  // moments the modelled muscles could not (or should not) carry
+  const res = act.reserves.filter((r) => Math.abs(r.value) >= 4).sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+  const merged = [];
+  for (const r of res) {
+    const { id, side } = splitSide(r.joint);
+    const twin = side && merged.find((x) => x.id === id && x.dof === r.dof && x.side !== side && Math.abs(Math.abs(x.value) - Math.abs(r.value)) < 2);
+    if (twin) twin.both = true;
+    else merged.push({ id, side, dof: r.dof, value: r.value, joint: r.joint });
+  }
+  if (merged.length) {
+    html += `<p class="reserve-note">Phần mô-men do cơ sâu / mô mềm chưa có trong mô hình gánh: ${merged
+      .slice(0, 3)
+      .map((x) => `<b>${esc(dofLabel(x.both ? x.id : x.joint, x.dof, x.value))}${x.both ? ' (2 bên)' : ''} ${Math.round(Math.abs(x.value))} N·m</b> <span>(${esc(MISSING[x.id] || 'mô mềm')})</span>`)
+      .join('; ')}.</p>`;
+  }
+  // flexion–relaxation: active muscles that are also strongly stretched
+  const stretched = rows.find((m) => m.a >= 0.3 && lengthPct(m.id, m.both ? null : m.side) > 12);
+  if (stretched) {
+    html += `<p class="warn-note">⚠ ${esc(MUSCLES[stretched.id]?.name || stretched.id)} đang bị kéo dài ${Math.round(lengthPct(stretched.id, stretched.both ? null : stretched.side))}%: ngoài thực tế sức căng thụ động của cơ và mô liên kết khi bị kéo giãn gánh một phần tải, nên mức co chủ động ở đây có thể thấp hơn con số mô hình.</p>`;
+  }
+  el.innerHTML = html;
 }
 
 /** Static analysis of each variant of the current asana, as an HTML table. */
@@ -727,7 +864,9 @@ function compareVariants() {
   const res = cols.map((c) => {
     body.rig.applyQuats(anim.quatsFor(c.pose));
     body.rig.ground();
-    return physics.compute();
+    const r = physics.compute();
+    r.act = forces.solve(r.moments);
+    return r;
   });
   anim.render();
   const byJoint = res.map((r) => Object.fromEntries(r.joints.map((j) => [j.joint, j])));
@@ -749,6 +888,14 @@ function compareVariants() {
     const vals = res.map((r) => sumSupport(r, word));
     if (vals.every((v) => v < 1)) continue;
     html += `<tr><td>${label}</td>${vals.map((v, i) => cell(v, i ? vals[0] : undefined, '%')).join('')}</tr>`;
+  }
+  // most active muscles (max over the two sides)
+  const actOf = (r, id) => Math.max(...['L', 'R'].map((sd) => r.act.muscles.get(`${id}|${sd}`)?.a || 0)) * 100;
+  const ids = [];
+  for (const r of res) for (const m of activationRows(r.act, 4)) if (!ids.includes(m.id)) ids.push(m.id);
+  for (const id of ids.slice(0, 5)) {
+    const vals = res.map((r) => actOf(r, id));
+    html += `<tr><td>${esc(MUSCLES[id]?.name || id)} <small>hoạt động</small></td>${vals.map((v, i) => cell(v, i ? vals[0] : undefined, '%')).join('')}</tr>`;
   }
   html += `<tr><td>Biên ổn định</td>${res.map((r, i) => cell(r.margin * 100, i ? res[0].margin * 100 : undefined, ' cm', false)).join('')}</tr>`;
   return `${html}</tbody></table><p class="hint">% = chênh lệch so với bản chuẩn (xanh: tải nhẹ hơn / vững hơn).</p>`;
@@ -773,6 +920,24 @@ function updateLiveNumbers(force = false) {
     bar.style.left = p >= 0 ? '50%' : `${50 - w}%`;
     bar.style.width = `${w}%`;
     bar.style.background = p >= 0 ? 'var(--stretch)' : 'var(--contract)';
+    const act = state.act;
+    const sides = sel.side ? [sel.side] : ['L', 'R'];
+    const el = $('#sel-act');
+    if (el && act) {
+      el.innerHTML = sides
+        .map((sd) => {
+          const m = act.muscles.get(`${sel.id}|${sd}`);
+          if (!m) return '';
+          const pct = Math.round(m.a * 100);
+          return `<div>Hoạt động ước lượng${sides.length > 1 ? ` (${SIDE_LABEL[sd]})` : ''}: <b>${pct}%</b>${m.part && pct ? ` · ${esc(m.part)}` : ''} · ${Math.round(m.force)} N${m.type ? ` <span class="ctype ${m.type}">${CONTRACTION[m.type].label}</span>` : ''}</div>`;
+        })
+        .join('');
+    }
+    const arms = $('#sel-arms');
+    if (arms) {
+      const rows = momentArmRows(sel.id, sides[0]);
+      arms.innerHTML = rows.length ? `<tr><td colspan="2" style="color:var(--muted)">Cánh tay đòn ở tư thế này${sides.length > 1 ? ' (bên trái)' : ''}</td></tr>${rows.slice(0, 4).join('')}` : '';
+    }
   }
   renderPhysicsLive();
   // flow step highlight
@@ -898,6 +1063,15 @@ function animateVisuals(time) {
       mat.opacity = 0.14 + 0.86 * Math.min(1, k * 1.5);
       mat.depthWrite = mat.opacity > 0.95;
       mat.emissive.copy(LOAD_HOT).multiplyScalar(0.3 * k);
+    } else if (state.colorMode === 'act') {
+      const a = state.act?.muscles.get(`${ms.id}|${ms.side}`);
+      const k = a ? Math.min(1, a.a / 0.5) : 0;
+      const col = a && a.type ? ACT_COLORS[a.type] : DIM_MUSCLE;
+      tmpColor.copy(DIM_MUSCLE).lerp(col, Math.sqrt(k));
+      mat.color.copy(tmpColor);
+      mat.opacity = isSel ? 1 : 0.14 + 0.86 * Math.min(1, k * 2);
+      mat.depthWrite = mat.opacity > 0.95;
+      mat.emissive.copy(col).multiplyScalar(0.28 * k);
     } else if (state.colorMode === 'length') {
       const d = THREE.MathUtils.clamp((ms.ratio - 1) / 0.3, -1, 1);
       tmpColor.copy(LEN_MID).lerp(d > 0 ? LEN_LONG : LEN_SHORT, Math.abs(d));
@@ -1077,6 +1251,7 @@ viewer.onTick = (dt) => {
     }
   }
   state.phys = physics.compute();
+  updateActivation();
   loadIntensity = computeLoadIntensity(state.phys);
   overlay.update(state.phys, clockTime);
   animateVisuals(clockTime);
@@ -1123,4 +1298,4 @@ body
     setTimeout(makeThumbnails, 50);
   });
 
-window.__app = { viewer, body, anim, state, loadAsana, setMode, select, physics };
+window.__app = { viewer, body, anim, state, loadAsana, setMode, select, physics, forces };

@@ -367,7 +367,7 @@ const MUSCLES = [
   M('deltoid', [['clavicular part of left deltoid'], ['acromial part of left deltoid'], ['spinal part of left deltoid']], ['left clavicle', 'left scapula'], ['left humerus']),
   M('supraspinatus', [['left supraspinatus']], ['left scapula'], ['left humerus']),
   M('infraspinatus', [['left infraspinatus muscle']], ['left scapula'], ['left humerus'], { mode: 'fan', fibers: 2 }),
-  M('biceps_brachii', [['long head of left biceps brachii'], ['short head of left biceps brachii']], ['left scapula'], ['left radius', 'left ulna']),
+  M('biceps_brachii', [['long head of left biceps brachii'], ['short head of left biceps brachii']], ['left scapula'], ['left radius', 'left ulna'], { insertAt: 'radialTuber' }),
   M('triceps_brachii', [['long head of left triceps brachii'], ['lateral head of left triceps brachii', 'medial head of left triceps brachii']], ['left scapula', 'left humerus'], ['left ulna']),
   M('forearm_flexors', [['left flexor carpi radialis'], ['humeral head of left flexor carpi ulnaris']], ['left humerus'], HAND),
   M('forearm_extensors', [['left extensor carpi radialis longus'], ['left extensor digitorum']], ['left humerus'], HAND),
@@ -381,8 +381,9 @@ const MUSCLES = [
   M('hamstrings', [['long head of left biceps femoris'], ['left semitendinosus'], ['left semimembranosus']], ['left hip bone'], ['left tibia', 'left fibula']),
   M('adductors', [['left adductor longus'], ['left adductor brevis'], ['left adductor magnus']], ['left hip bone'], ['left femur']),
   M('sartorius', [['left sartorius']], ['left hip bone'], ['left tibia'], { vias: 5 }),
-  M('gastrocnemius', [['medial head of left gastrocnemius'], ['lateral head of left gastrocnemius']], ['left femur'], ['left calcaneus']),
-  M('soleus', [['left soleus']], ['left tibia', 'left fibula'], ['left calcaneus']),
+  // the Achilles tendon is not in BodyParts3D: insert on the calcaneal tuberosity
+  M('gastrocnemius', [['medial head of left gastrocnemius'], ['lateral head of left gastrocnemius']], ['left femur'], ['left calcaneus'], { insertAt: 'calcTuber' }),
+  M('soleus', [['left soleus']], ['left tibia', 'left fibula'], ['left calcaneus'], { insertAt: 'calcTuber' }),
   M('tibialis_anterior', [['left tibialis anterior']], ['left tibia'], ['left medial cuneiform bone', 'left first metatarsal bone']),
 ];
 
@@ -390,6 +391,22 @@ const tuberosity = (() => {
   const top = maxOf(tibia.map((p) => p.y));
   return argmax(tibia.filter((p) => p.y < top - 0.035 && p.y > top - 0.075), (p) => p.z);
 })();
+
+// Achilles insertion: most posterior point of the middle third of the calcaneus' height
+const calcTuber = (() => {
+  const c = part('left calcaneus').verts;
+  const y0 = minOf(c.map((p) => p.y));
+  const h = maxOf(c.map((p) => p.y)) - y0;
+  return argmin(c.filter((p) => p.y > y0 + 0.3 * h && p.y < y0 + 0.6 * h), (p) => p.z);
+})();
+// biceps tendon (not in BodyParts3D): radial tuberosity, 2.5–4.5 cm below the radial head,
+// on its anteromedial side
+const radialTuber = (() => {
+  const r = part('left radius').verts;
+  const top = maxOf(r.map((p) => p.y));
+  return argmax(r.filter((p) => p.y < top - 0.025 && p.y > top - 0.045), (p) => p.z - p.x);
+})();
+const INSERT_AT = { calcTuber: { p: calcTuber, seg: 'ankle' }, radialTuber: { p: radialTuber, seg: 'elbow' } };
 
 /**
  * Attachment regions of one muscle mesh: vertices near the origin (insertion) bones in
@@ -480,7 +497,7 @@ function buildMuscle(def) {
       const i = centroid(iBins[f].map((q) => q.p));
       fibres.push({
         o: { p: o, seg: BONE_SEG[majority(oBins[f].map((q) => q.bone))] },
-        i: { p: i, seg: BONE_SEG[majority(iBins[f].map((q) => q.bone))] },
+        i: def.insertAt ? INSERT_AT[def.insertAt] : { p: i, seg: BONE_SEG[majority(iBins[f].map((q) => q.bone))] },
         vias: vias.map((v) => {
           const p = o.clone().lerp(i, v.t).add(v.off);
           return { p, seg: def.viaSeg === 'spine' ? segAt(p, spineGrid) : segAt(p) };

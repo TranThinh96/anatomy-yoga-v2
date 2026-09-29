@@ -87,14 +87,21 @@
         <div class="legend" id="legend" hidden>
           <div class="legend-title">Tô màu cơ</div>
           <div class="seg-tabs small" id="color-mode">
-            <button class="seg active" data-cm="roles">Theo vai trò</button>
-            <button class="seg" data-cm="length">Theo độ dài</button>
-            <button class="seg" data-cm="load">Theo tải</button>
+            <button class="seg active" data-cm="roles" title="Vai trò của cơ theo tài liệu (EMG, giải phẫu)">Vai trò</button>
+            <button class="seg" data-cm="act" title="Mức hoạt động cơ ước lượng bằng mô hình (tối ưu tĩnh)">Hoạt động</button>
+            <button class="seg" data-cm="length" title="Độ dài cơ so với Tadasana">Độ dài</button>
+            <button class="seg" data-cm="load" title="Nhóm cơ phải chống lại mô-men khớp">Tải khớp</button>
           </div>
           <div class="legend-items" data-cm="roles">
             <label><input type="checkbox" data-role="contract" checked /><i class="sw contract"></i>Co cơ (chủ động)</label>
             <label><input type="checkbox" data-role="stretch" checked /><i class="sw stretch"></i>Kéo giãn</label>
             <label><input type="checkbox" data-role="stabilize" checked /><i class="sw stabilize"></i>Ổn định</label>
+          </div>
+          <div class="legend-items" data-cm="act" hidden>
+            <div><i class="sw conc"></i>Co đồng tâm <small>(ngắn lại khi làm việc)</small></div>
+            <div><i class="sw ecc"></i>Co ly tâm <small>(dài ra khi làm việc)</small></div>
+            <div><i class="sw iso"></i>Co đẳng trường <small>(giữ yên)</small></div>
+            <p class="hint">Độ đậm = mức hoạt động ước lượng (% sức tối đa của cơ), tính từ tải khớp và cánh tay đòn của từng bó cơ.</p>
           </div>
           <div class="legend-items" data-cm="length" hidden>
             <div class="gradient-bar"></div>

@@ -38,15 +38,44 @@ Phương pháp:
 1. Khối lượng & trọng tâm 14 đoạn cơ thể theo de Leva (1996), *J Biomech* 29(9):1223–1230.
 2. Mỗi tư thế được **cân bằng tự động** (chiến lược cổ chân): nếu trọng tâm nằm ngoài bàn chân,
    cả cơ thể được nghiêng quanh bàn chân (giữ bàn chân áp sàn) cho tới khi trọng tâm nằm trên chân đế.
-3. Lực đỡ thẳng đứng: nghiệm cân bằng ΣF = 0, ΣM = 0 (chuẩn cực tiểu có trọng số khi có nhiều điểm tựa,
-   không cho điểm tựa "kéo" sàn).
-4. Lực ma sát: chọn sao cho tổng bình phương mô-men khớp (chuẩn hoá theo sức mạnh từng khớp) nhỏ nhất,
-   trong nón ma sát μ = 0,8 — bài toán bình phương tối thiểu có ràng buộc, giải bằng hệ KKT.
+3. Lực đỡ từ sàn (đứng + ma sát): trong mọi nghiệm cân bằng ΣF = 0, ΣM = 0, chọn nghiệm có tổng bình
+   phương mô-men khớp (chuẩn hoá theo sức mạnh từng khớp) nhỏ nhất — người tập "thả" trọng lượng vào
+   điểm tựa, nên tư thế nằm gần như không cần cơ. Điểm tựa chỉ được đẩy (tập hoạt động), lực ngang trong
+   nón ma sát μ = 0,8 — bình phương tối thiểu có ràng buộc, giải bằng hệ KKT.
 5. Mô-men khớp: tĩnh học ngược trên phần cơ thể phía xa khớp (trọng lực + lực sàn).
+
+### Mức hoạt động cơ & kiểu co (mô hình)
+Chế độ tô màu **"Hoạt động"** và mục *Mức hoạt động cơ* trong thẻ cơ sinh học ước lượng **từng cơ làm việc
+bao nhiêu % sức tối đa** và **kiểu co**: đồng tâm (ngắn lại khi làm việc), ly tâm (dài ra khi làm việc),
+đẳng trường (giữ yên) — theo chiều thay đổi độ dài cơ khi tư thế chuyển động.
+1. **Cánh tay đòn cơ** (moment arm) của 136 bó cơ ở mọi khớp chúng bắc qua, tính **giải tích** bằng công ảo
+   trên đường đi của cơ: r = −dL/dθ = Σ (wᵢ₋₁·rᵢ₋₁ − wᵢ·rᵢ) × uᵢ (khớp với sai phân hữu hạn < 1 mm).
+2. **Mặt bao quanh khớp** (wrapping, kiểu OpenSim): trụ quanh trục gối / khuỷu, cầu quanh chỏm xương cánh tay /
+   chỏm xương đùi, để cơ tứ đầu, gân kheo, cơ tam đầu, cơ delta, cơ thắt lưng–chậu không "cắt" qua xương khi
+   khớp gập sâu — cánh tay đòn giữ đúng dấu trên toàn tầm vận động dùng trong các tư thế.
+3. **Sức tối đa** mỗi bó cơ theo thiết diện sinh lý (PCSA) trong các mô hình đã công bố: chi dưới — Arnold et al.
+   2010 (*Ann Biomed Eng* 38:269); chi trên — Holzbaur et al. 2005 (*Ann Biomed Eng* 33:829); cột sống thắt lưng —
+   Christophy et al. 2012 (*Biomech Model Mechanobiol* 11:19); cơ vai–lồng ngực — Seth et al. 2016 (*PLoS ONE*
+   11:e0141028); cổ — Vasavada et al. 1998 (*Spine* 23:412). (`src/data/muscle-strength.js`)
+4. **Tối ưu tĩnh** (Crowninshield & Brand 1981, *J Biomech* 14:793): tìm mức hoạt động a ∈ [0, 1] của mọi bó cơ
+   sao cho Σ a·Fmax·(cánh tay đòn) cân bằng mô-men khớp ở mọi trục, cực tiểu Σ a². Các cơ **chưa có trong mô hình**
+   (cơ sâu cột sống & cổ, cơ dưới vai, cơ cánh tay, cơ gập ngón, cơ mác…) và mô mềm được thay bằng "cơ dự phòng"
+   có sức giới hạn ở từng trục khớp; phần chúng gánh được hiển thị để thấy chỗ mô hình còn thiếu.
+   Giải chính xác qua bài toán đối ngẫu (Newton + tìm theo tia), ~1 ms mỗi khung hình.
+5. Chọn một cơ: thẻ cơ hiển thị mức hoạt động, lực (N), kiểu co và **cánh tay đòn ở tư thế hiện tại**; trong chế độ
+   Giải phẫu hiển thị cánh tay đòn ở tư thế giải phẫu và sức tối đa. Bảng so sánh biến thể có thêm các cơ làm việc
+   nhiều nhất.
+
+Kiểm tra (`npm run check`): cánh tay đòn giải tích = sai phân hữu hạn; dấu tác dụng của 44 cặp cơ–khớp đúng sách
+giải phẫu ở tư thế giải phẫu và giữ đúng trên tầm vận động; mô-men cơ + dự phòng tái tạo đúng mô-men khớp ở cả
+33 tư thế; mức hoạt động trong [0, 1].
 
 Giới hạn: chỉ tính tư thế giữ yên (không tính lực quán tính khi chuyển động); chưa tính dây chằng, mô mềm
 và tiếp xúc giữa các phần cơ thể (vd. đùi tựa lên bắp chân trong Balasana); tải hiển thị là mức tối thiểu
-khi người tập đẩy sàn khéo léo. Dùng để **so sánh xu hướng**, không phải số đo lâm sàng.
+khi người tập đẩy sàn khéo léo. Mức hoạt động cơ chưa tính **sức căng thụ động** của cơ bị kéo giãn (ở tư thế
+gập sâu, cơ bị kéo giãn gánh một phần tải — app cảnh báo khi gặp) và không mô tả đồng co (co chống nhau để giữ
+vững khớp). Đai vai là một đoạn cứng quay quanh khớp ức–đòn. Dùng để **so sánh xu hướng**, không thay thế đo EMG
+hay số đo lâm sàng.
 
 ### Mô hình từ xương & cơ thật (BodyParts3D)
 Toàn bộ khung xương (117 bộ phận: sọ, từng đốt sống, 24 xương sườn, xương cổ tay, đốt ngón…)
@@ -59,6 +88,8 @@ bằng `tools/bp3d-build.mjs`:
 - **Điểm bám cơ** = nơi mesh cơ chạm mesh xương nguyên uỷ / bám tận; **đường đi** = trọng tâm các lát
   cắt ngang của mesh cơ; **độ dày bụng cơ** = bán kính trung bình các lát cắt. Cơ nhiều đầu / hình quạt
   (cơ delta, cơ ngực lớn, cơ thang, gân kheo, cơ khép, cơ lưng rộng…) được tách thành nhiều bó.
+  Gân không có trong BodyParts3D được nối tới mốc xương: gân Achilles → củ xương gót (điểm sau nhất của
+  1/3 giữa xương gót), gân nhị đầu → lồi củ xương quay.
 - **Điểm chạm sàn** (gót, ụ đốt bàn chân, ụ ngồi, mông, bụng, bả vai…) và **mốc nhân trắc** cho lớp
   cơ sinh học cũng lấy từ bề mặt xương / cơ.
 - Cánh tay được xoay quanh tâm vai cho thẳng đứng (tư thế trung tính của khung xương); bên phải là ảnh
@@ -80,7 +111,7 @@ Liên kết có thể chia sẻ: `#asana/adho_mukha_svanasana`, `#muscle/hamstri
 npm install
 npm run dev        # http://localhost:5173
 npm run build      # xuất bản tĩnh vào dist/ (dùng được trên GitHub Pages / Netlify / Vercel)
-npm run check      # kiểm tra vật lý mọi tư thế (cân bằng lực, trọng tâm, tiếp đất, đối xứng)
+npm run check      # kiểm tra vật lý mọi tư thế + mô hình cơ (cánh tay đòn, tối ưu tĩnh)
 npm run fit-poses  # tự chỉnh góc khớp để đúng bộ phận chạm sàn (ghi vào src/data/poses.js)
 npm run build-model -- <thư mục BodyParts3D_data>  # dựng lại khung xương, cơ, mốc từ BodyParts3D
 ```
@@ -90,13 +121,15 @@ npm run build-model -- <thư mục BodyParts3D_data>  # dựng lại khung xươ
 ```
 src/
   anatomy/rig.js            Khung xương khớp (FK), quy ước góc khớp, tiếp đất
-  anatomy/muscles.js        Cơ dạng ống bám theo xương: tự dài/ngắn/phình theo tư thế
+  anatomy/muscles.js        Cơ dạng ống bám theo xương, bao quanh khớp: tự dài/ngắn/phình theo tư thế
+  anatomy/muscleForces.js   Cánh tay đòn cơ, tối ưu tĩnh (mức hoạt động), kiểu co
   anatomy/animator.js       Nội suy tư thế (quaternion), neo tay/chân trên sàn
-  anatomy/physics.js        Trọng tâm, chân đế, lực sàn (có ma sát), mô-men khớp, tự cân bằng
+  anatomy/physics.js        Trọng tâm, chân đế, lực sàn ít tốn sức nhất (có ma sát), mô-men khớp, tự cân bằng
   anatomy/bp3d.js           Nạp mesh xương (public/models/bp3d/skeleton.bin)
   data/body-model.gen.js    Tâm khớp, điểm bám & đường đi cơ, điểm chạm sàn, mốc (sinh tự động)
   data/anthropometry.js     Khối lượng / trọng tâm đoạn cơ thể (de Leva 1996)
-tools/                      bp3d-build, fit-poses, check-physics
+  data/muscle-strength.js   Sức tối đa từng bó cơ (PCSA, có nguồn)
+tools/                      bp3d-build, fit-poses, check-physics, check-muscles
   data/poses.js             Góc khớp của từng tư thế
   data/asanas.js            Asana: chuỗi chuyển động, vai trò cơ, cue, lưu ý
   data/{bones,muscles,joints}.js  Nội dung giải phẫu tiếng Việt
