@@ -53,6 +53,9 @@ Data files:
 - UI text and data content are Vietnamese; code, comments and commit messages are English.
 - Scientific numbers (EMG %MVIC, forces, moment arms from papers) must cite their source in the code.
   Never fill in values from memory – leave them out and say so.
+- The "Hoạt động" (muscle activation) colour mode and the activation list are **experimental**: not validated
+  against EMG. Keep their "thử nghiệm" labels and keep "Vai trò" (literature roles) as the default colour mode
+  until a validation step exists.
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
   tension. Keep these limitations visible in UI notes when a feature depends on them.
 

@@ -46,7 +46,10 @@ Phương pháp:
    nón ma sát μ = 0,8 — bình phương tối thiểu có ràng buộc, giải bằng hệ KKT.
 5. Mô-men khớp: tĩnh học ngược trên phần cơ thể phía xa khớp (trọng lực + lực sàn).
 
-### Mức hoạt động cơ & kiểu co (mô hình)
+### Mức hoạt động cơ & kiểu co (mô hình · thử nghiệm)
+> **Thử nghiệm:** đây là ước lượng của mô hình, **chưa đối chiếu với đo EMG thật**. Dùng để minh hoạ xu hướng,
+> không trích dẫn như số đo. Vai trò cơ theo tài liệu giải phẫu / EMG nằm ở chế độ tô màu mặc định **"Vai trò"**.
+
 Chế độ tô màu **"Hoạt động"** và mục *Mức hoạt động cơ* trong thẻ cơ sinh học ước lượng **từng cơ làm việc
 bao nhiêu % sức tối đa** và **kiểu co**: đồng tâm (ngắn lại khi làm việc), ly tâm (dài ra khi làm việc),
 đẳng trường (giữ yên) — theo chiều thay đổi độ dài cơ khi tư thế chuyển động.

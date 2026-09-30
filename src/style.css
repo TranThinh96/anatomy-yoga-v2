@@ -377,3 +377,8 @@ button { cursor: pointer; }
   .player { bottom: 8px; padding: 8px 10px; gap: 8px; }
   .player select { display: none; }
 }
+
+/* experimental (model-only, not validated against EMG) */
+.exp-mark { font-size: 9px; margin-left: 2px; color: #ffcf8a; font-weight: 700; }
+.exp-pill { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 1px 6px; border-radius: 6px; margin-left: 4px; background: rgba(255, 176, 32, 0.16); color: #ffcf8a; vertical-align: 1px; }
+.exp-note { font-size: 11.5px; line-height: 1.45; margin: 4px 0 0; padding: 6px 8px; border-radius: 8px; background: rgba(255, 176, 32, 0.1); color: #ffdca8; }
