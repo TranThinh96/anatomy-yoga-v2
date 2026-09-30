@@ -169,6 +169,24 @@ for (const [joint, key, angles, list] of RANGES) {
   }
 }
 
+// ---- content: a muscle an asana lists under `stretch` must really lengthen in its target pose
+{
+  const STRETCH_MIN = 0.025; // at least 2.5 % longer than in Tadasana
+  for (const a of ASANAS) {
+    if (a.flow) continue;
+    rig.applyQuats(physics.balance(poseToQuats(a.steps[a.steps.length - 1].pose)));
+    rig.ground();
+    mf.updatePoints();
+    for (const k of a.roles.stretch) {
+      const m = k.match(/^(.*)_(L|R)$/);
+      const id = m ? m[1] : k;
+      const list = system.muscles.filter((x) => x.id === id && (!m || x.side === m[2]));
+      const r = list.reduce((acc, x) => acc + x.ratio, 0) / list.length - 1;
+      if (r < STRETCH_MIN) fail(`${a.id}: ${k} is listed as stretched but is ${(r * 100).toFixed(1)}% vs Tadasana in the pose`);
+    }
+  }
+}
+
 // ---- 3. static optimisation on every pose
 const poses = new Set();
 for (const a of ASANAS) {
