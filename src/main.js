@@ -798,11 +798,11 @@ function physicsSectionHtml(a) {
     <div id="ph-support"></div>
     <div class="phys-sub">Tải khớp · mô-men cơ phải tạo ra</div>
     <div id="ph-loads"></div>
-    <div class="phys-sub">Mức hoạt động cơ · ước lượng bằng mô hình</div>
+    <div class="phys-sub">Mức hoạt động cơ · ước lượng bằng mô hình <span class="exp-pill" title="Chưa đối chiếu với đo EMG thật">thử nghiệm</span></div>
     <div id="ph-act"></div>
     ${compare}
     <p class="hint">Tính từ tư thế trên mô hình: khối lượng từng đoạn cơ thể theo de Leva (1996), cân bằng tĩnh (ΣF = 0, ΣM = 0). Khi có nhiều điểm tựa, lực đỡ từ sàn (cả lực đứng và ma sát) được chọn sao cho tổng tải khớp nhỏ nhất – người tập "thả" trọng lượng vào điểm tựa một cách khéo léo, nên tải hiển thị là mức thấp.</p>
-    <p class="hint">Mức hoạt động cơ: mỗi bó cơ có cánh tay đòn (tính giải tích từ đường đi của cơ, có bao quanh khớp) và sức tối đa theo thiết diện sinh lý; tối ưu tĩnh chọn tổ hợp lực cơ cân bằng mọi mô-men khớp với tổng bình phương mức hoạt động nhỏ nhất (Crowninshield &amp; Brand 1981). Kiểu co lấy từ chiều thay đổi độ dài cơ khi chuyển động. Mô hình chưa tính sức căng thụ động của cơ bị kéo giãn và chưa có một số cơ sâu, nên đây là ước lượng xu hướng – không thay thế đo EMG.</p>
+    <p class="hint"><b>Thử nghiệm – chưa đối chiếu với đo EMG thật.</b> Mức hoạt động cơ: mỗi bó cơ có cánh tay đòn (tính giải tích từ đường đi của cơ, có bao quanh khớp) và sức tối đa theo thiết diện sinh lý; tối ưu tĩnh chọn tổ hợp lực cơ cân bằng mọi mô-men khớp với tổng bình phương mức hoạt động nhỏ nhất (Crowninshield &amp; Brand 1981). Kiểu co lấy từ chiều thay đổi độ dài cơ khi chuyển động. Mô hình chưa tính sức căng thụ động của cơ bị kéo giãn và chưa có một số cơ sâu, nên đây là ước lượng xu hướng – không thay thế đo EMG.</p>
   </div>`;
 }
 
@@ -845,7 +845,7 @@ function renderPhysicsLive() {
     hud.innerHTML = `<div><i class="dot com"></i>Trọng tâm · biên <b class="${moving ? '' : cm >= 0 ? 'ok' : 'bad'}">${cm >= 0 ? '+' : ''}${cm.toFixed(1)} cm</b>${moving ? ' <small>(đang chuyển)</small>' : ''}</div>
       <div><i class="dot grf"></i>${r.support.slice(0, 4).map((g) => `${esc(g.label)} <b>${Math.round(g.pct)}%</b>`).join(' · ')}</div>
       ${top ? `<div><i class="dot load"></i>Tải lớn nhất: ${esc(top.name)} <b>${Math.round(top.total)} N·m</b></div>` : ''}
-      ${topAct ? `<div><i class="sw ${topAct.type === 'eccentric' ? 'ecc' : topAct.type === 'concentric' ? 'conc' : 'iso'}"></i>Cơ làm việc nhiều nhất: ${esc(MUSCLES[topAct.id]?.name || topAct.id)} <b>${Math.round(topAct.a * 100)}%</b>${topAct.type ? ` <small>(${CONTRACTION[topAct.type].short})</small>` : ''}</div>` : ''}`;
+      ${topAct && state.colorMode === 'act' ? `<div><i class="sw ${topAct.type === 'eccentric' ? 'ecc' : topAct.type === 'concentric' ? 'conc' : 'iso'}"></i>Cơ làm việc nhiều nhất <small>(mô hình)</small>: ${esc(MUSCLES[topAct.id]?.name || topAct.id)} <b>${Math.round(topAct.a * 100)}%</b>${topAct.type ? ` <small>(${CONTRACTION[topAct.type].short})</small>` : ''}</div>` : ''}`;
   }
 }
 
@@ -944,7 +944,7 @@ function compareVariants() {
   for (const r of res) for (const m of activationRows(r.act, 4)) if (!ids.includes(m.id)) ids.push(m.id);
   for (const id of ids.slice(0, 5)) {
     const vals = res.map((r) => actOf(r, id));
-    html += `<tr><td>${esc(MUSCLES[id]?.name || id)} <small>hoạt động</small></td>${vals.map((v, i) => cell(v, i ? vals[0] : undefined, '%')).join('')}</tr>`;
+    html += `<tr><td>${esc(MUSCLES[id]?.name || id)} <small>hoạt động (mô hình)</small></td>${vals.map((v, i) => cell(v, i ? vals[0] : undefined, '%')).join('')}</tr>`;
   }
   html += `<tr><td>Biên ổn định</td>${res.map((r, i) => cell(r.margin * 100, i ? res[0].margin * 100 : undefined, ' cm', false)).join('')}</tr>`;
   return `${html}</tbody></table><p class="hint">% = chênh lệch so với bản chuẩn (xanh: tải nhẹ hơn / vững hơn).</p>`;
@@ -978,7 +978,7 @@ function updateLiveNumbers(force = false) {
           const m = act.muscles.get(`${sel.id}|${sd}`);
           if (!m) return '';
           const pct = Math.round(m.a * 100);
-          return `<div>Hoạt động ước lượng${sides.length > 1 ? ` (${SIDE_LABEL[sd]})` : ''}: <b>${pct}%</b>${m.part && pct ? ` · ${esc(m.part)}` : ''} · ${Math.round(m.force)} N${m.type ? ` <span class="ctype ${m.type}">${CONTRACTION[m.type].label}</span>` : ''}</div>`;
+          return `<div>Hoạt động (mô hình, thử nghiệm)${sides.length > 1 ? ` (${SIDE_LABEL[sd]})` : ''}: <b>${pct}%</b>${m.part && pct ? ` · ${esc(m.part)}` : ''} · ${Math.round(m.force)} N${m.type ? ` <span class="ctype ${m.type}">${CONTRACTION[m.type].label}</span>` : ''}</div>`;
         })
         .join('');
     }

@@ -24,6 +24,7 @@ were already tuned and drifts them by a few degrees.
 ```
 rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames = identity)
   → muscles.js   muscle tubes: stations riding on segments + wrapping surfaces (WRAPS)
+                 + stations coupled to the shoulder by the scapulohumeral rhythm (COUPLED)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses, anchors (feet/hands stay put), balances each pose once (cached)
@@ -53,6 +54,15 @@ Data files:
 - UI text and data content are Vietnamese; code, comments and commit messages are English.
 - Scientific numbers (EMG %MVIC, forces, moment arms from papers) must cite their source in the code.
   Never fill in values from memory – leave them out and say so.
+- The "Hoạt động" (muscle activation) colour mode and the activation list are **experimental**: not validated
+  against EMG. Keep their "thử nghiệm" labels and keep "Vai trò" (literature roles) as the default colour mode
+  until a validation step exists.
+- Passive muscle tension is deliberately NOT modelled. A ROM-based version (slack at standing
+  length, Thelen 2003 passive curve up to the textbook range end) was tried and made results worse
+  (muscles pinned at 90–100 % went from 5 to 9–14 across the 33 poses): the dominant errors in
+  stretch poses come from body-to-body contacts the physics lacks (thigh on calves in Balasana, foot
+  on thigh in Vrksasana, hands on feet in Paschimottanasana) and from the rigid shoulder girdle.
+  Passive tension needs per-muscle optimal fibre / tendon slack lengths from the literature first.
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
   tension. Keep these limitations visible in UI notes when a feature depends on them.
 
