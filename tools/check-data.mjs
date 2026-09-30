@@ -3,6 +3,7 @@
 // understands, and every modelled muscle / bone needs its Vietnamese content and strength.
 //   node tools/check-data.mjs
 import { ASANAS, CATEGORIES } from '../src/data/asanas.js';
+import { TOPICS } from '../src/data/topics.js';
 import { POSES, POSE_FIT } from '../src/data/poses.js';
 import { MUSCLES } from '../src/data/muscles.js';
 import { BONES } from '../src/data/bones.js';
@@ -112,6 +113,26 @@ for (const a of ASANAS) {
     for (const f of ['cues', 'benefits', 'cautions']) if (!a[f] || !a[f].length) warn(`${where}: no ${f}`);
   }
 }
+// ---- workshop topics
+const topicIds = new Set();
+for (const t of TOPICS) {
+  const where = `topic ${t.id}`;
+  if (topicIds.has(t.id)) fail(`${where}: duplicate id`);
+  topicIds.add(t.id);
+  for (const f of ['title', 'en', 'area', 'intro']) if (!t[f]) fail(`${where}: missing ${f}`);
+  if (!Array.isArray(t.compare) || t.compare.length !== 2) fail(`${where}: compare must be [reference, condition]`);
+  for (const c of t.compare || []) {
+    if (!POSES[c.pose]) fail(`${where}: compare pose "${c.pose}" not in POSES`);
+    if (!c.label) fail(`${where}: compare pose without label`);
+    usedPoses.add(c.pose);
+  }
+  for (const k of [...(t.shorter || []), ...(t.longer || [])]) if (!MUSCLES[k]) fail(`${where}: unknown muscle "${k}"`);
+  for (const j of t.joints || []) if (!JOINTS[j]) fail(`${where}: unknown joint "${j}"`);
+  for (const b of t.bones || []) if (!BONES[b]) fail(`${where}: unknown bone "${b}"`);
+  for (const [id] of t.asanas || []) if (!ASANAS.some((a) => a.id === id)) fail(`${where}: unknown asana "${id}"`);
+  for (const f of ['sections', 'cautions', 'limits']) if (!t[f] || !t[f].length) fail(`${where}: no ${f}`);
+}
+
 for (const id of Object.keys(POSES)) if (!usedPoses.has(id)) warn(`pose ${id} is not used by any asana`);
 
 // ---- anatomy content for every modelled part
@@ -124,6 +145,6 @@ for (const id of new Set(MODEL.meshes.map((m) => m.id))) if (!BONES[id]) fail(`b
 console.log(
   failures
     ? `\n${failures} data problem(s)`
-    : `✓ data OK (${ASANAS.length} asanas, ${Object.keys(POSES).length} poses${warnings ? `, ${warnings} warning(s)` : ''})`,
+    : `✓ data OK (${ASANAS.length} asanas, ${TOPICS.length} topics, ${Object.keys(POSES).length} poses${warnings ? `, ${warnings} warning(s)` : ''})`,
 );
 process.exit(failures ? 1 : 0);
