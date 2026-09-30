@@ -1,6 +1,8 @@
 // Adjusts selected joint angles of each pose so that the segments listed in
 // POSE_FIT[pose].support touch the floor, then writes the angles back into
-// src/data/poses.js.   Usage: node tools/fit-poses.mjs [--dry] [pose ...]
+// src/data/poses.js.
+//   Usage: node tools/fit-poses.mjs [--dry] <pose ...>   |   node tools/fit-poses.mjs [--dry] --all
+// Name the poses you changed: refitting every pose rewrites angles that were already tuned.
 import { readFileSync, writeFileSync } from 'node:fs';
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
@@ -12,6 +14,15 @@ const FILE = new URL('../src/data/poses.js', import.meta.url);
 const args = process.argv.slice(2);
 const dry = args.includes('--dry');
 const only = args.filter((a) => !a.startsWith('--'));
+if (args.includes('--help') || args.includes('-h') || (!only.length && !args.includes('--all'))) {
+  console.log('Usage: npm run fit-poses -- [--dry] <pose ...>   (or --all to refit every pose in POSE_FIT)');
+  process.exit(args.includes('--help') || args.includes('-h') ? 0 : 1);
+}
+const unknown = only.filter((p) => !POSE_FIT[p]);
+if (unknown.length) {
+  console.log(`No POSE_FIT entry for: ${unknown.join(', ')} (add one in src/data/poses.js)`);
+  process.exit(1);
+}
 const rig = new Rig();
 const physics = new Physics(rig, { mass: 60, sex: 'f' });
 
