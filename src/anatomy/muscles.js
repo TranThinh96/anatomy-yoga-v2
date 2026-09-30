@@ -37,6 +37,21 @@ const WRAPS = [
 const ARC_STEP = 0.35; // rad between points on a wrapped arc
 
 /**
+ * Scapulohumeral rhythm. The rig moves the clavicle–scapula only by elevation / protraction,
+ * but in reality about a third of arm elevation is upward rotation of the scapula (2:1
+ * glenohumeral : scapulothoracic, Inman et al. 1944). Latissimus dorsi runs over the inferior
+ * angle of the scapula and the long head of triceps starts on it, so without that rotation
+ * their lines swing behind the shoulder with the arm overhead and they turn into (wrong)
+ * flexors. These stations ride on the scapula and turn with RHYTHM × the shoulder rotation
+ * about the shoulder centre (a "coupled" path point, like OpenSim's moving path points).
+ */
+const RHYTHM = 1 / 3;
+const COUPLED = {
+  latissimus_dorsi: (stations) => [stations.length - 2], // over the inferior angle, before the humerus
+  triceps_brachii: (stations, fibre) => (fibre === 0 ? [0] : []), // long head: infraglenoid tubercle
+};
+
+/**
  * Shortest path from P to S (2-D, circle of radius R at the origin) that stays on the +x
  * side of the circle. Returns null if the straight line already does, else the tangent
  * angles and travel direction.
@@ -92,6 +107,7 @@ export class MuscleSystem {
     this.muscles = [];
     this._w = new THREE.Vector3();
     this._w2 = new THREE.Vector3();
+    this._q = new THREE.Quaternion();
 
     // segments distal to each joint (to find where a fibre crosses it)
     this._sub = {};
@@ -106,6 +122,16 @@ export class MuscleSystem {
     rig.root.updateMatrixWorld(true);
     this.update();
     for (const m of this.muscles) m.restLength = m.length;
+  }
+
+  /** Re-hosts a station on the scapula, turning with RHYTHM × the shoulder rotation. */
+  _coupled(st, side) {
+    const rest = this.rig.rest;
+    const p = st.a.local.clone().add(rest[st.a.seg]);
+    if (st.t > 0) p.lerp(st.b.local.clone().add(rest[st.b.seg]), st.t);
+    const scap = `scapula_${side}`;
+    const at = { seg: scap, local: p.sub(rest[scap]) };
+    return { a: at, b: at, t: 0, couple: { joint: `shoulder_${side}`, k: RHYTHM, c: rest[`shoulder_${side}`].clone().sub(rest[scap]) } };
   }
 
   /** Wrapping objects of one fibre: [{ at: station index, body, type, c, a, d, r }] */
@@ -182,6 +208,7 @@ export class MuscleSystem {
         const i = Math.min(Math.floor(x), pts.length - 2);
         return { a: pts[i], b: pts[i + 1], t: x - i };
       });
+      for (const i of COUPLED[def.id]?.(stations, f) || []) stations[i] = this._coupled(stations[i], side);
       const ctrl = stations.map(() => new THREE.Vector3());
       const curve = new THREE.CatmullRomCurve3(ctrl, false, 'centripetal');
       // path = stations plus points on wrapping surfaces; pathSt[i] says which segment(s) carry path[i]
@@ -245,7 +272,11 @@ export class MuscleSystem {
       let total = 0;
       for (const fb of m.fibers) {
         fb.stations.forEach((st, i) => {
-          rig.worldPoint(st.a.seg, st.a.local, this._w);
+          if (st.couple) {
+            const { joint, k, c } = st.couple;
+            this._q.identity().slerp(rig.joints[joint].quaternion, k);
+            rig.worldPoint(st.a.seg, this._w.copy(st.a.local).sub(c).applyQuaternion(this._q).add(c), this._w);
+          } else rig.worldPoint(st.a.seg, st.a.local, this._w);
           if (st.t > 0) {
             rig.worldPoint(st.b.seg, st.b.local, this._w2);
             this._w.lerp(this._w2, st.t);

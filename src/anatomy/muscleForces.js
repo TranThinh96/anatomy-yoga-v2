@@ -237,14 +237,24 @@ export class MuscleForces {
     this.rows.forEach((r, i) => (this.rowIndex[`${r.joint}.${r.dof.key}`] = i));
     this._lam = null;
     this._w = new THREE.Vector3();
+    this._qk = new THREE.Quaternion();
     this.updatePoints();
     this.fibres.forEach((f) => (f.restLength = f.length));
   }
 
   /** How much of a path point moves with the distal side of joint j (0…1). */
-  _weight(st, j) {
+  _weight(st, j, withCouple = true) {
     const sub = this.inSub[j];
-    return (1 - st.t) * (sub.has(st.a.seg) ? 1 : 0) + (st.t ? st.t * (sub.has(st.b.seg) ? 1 : 0) : 0);
+    const w = (1 - st.t) * (sub.has(st.a.seg) ? 1 : 0) + (st.t ? st.t * (sub.has(st.b.seg) ? 1 : 0) : 0);
+    // a coupled station (scapulohumeral rhythm, see muscles.js) turns with k × that joint
+    return withCouple && st.couple && st.couple.joint === j ? w + st.couple.k : w;
+  }
+
+  /** World position of a coupled station for a given local quaternion of its joint. */
+  _coupledPoint(st, q, out) {
+    const { k, c } = st.couple;
+    this._qk.identity().slerp(q, k);
+    return this.rig.worldPoint(st.a.seg, out.copy(st.a.local).sub(c).applyQuaternion(this._qk).add(c), out);
   }
 
   /** Muscle paths (with wrapping) and lengths for the rig's current pose. */
@@ -260,7 +270,9 @@ export class MuscleForces {
     const r = new THREE.Vector3();
     const c = new THREE.Vector3();
     const pts = f.fb.path;
-    const w = f.fb.pathSt.map((st) => this._weight(st, cross.joint));
+    const sts = f.fb.pathSt;
+    const w = sts.map((st) => this._weight(st, cross.joint, false));
+    const dir = (i) => (i < 1 || i >= pts.length ? null : u.subVectors(pts[i], pts[i - 1]).normalize().clone());
     for (let i = 1; i < pts.length; i++) {
       u.subVectors(pts[i], pts[i - 1]);
       const len = u.length();
@@ -269,6 +281,28 @@ export class MuscleForces {
       if (w[i - 1]) out.add(c.crossVectors(r.subVectors(pts[i - 1], J), u).multiplyScalar(w[i - 1]));
       if (w[i]) out.sub(c.crossVectors(r.subVectors(pts[i], J), u).multiplyScalar(w[i]));
     }
+    // coupled stations move by q^k, not rigidly with the joint: their velocity for a small world
+    // rotation δ·e of the joint is taken numerically, dL/dδ gains (u_in − u_out) · dp/dδ
+    sts.forEach((st, i) => {
+      if (!st.couple || st.couple.joint !== cross.joint) return;
+      const joint = this.rig.joints[cross.joint];
+      const P = joint.parent.getWorldQuaternion(new THREE.Quaternion());
+      const Pi = P.clone().invert();
+      const p0 = this._coupledPoint(st, joint.quaternion, new THREE.Vector3());
+      const a = new THREE.Vector3();
+      const uin = dir(i);
+      const uout = dir(i + 1);
+      if (uin) a.add(uin);
+      if (uout) a.sub(uout);
+      const h = 1e-5;
+      const p1 = new THREE.Vector3();
+      for (let k = 0; k < 3; k++) {
+        const e = new THREE.Vector3(k === 0 ? 1 : 0, k === 1 ? 1 : 0, k === 2 ? 1 : 0);
+        const q = Pi.clone().multiply(new THREE.Quaternion().setFromAxisAngle(e, h)).multiply(P).multiply(joint.quaternion);
+        const g = this._coupledPoint(st, q, p1).sub(p0).dot(a) / h; // dL/dδ about axis k
+        out.setComponent(k, out.getComponent(k) - g);
+      }
+    });
     return out;
   }
 

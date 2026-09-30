@@ -58,6 +58,9 @@ bao nhiêu % sức tối đa** và **kiểu co**: đồng tâm (ngắn lại khi
 2. **Mặt bao quanh khớp** (wrapping, kiểu OpenSim): trụ quanh trục gối / khuỷu, cầu quanh chỏm xương cánh tay /
    chỏm xương đùi, để cơ tứ đầu, gân kheo, cơ tam đầu, cơ delta, cơ thắt lưng–chậu không "cắt" qua xương khi
    khớp gập sâu — cánh tay đòn giữ đúng dấu trên toàn tầm vận động dùng trong các tư thế.
+   **Nhịp vai–cánh tay**: khung xương chưa có động tác xoay lên của xương bả vai, nên điểm đi qua của cơ lưng rộng
+   (trên góc dưới xương bả vai) và nguyên uỷ đầu dài cơ tam đầu xoay theo 1/3 chuyển động của khớp vai (tỷ lệ 2:1,
+   Inman et al. 1944). Nhờ vậy khi giơ tay qua đầu hai cơ này vẫn duỗi vai và cơ lưng rộng dài ra tới cuối tầm.
 3. **Sức tối đa** mỗi bó cơ theo thiết diện sinh lý (PCSA) trong các mô hình đã công bố: chi dưới — Arnold et al.
    2010 (*Ann Biomed Eng* 38:269); chi trên — Holzbaur et al. 2005 (*Ann Biomed Eng* 33:829); cột sống thắt lưng —
    Christophy et al. 2012 (*Biomech Model Mechanobiol* 11:19); cơ vai–lồng ngực — Seth et al. 2016 (*PLoS ONE*
@@ -80,7 +83,8 @@ Giới hạn: chỉ tính tư thế giữ yên (không tính lực quán tính k
 và tiếp xúc giữa các phần cơ thể (vd. đùi tựa lên bắp chân trong Balasana); tải hiển thị là mức tối thiểu
 khi người tập đẩy sàn khéo léo. Mức hoạt động cơ chưa tính **sức căng thụ động** của cơ bị kéo giãn (ở tư thế
 gập sâu, cơ bị kéo giãn gánh một phần tải — app cảnh báo khi gặp) và không mô tả đồng co (co chống nhau để giữ
-vững khớp). Đai vai là một đoạn cứng quay quanh khớp ức–đòn. Dùng để **so sánh xu hướng**, không thay thế đo EMG
+vững khớp). Đai vai là một đoạn cứng quay quanh khớp ức–đòn, chưa tựa lên lồng ngực: cơ nào kéo xương bả vai
+(như cơ lưng rộng) bị mô hình "ngại" dùng, nên ở tư thế tay qua đầu (Chó úp mặt) nhóm chóp xoay vẫn bị tính cao. Dùng để **so sánh xu hướng**, không thay thế đo EMG
 hay số đo lâm sàng.
 
 ### Mô hình từ xương & cơ thật (BodyParts3D)

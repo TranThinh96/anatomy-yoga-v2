@@ -132,6 +132,9 @@ for (const [id, fibre, joint, dof, sign] of ACTIONS) {
 }
 // over the range of motion used by the poses
 const RANGES = [
+  // arms overhead (Down Dog, Urdhva Hastasana): lats and the long head of triceps still extend
+  ['shoulder_L', 'flex', [0, 45, 90, 135, 160, 180], [['latissimus_dorsi', 'flex', -1], ['triceps_brachii', 'flex', -1, 0]]],
+  ['shoulder_L', 'abd', [0, 45, 90, 135, 170], [['latissimus_dorsi', 'abd', -1]]],
   ['knee_L', 'flex', [0, 30, 60, 90, 120, 150], [['vastus_lateralis', 'flex', -1], ['rectus_femoris', 'flex', -1], ['hamstrings', 'flex', 1]]],
   ['knee_L', 'flex', [0, 30, 60, 90], [['gastrocnemius', 'flex', 1]]],
   ['hip_L', 'flex', [-20, 0, 30, 60, 90, 120], [['gluteus_maximus', 'flex', -1], ['iliopsoas', 'flex', 1], ['rectus_femoris', 'flex', 1]]],
@@ -151,6 +154,18 @@ for (const [joint, key, angles, list] of RANGES) {
       const a = arm(id, fibre, joint, dof);
       if (a === null || a * sign <= 0.002) fail(`${id} ${joint}.${dof} at ${key} ${ang}°: ${a === null ? 'n/a' : (a * 100).toFixed(1)} cm, expected ${sign > 0 ? '+' : '−'}`);
     }
+  }
+}
+
+// the lats lengthen all the way up to full elevation (they are what Down Dog stretches)
+{
+  let prev = 0;
+  for (const ang of [0, 30, 60, 90, 120, 150, 180]) {
+    rig.applyQuats({ shoulder_L: semanticToQuat('shoulder_L', { flex: ang }) });
+    mf.updatePoints();
+    const L = system.muscles.find((m) => m.id === 'latissimus_dorsi' && m.side === 'L').length;
+    if (L <= prev) fail(`latissimus_dorsi shortens between shoulder flexion ${ang - 30}° and ${ang}° (${(prev * 100).toFixed(1)} → ${(L * 100).toFixed(1)} cm)`);
+    prev = L;
   }
 }
 
