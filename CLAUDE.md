@@ -62,6 +62,15 @@ Data files:
 2. For anything visible: `node tools/shot.mjs …` and look at the PNG (the headless renderer is slow,
    ~2 fps – do not judge performance from it).
 
+## CI / deployment
+
+- `.github/workflows/ci.yml`: every pull request and push to `main` runs `npm ci`, `npm run check`, `npm run build` (Node 22).
+  Keep `npm run check` green locally before pushing – it is exactly what CI runs.
+- `.github/workflows/pages.yml`: a push to `main` re-runs the checks, builds and publishes `dist/` to GitHub Pages.
+  Needs repository Settings → Pages → Source = "GitHub Actions" (a one-time manual setting).
+- The build uses a relative base (`vite.config.js`) and hash routing, so it works under `/<repo>/`.
+  Reference assets through `import.meta.env.BASE_URL` or relative paths, never `/absolute` paths.
+
 ## Environment notes (Claude Code on the web)
 
 - `.claude/hooks/session-start.sh` runs `npm install` in remote sessions.

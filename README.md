@@ -119,6 +119,11 @@ npm run fit-poses -- <tư thế…>  # tự chỉnh góc khớp để đúng b�
 npm run build-model -- <thư mục BodyParts3D_data>  # dựng lại khung xương, cơ, mốc từ BodyParts3D
 ```
 
+### CI & xuất bản
+- `.github/workflows/ci.yml`: mỗi pull request (và mỗi lần push vào `main`) chạy `npm ci`, `npm run check`, `npm run build`.
+- `.github/workflows/pages.yml`: push vào `main` → kiểm tra, build và đưa `dist/` lên **GitHub Pages**
+  (địa chỉ dạng `https://<tài khoản>.github.io/<repo>/`). Cần bật một lần: *Settings → Pages → Source: GitHub Actions*.
+
 ## Cấu trúc
 
 ```
