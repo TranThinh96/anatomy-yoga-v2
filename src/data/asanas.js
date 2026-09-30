@@ -82,7 +82,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: [...QUADS, 'iliopsoas', 'tibialis_anterior'],
-      stretch: ['hamstrings', 'gastrocnemius', 'soleus', 'gluteus_maximus', 'erector_spinae', 'quadratus_lumborum'],
+      stretch: ['hamstrings', 'gluteus_maximus', 'erector_spinae', 'quadratus_lumborum'],
       stabilize: ['gluteus_medius', 'adductors'],
     },
     joints: [
@@ -110,7 +110,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['erector_spinae', 'rhomboids', 'trapezius', 'quadratus_lumborum', ...QUADS],
-      stretch: ['hamstrings', 'gastrocnemius', 'gluteus_maximus'],
+      stretch: ['hamstrings', 'gluteus_maximus'],
       stabilize: ['rectus_abdominis', 'external_oblique', 'latissimus_dorsi'],
     },
     joints: [
@@ -190,7 +190,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: [...side(QUADS, 'L'), 'gluteus_maximus_L', 'gluteus_maximus_R', 'vastus_lateralis_R', 'vastus_medialis_R', 'erector_spinae', 'deltoid', 'serratus_anterior', 'trapezius'],
-      stretch: ['iliopsoas_R', 'rectus_femoris_R', 'gastrocnemius_R', 'soleus_R', 'latissimus_dorsi', 'rectus_abdominis'],
+      stretch: ['iliopsoas_R', 'gastrocnemius_R', 'soleus_R', 'latissimus_dorsi', 'rectus_abdominis'],
       stabilize: ['external_oblique', 'gluteus_medius', 'adductors', 'tibialis_anterior_L'],
     },
     joints: [
@@ -249,7 +249,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: [...QUADS, 'quadratus_lumborum_L', 'external_oblique_L', 'gluteus_medius_R', 'deltoid', 'trapezius', 'sternocleidomastoid_R'],
-      stretch: ['hamstrings_L', 'adductors_L', 'adductors_R', 'quadratus_lumborum_R', 'external_oblique_R', 'latissimus_dorsi_R', 'pectoralis_major'],
+      stretch: ['hamstrings_L', 'adductors_L', 'quadratus_lumborum_R', 'external_oblique_R', 'latissimus_dorsi_R', 'pectoralis_major'],
       stabilize: ['gluteus_maximus', 'erector_spinae', 'tfl_itb_R', 'tibialis_anterior', 'rectus_abdominis'],
     },
     joints: [
@@ -441,7 +441,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['erector_spinae', 'triceps_brachii', 'gluteus_maximus', 'hamstrings', ...QUADS, 'trapezius', 'latissimus_dorsi'],
-      stretch: ['rectus_abdominis', 'external_oblique', 'iliopsoas', 'rectus_femoris', 'pectoralis_major', 'pectoralis_minor', 'tibialis_anterior'],
+      stretch: ['rectus_abdominis', 'external_oblique', 'iliopsoas', 'tibialis_anterior'],
       stabilize: ['serratus_anterior', 'rhomboids', 'infraspinatus'],
     },
     joints: [
@@ -469,7 +469,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['erector_spinae', 'quadratus_lumborum', 'rhomboids', 'trapezius', 'gluteus_maximus', 'hamstrings'],
-      stretch: ['rectus_abdominis', 'external_oblique', 'iliopsoas', 'pectoralis_major', 'pectoralis_minor'],
+      stretch: ['rectus_abdominis', 'external_oblique'],
       stabilize: ['latissimus_dorsi', 'triceps_brachii', 'adductors', 'serratus_anterior'],
     },
     joints: [
@@ -520,7 +520,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['gluteus_maximus', 'hamstrings', 'erector_spinae', 'rhomboids', 'triceps_brachii', 'adductors'],
-      stretch: ['rectus_abdominis', 'external_oblique', 'iliopsoas', 'rectus_femoris', 'pectoralis_major', 'pectoralis_minor', 'biceps_brachii', 'sternocleidomastoid', 'tibialis_anterior'],
+      stretch: ['rectus_abdominis', 'external_oblique', 'iliopsoas', 'rectus_femoris', 'pectoralis_major', 'sternocleidomastoid', 'tibialis_anterior'],
       stabilize: ['vastus_lateralis', 'vastus_medialis', 'latissimus_dorsi', 'serratus_anterior'],
     },
     joints: [
@@ -550,7 +550,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['gluteus_maximus', 'hamstrings', 'erector_spinae', 'adductors', 'rhomboids', 'triceps_brachii'],
-      stretch: ['iliopsoas', 'rectus_femoris', 'rectus_abdominis', 'pectoralis_major', 'deltoid'],
+      stretch: ['rectus_femoris', 'pectoralis_major'],
       stabilize: ['vastus_lateralis', 'vastus_medialis', 'gluteus_medius', 'latissimus_dorsi'],
     },
     joints: [
@@ -579,7 +579,7 @@ export const ASANAS = [
     loop: 'static',
     roles: {
       contract: [...QUADS, 'iliopsoas', 'erector_spinae', 'triceps_brachii'],
-      stretch: ['hamstrings', 'gastrocnemius'],
+      stretch: ['hamstrings'],
       stabilize: ['rectus_abdominis', 'tibialis_anterior', 'adductors'],
     },
     joints: [
@@ -602,7 +602,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['iliopsoas', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'rectus_abdominis'],
-      stretch: ['hamstrings', 'gastrocnemius', 'erector_spinae', 'gluteus_maximus', 'latissimus_dorsi', 'quadratus_lumborum'],
+      stretch: ['hamstrings', 'erector_spinae', 'gluteus_maximus', 'latissimus_dorsi', 'quadratus_lumborum'],
       stabilize: ['adductors', 'tibialis_anterior'],
     },
     joints: [
@@ -630,7 +630,7 @@ export const ASANAS = [
     loop: 'pingpong',
     roles: {
       contract: ['iliopsoas', 'rectus_femoris', 'rectus_abdominis', 'external_oblique', 'vastus_lateralis', 'vastus_medialis', 'erector_spinae', 'deltoid'],
-      stretch: ['hamstrings', 'gastrocnemius'],
+      stretch: ['hamstrings'],
       stabilize: ['adductors', 'tibialis_anterior', 'sartorius', 'tfl_itb'],
     },
     joints: [

@@ -21,6 +21,9 @@ export const MUSCLE_COLOR = new THREE.Color('#b24a44');
  * object" of OpenSim-style models. Radii from the bone surfaces (condyle 18 mm, humeral
  * head 21.5 mm, femoral head 23 mm) plus tendon / patella thickness.
  */
+// soft: wrap only where the straight line would cut through the sphere, the short way round (the
+// deltoid and cuff slide over the humeral head; forcing them round a fixed side sends a fibre the
+// long way round the head with the arm overhead).
 // side: for spheres, the preferred side of the joint (body frame, left side), blended with
 // the side seen in the rest pose (or used as is when `fixed`)
 const WRAPS = [
@@ -30,7 +33,7 @@ const WRAPS = [
   { joint: 'elbow', body: 'shoulder', type: 'cylinder', axis: [1, 0, 0], r: 0.016, muscles: ['biceps_brachii'] },
   // via points riding on a bone right next to the joint would swing through the other bone
   // when the joint moves (a real belly slides); within `drop` of the centre they are skipped
-  { joint: 'shoulder', body: 'shoulder', type: 'sphere', r: 0.026, drop: 0.05, side: [1, 0.3, 0], muscles: ['deltoid', 'supraspinatus', 'infraspinatus'] },
+  { joint: 'shoulder', body: 'shoulder', type: 'sphere', r: 0.026, drop: 0.05, side: [1, 0.3, 0], soft: true, muscles: ['deltoid', 'supraspinatus', 'infraspinatus'] },
   // iliopsoas: over the front of the femoral head (the brim via point is replaced by the wrap)
   { joint: 'hip', body: 'hip', type: 'sphere', r: 0.028, drop: 0.04, side: [0, 0, 1], fixed: true, muscles: ['iliopsoas'] },
 ];
@@ -56,7 +59,7 @@ const COUPLED = {
  * side of the circle. Returns null if the straight line already does, else the tangent
  * angles and travel direction.
  */
-function wrap2D(px, py, sx, sy, R, fAng) {
+function wrap2D(px, py, sx, sy, R, fAng, soft = false) {
   const lp = Math.hypot(px, py);
   const ls = Math.hypot(sx, sy);
   R = Math.min(R, 0.95 * lp, 0.95 * ls);
@@ -67,7 +70,7 @@ function wrap2D(px, py, sx, sy, R, fAng) {
   const t = Math.max(0, Math.min(1, -(px * dx + py * dy) / (dx * dx + dy * dy || 1e-12)));
   const cx = px + t * dx;
   const cy = py + t * dy;
-  if (cx > 0 && Math.hypot(cx, cy) >= R) return null;
+  if (Math.hypot(cx, cy) >= R && (cx > 0 || soft)) return null;
   const ap = Math.atan2(py, px);
   const as = Math.atan2(sy, sx);
   const bp = Math.acos(R / lp);
@@ -85,7 +88,7 @@ function wrap2D(px, py, sx, sy, R, fAng) {
     const t2 = as - sg * bs;
     let d = (sg * (t2 - t1)) % (2 * Math.PI);
     if (d < 0) d += 2 * Math.PI;
-    const score = (fAng !== null && along(t1, sg, fAng) <= d ? -100 : 0) + (along(t1, sg, 0) <= d ? 10 : 0) - d;
+    const score = (fAng !== null && along(t1, sg, fAng) <= d ? -100 : 0) + (!soft && along(t1, sg, 0) <= d ? 10 : 0) - d;
     if (!best || score > best.score) best = { t1, sg, d, R, score };
   }
   return best;
@@ -188,7 +191,7 @@ export class MuscleSystem {
       const f = this.rig.rest[other].clone().sub(J);
       if (a) f.addScaledVector(a, -f.dot(a));
       f.normalize();
-      out.push({ at, skip, body, type: w.type, c, a, d, f, r: w.r, st: { a: { seg: body }, b: { seg: body }, t: 0 } });
+      out.push({ at, skip, body, type: w.type, c, a, d, f, r: w.r, soft: !!w.soft, st: { a: { seg: body }, b: { seg: body }, t: 0 } });
     }
     return out;
   }
@@ -319,7 +322,7 @@ export class MuscleSystem {
             const sy = S.dot(e2);
             const fx = w.f.dot(e1);
             const fy = w.f.dot(e2);
-            const wr = wrap2D(px, py, sx, sy, w.r, Math.hypot(fx, fy) > 0.3 ? Math.atan2(fy, fx) : null);
+            const wr = wrap2D(px, py, sx, sy, w.r, Math.hypot(fx, fy) > 0.3 ? Math.atan2(fy, fx) : null, w.soft);
             if (!wr) continue;
             const R = wr.R;
             const l1 = Math.hypot(px - R * Math.cos(wr.t1), py - R * Math.sin(wr.t1));

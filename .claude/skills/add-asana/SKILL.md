@@ -52,13 +52,31 @@ my_pose: {
   rel: [['ankle_L', 'ankle_R', [-1.0, 0]]], // joint B offset from joint A on the floor, metres (x, z)
   dir: [['thorax', [0, 1, 0], [0, 1, 0]]],  // a segment axis points this way (trunk upright)
   above: [['shoulder_L', 'wrist_L']],   // stack a joint over another (shoulders over wrists)
-  balance: true,                         // COM ≥ 3 cm inside the base of support (kneeling, one leg…)
+  at: [['wrist_L', 'knee_L', [0.02, -0.2, 0.05]]], // put a joint ON a body part: point on segment
+                                         // `knee_L` = its joint centre + offset (m, rest-pose axes)
+  balance: true,                         // COM ≥ 3 cm inside the base of support (kneeling, one leg,
+                                         // folds with the hands down – hands don't auto-balance)
 },
 ```
 
 - A param `a&b&-c` moves several angles together by the same amount (`-` = opposite) – e.g.
   `root.pitch&hip.flex` tilts the whole body while keeping the hip angle to the floor.
 - Give the fitter only the angles that should move; everything else stays as you wrote it.
+- `at` examples that worked (offsets are in the rest-pose axes of the named segment; x + = the
+  model's left, so mirror x for the right side):
+  - palms beside the feet: `['wrist_L', 'ankle_L', [0.06, -0.02, 0.13]]`
+  - hands just above the knees: `['wrist_L', 'hip_L', [0, -0.33, 0.09]]`
+  - lower hand on the front shin: `['wrist_L', 'knee_L', [0.02, -0.2, 0.05]]`
+  - sole on the upper inner thigh (tree): `['ankle_L', 'hip_R', [0.07, -0.16, 0]]`
+  - sit bones on the heels (child's pose): `['pelvis', 'knee_L', [-0.07, -0.3, -0.1], 0.5]`
+- Hands on the floor: add the wrists to `flat` so the palm is flat (otherwise the fitter may leave
+  the hand on its fingertips) – the fitter keeps wrist extension ≤ 95°.
+- The fitter finds the *nearest* way to meet the goals, which is not always the teachable one:
+  it will round the spine or bend the elbows instead of hinging at the hips. Leave the angles that
+  define the pose's form (spine curve, knee angle of a variant) out of `params`.
+- Complex asymmetric poses (Trikonasana): build the start pose geometrically first (pelvis tilt,
+  hip abduction / rotation, stance width ≈ one leg length ≈ 0.9 m) and let the fitter adjust a
+  few angles; with 15+ free angles it lands in odd local minima (twisted spine, pointed feet).
 
 Then run, **naming only your poses**:
 
@@ -103,6 +121,10 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   pubic_symphysis scapulothoracic sternoclavicular glenohumeral elbow wrist hip knee ankle.
 - Roles come from anatomy / EMG literature, not from the model. Cite a study in a comment if you use
   one; never invent EMG numbers.
+- A muscle under `stretch` must really lengthen in the target pose (≥ 2.5 % longer than in
+  Tadasana) – `npm run check` fails otherwise. Typical traps: calves are not stretched in a fold
+  with vertical shins or in Dandasana with neutral ankles; the back hip is *adducted* in Trikonasana
+  (its adductors shorten); Cobra / Up Dog stretch the abdominals more than the pectorals.
 - Flows (sequences): `flow: true`, `loop: 'cycle'`, each step with a `label` and `roles: '<asana id>'`
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
@@ -118,18 +140,32 @@ npm run build
 `check-physics` treats poses whose id matches `vrksasana|virabhadrasana|trikonasana` as asymmetric;
 add your one-sided pose to that regex in `tools/check-physics.mjs` if the symmetry check fails for it.
 
-## 6. Look at it
+## 6. Look at it – workshop quality
 
 ```bash
-node tools/shot.mjs asana/my_asana /tmp/a.png --hold               # target pose
-node tools/shot.mjs asana/my_asana /tmp/b.png --hold --cm act --view left
+node tools/review-poses.mjs /tmp/review my_asana --views front,left,top   # framed on the body, UI hidden
+node tools/shot.mjs asana/my_asana /tmp/b.png --hold --cm act --view left  # with the UI, activation colours
 ```
 
-Open the PNGs and check: feet/hands on the mat (not floating or sunk), no limb through the body,
-the pose reads like the real asana from the front and the side, the "Hoạt động" (model activation)
-colours are plausible. Compare the model's most active muscles with your `roles.contract`; if they
-disagree strongly, look for a pose error first, then mention the disagreement to the user
-(the model has no passive tension and lacks some deep muscles – see README "Giới hạn").
+The app is used to teach anatomy in workshops (balanced / restorative yoga), so a pose must read
+like the textbook form from the front AND the side. Checklist:
+
+- [ ] The shape a teacher would demonstrate: e.g. Uttanasana hinges at the hips with palms beside
+      the feet; Trikonasana both legs straight, lower hand on the shin, top arm vertical, chest open
+      to the long side; Tree foot on the inner thigh or calf, never on the knee; Child's pose sit
+      bones on the heels.
+- [ ] Alignment cues are visible in the model: hands under shoulders and knees under hips on all
+      fours, knee over ankle in lunges / Warrior / Bridge, neutral neck unless the pose looks up.
+- [ ] Palms and soles flat on the mat, nothing floating or sunk, no limb through the body.
+- [ ] Gaze matches the cue (Trikonasana looks up at the top hand, Warrior II over the front hand).
+- [ ] Stable (margin > 0), weight distribution plausible (review-poses prints it).
+- [ ] Roles agree with the model lengths (`npm run check`) and with the cues text.
+- [ ] Cues, benefits and cautions are safe for a restorative context: offer a supported / easier
+      variant (props, bent knees, knees down) for demanding poses.
+
+Compare the model's most active muscles ("Hoạt động", experimental) with `roles.contract`; if they
+disagree strongly, look for a pose error first, then mention the disagreement to the user (the
+model has no passive tension and lacks some deep muscles – see README "Giới hạn").
 
 ## Common problems
 
@@ -142,6 +178,11 @@ disagree strongly, look for a pose error first, then mention the disagreement to
 | hands reach forward instead of under the shoulders | `above: [['shoulder_L','wrist_L'], …]` |
 | whole body tips forward/back in a standing pose | normal – `physics.balance` tilts it at the ankles; if it looks wrong, the pose itself is unbalanced |
 | symmetry check fails on a one-sided pose | add the id to the ASYMMETRIC regex in `tools/check-physics.mjs` |
+| hands land far in front of the feet in a fold | `at` goal for the wrists + keep the spine out of `params` so it hinges at the hips |
+| fitter bends elbows / rounds the back to reach | remove those angles from `params`; they define the form |
+| COM behind the heels, all weight on the hands | `balance: true` (poses with hand contacts are not auto-balanced) |
+| a wrist ends at 110–130° extension | add the hands to `flat`; the ROM limit is 95° |
+| `check` says a stretched muscle is not longer | the role is wrong for this shape – fix the role (or the pose), don't lower the threshold |
 
 ## Done when
 

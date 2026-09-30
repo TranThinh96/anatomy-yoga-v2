@@ -157,7 +157,9 @@ tools/                      bp3d-build, fit-poses, check-*, shot (chụp màn h�
 2. Thêm mục trong `src/data/asanas.js` với `steps` (tư thế bắt đầu → tư thế đích, `anchor` là khớp
    giữ cố định trên sàn) và `roles` (`contract` / `stretch` / `stabilize`; thêm hậu tố `_L`/`_R`
    cho cơ một bên).
-3. Xem thử: `node tools/shot.mjs asana/<id> anh.png --hold`.
+3. Xem thử: `node tools/shot.mjs asana/<id> anh.png --hold`, hoặc rà soát hàng loạt từ nhiều góc:
+   `node tools/review-poses.mjs <thư-mục> [asana…] --views front,left,top`.
+   `npm run check` còn kiểm tra cơ ghi "kéo giãn" phải thật sự dài ra (≥ 2,5 %) trong tư thế đó.
 
 Quy trình đầy đủ (kèm các lỗi hay gặp) nằm trong skill `.claude/skills/add-asana/SKILL.md`;
 với Claude Code chỉ cần gõ `/add-asana <tên tư thế>`. `CLAUDE.md` tóm tắt kiến trúc và quy ước cho các phiên làm việc với Claude.

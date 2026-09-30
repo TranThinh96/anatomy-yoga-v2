@@ -60,13 +60,16 @@ function shift(pose, param, d) {
 
 // Approximate physiological limits (degrees) – the fitter is penalised beyond them.
 const ROM = {
-  hip: { flex: [-20, 140], abd: [-30, 70] },
+  hip: { flex: [-20, 150], abd: [-30, 70] },
   knee: { flex: [0, 160] },
-  lumbar: { flex: [-35, 50] },
-  thorax: { flex: [-30, 45] },
+  lumbar: { flex: [-35, 50], side: [-25, 25], rot: [-10, 10] },
+  thorax: { flex: [-30, 45], side: [-30, 30], rot: [-35, 35] },
   shoulder: { flex: [-60, 185] },
   elbow: { flex: [0, 150] },
   ankle: { dorsi: [-60, 40] },
+  wrist: { ext: [-80, 95] },
+  neck: { flex: [-60, 50] },
+  head: { flex: [-25, 25] },
 };
 function romPenalty(pose) {
   let e = 0;
@@ -90,6 +93,9 @@ const wdir = (seg, v) => new THREE.Vector3(...v).transformDirection(rig.joints[s
 //   rel:   [segA, segB, [dx, dz]] horizontal offset of joint B from joint A (m)
 //   dir:   [seg, localVector, worldVector] a segment axis should point this way
 //   above: [upper, lower] joint `upper` stacked vertically over joint `lower`
+//   at:    [joint, seg, [dx, dy, dz], weight?] put a joint on a point riding on segment `seg`:
+//          seg's joint centre + offset (m, rest-pose axes of seg) – a hand on the shin, a foot
+//          against the inner thigh, the sit bones on the heels
 //   balance: centre of mass at least 3 cm inside the base of support
 function goals(fit) {
   let e = 0;
@@ -110,6 +116,10 @@ function goals(fit) {
     const d = wdir(seg, lv);
     const t = new THREE.Vector3(...wv).normalize();
     e += 400 * (1 - d.dot(t));
+  }
+  for (const [j, seg, off, w = 1] of fit.at || []) {
+    const target = rig.worldPoint(seg, new THREE.Vector3(...off));
+    e += w * (wp(j).distanceTo(target) * 100) ** 2;
   }
   for (const [u, l] of fit.above || []) {
     const U = wp(u);

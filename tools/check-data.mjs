@@ -67,6 +67,10 @@ for (const [id, fit] of Object.entries(POSE_FIT)) {
     if (!SEGMENTS.has(a) || !SEGMENTS.has(b)) fail(`POSE_FIT.${id}: unknown joint in rel/above "${a}", "${b}"`);
   }
   for (const [s] of fit.dir || []) if (!SEGMENTS.has(s)) fail(`POSE_FIT.${id}: unknown dir segment "${s}"`);
+  for (const [j, seg, off] of fit.at || []) {
+    if (!SEGMENTS.has(j) || !SEGMENTS.has(seg)) fail(`POSE_FIT.${id}: unknown joint in at "${j}", "${seg}"`);
+    if (!Array.isArray(off) || off.length !== 3) fail(`POSE_FIT.${id}: at offset must be [dx, dy, dz]`);
+  }
   for (const p of fit.params || []) {
     for (const term of p.split('&')) {
       const [k, a] = term.replace(/^-/, '').split('.');

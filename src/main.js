@@ -816,9 +816,13 @@ function renderPhysicsLive() {
   // static analysis is exact only while a pose is held; in-between frames are not balanced
   const { index, alpha } = anim.locate(anim.time);
   const moving = index > 0 && alpha < 1;
-  const status = moving ? 'đang chuyển tư thế' : cm >= 0 ? 'ổn định' : 'mất cân bằng';
-  m.textContent = isFinite(cm) ? `${cm >= 0 ? '+' : ''}${cm.toFixed(1)} cm · ${status}` : '—';
-  m.className = moving ? '' : cm >= 0 ? 'ok' : 'bad';
+  // a base that is only a line or a point (sit bones in Navasana): balancing right on it is the pose
+  const narrow = r.hull.length < 3 && cm > -0.5;
+  const ok = cm >= 0 || narrow;
+  const status = moving ? 'đang chuyển tư thế' : narrow ? 'thăng bằng trên chân đế hẹp' : cm >= 0 ? 'ổn định' : 'mất cân bằng';
+  const cmTxt = narrow ? '0.0' : `${cm >= 0 ? '+' : ''}${cm.toFixed(1)}`;
+  m.textContent = isFinite(cm) ? `${cmTxt} cm · ${status}` : '—';
+  m.className = moving ? '' : ok ? 'ok' : 'bad';
   $('#ph-support').innerHTML = r.support
     .map(
       (g) =>
@@ -842,7 +846,7 @@ function renderPhysicsLive() {
   if (hud) {
     const top = r.joints.find((j) => j.demands.length);
     const topAct = state.act ? [...state.act.muscles.values()].sort((a, b) => b.a - a.a).find((m) => m.a >= 0.05) : null;
-    hud.innerHTML = `<div><i class="dot com"></i>Trọng tâm · biên <b class="${moving ? '' : cm >= 0 ? 'ok' : 'bad'}">${cm >= 0 ? '+' : ''}${cm.toFixed(1)} cm</b>${moving ? ' <small>(đang chuyển)</small>' : ''}</div>
+    hud.innerHTML = `<div><i class="dot com"></i>Trọng tâm · biên <b class="${moving ? '' : ok ? 'ok' : 'bad'}">${cmTxt} cm</b>${moving ? ' <small>(đang chuyển)</small>' : narrow ? ' <small>(thăng bằng trên chân đế hẹp)</small>' : ''}</div>
       <div><i class="dot grf"></i>${r.support.slice(0, 4).map((g) => `${esc(g.label)} <b>${Math.round(g.pct)}%</b>`).join(' · ')}</div>
       ${top ? `<div><i class="dot load"></i>Tải lớn nhất: ${esc(top.name)} <b>${Math.round(top.total)} N·m</b></div>` : ''}
       ${topAct && state.colorMode === 'act' ? `<div><i class="sw ${topAct.type === 'eccentric' ? 'ecc' : topAct.type === 'concentric' ? 'conc' : 'iso'}"></i>Cơ làm việc nhiều nhất <small>(mô hình)</small>: ${esc(MUSCLES[topAct.id]?.name || topAct.id)} <b>${Math.round(topAct.a * 100)}%</b>${topAct.type ? ` <small>(${CONTRACTION[topAct.type].short})</small>` : ''}</div>` : ''}`;

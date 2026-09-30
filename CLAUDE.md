@@ -13,6 +13,7 @@ npm run check                       # data + physics + muscle model + picking ch
 npm run build                       # production build into dist/ (not committed)
 npm run fit-poses -- [--dry] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
 node tools/shot.mjs asana/<id> out.png [--hold] [--cm act] [--view left]   # screenshot, fails on page errors
+node tools/review-poses.mjs <dir> [asana…] [--views front,left,top]        # every pose framed on the body, UI hidden
 npm run build-model -- <BodyParts3D_data>   # regenerate the body model (rarely; needs the BodyParts3D download)
 ```
 
@@ -90,6 +91,12 @@ Data files:
 - BodyParts3D is only reachable as a git mirror (github.com/Kevin-Mattheus-Moerman/BodyParts3D);
   lifesciencedb.jp is blocked. Its data is CC BY-SA 2.1 JP – keep the attribution in README,
   the app and `public/models/bp3d/LICENSE.txt`.
+
+## Pose quality bar
+
+Poses are used to teach anatomy in workshops (balanced / restorative yoga): each must read like the
+textbook form from the front and the side (see the checklist in the add-asana skill). `npm run check`
+also fails when an asana lists a muscle under `stretch` that does not lengthen in its pose.
 
 ## Recurring tasks
 
