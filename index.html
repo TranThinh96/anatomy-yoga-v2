@@ -25,6 +25,7 @@
         <nav class="mode-tabs" role="tablist">
           <button class="mode-tab active" data-mode="anatomy" role="tab">Giải phẫu</button>
           <button class="mode-tab" data-mode="asana" role="tab">Asana 3D</button>
+          <button class="mode-tab" data-mode="topic" role="tab">Chủ đề</button>
         </nav>
         <div class="topbar-actions">
           <button class="ghost-btn" id="present-btn" title="Ẩn bảng để trình chiếu cho lớp (phím P)">⛶ Trình chiếu</button>
@@ -66,6 +67,17 @@
           </div>
           <div class="panel-block grow">
             <div class="list" id="asana-list"></div>
+          </div>
+        </section>
+
+        <!-- Workshop topic sidebar -->
+        <section class="mode-section" data-for="topic" hidden>
+          <div class="panel-block">
+            <div class="block-title">Chủ đề workshop</div>
+            <p class="hint">So sánh một tư thế lệch với tư thế trung tính trên mô hình 3D.</p>
+          </div>
+          <div class="panel-block grow">
+            <div class="list" id="topic-list"></div>
           </div>
         </section>
       </aside>
@@ -121,6 +133,15 @@
             <label><input type="checkbox" data-phys="loads" checked /><i class="dot load"></i>Tải khớp</label>
           </div>
           <label class="legend-opt"><input type="checkbox" id="show-bones-asana" checked /> Hiện xương</label>
+        </div>
+
+        <div class="legend" id="topic-legend" hidden>
+          <div class="legend-title">Độ dài cơ</div>
+          <div class="gradient-bar"></div>
+          <div class="gradient-labels"><span>Ngắn lại</span><span>Không đổi</span><span>Dài ra</span></div>
+          <p class="hint">So với tư thế trung tính. Phím ← → đổi tư thế, Space: chuyển qua lại.</p>
+          <div class="topic-state">Đang hiển thị: <b id="topic-state">—</b></div>
+          <div class="chips topic-pose-chips" id="topic-legend-chips"></div>
         </div>
 
         <div class="phys-hud" id="phys-hud" hidden></div>

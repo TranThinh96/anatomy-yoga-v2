@@ -12,6 +12,7 @@ import { Physics } from '../src/anatomy/physics.js';
 import { MuscleForces, JOINT_AXES } from '../src/anatomy/muscleForces.js';
 import { poseToQuats } from '../src/anatomy/animator.js';
 import { ASANAS } from '../src/data/asanas.js';
+import { TOPICS } from '../src/data/topics.js';
 
 const verbose = process.argv.includes('--verbose');
 const rig = new Rig();
@@ -183,6 +184,33 @@ for (const [joint, key, angles, list] of RANGES) {
       const list = system.muscles.filter((x) => x.id === id && (!m || x.side === m[2]));
       const r = list.reduce((acc, x) => acc + x.ratio, 0) / list.length - 1;
       if (r < STRETCH_MIN) fail(`${a.id}: ${k} is listed as stretched but is ${(r * 100).toFixed(1)}% vs Tadasana in the pose`);
+    }
+  }
+}
+
+// ---- content: a topic's shorter / longer muscles must change that way from its reference pose
+{
+  const CHANGE_MIN = 0.015; // at least 1.5 % shorter / longer than in the reference pose
+  const lengths = (pose) => {
+    rig.applyQuats(physics.balance(poseToQuats(pose)));
+    rig.ground();
+    mf.updatePoints();
+    return new Map(system.muscles.map((x) => [x, x.length]));
+  };
+  for (const t of TOPICS) {
+    const ref = lengths(t.compare[0].pose);
+    const cur = lengths(t.compare[1].pose);
+    const change = (id) => {
+      const list = system.muscles.filter((x) => x.id === id);
+      return list.reduce((acc, x) => acc + cur.get(x) / ref.get(x), 0) / list.length - 1;
+    };
+    for (const id of t.shorter || []) {
+      const r = change(id);
+      if (r > -CHANGE_MIN) fail(`topic ${t.id}: ${id} is listed as shorter but changes ${(r * 100).toFixed(1)}%`);
+    }
+    for (const id of t.longer || []) {
+      const r = change(id);
+      if (r < CHANGE_MIN) fail(`topic ${t.id}: ${id} is listed as longer but changes ${(r * 100).toFixed(1)}%`);
     }
   }
 }

@@ -1,7 +1,8 @@
 // Screenshot of the running app, to check a change by eye (new asana, UI change …).
 // Starts its own Vite dev server, opens the page in headless Chromium, fails on page errors.
-//   node tools/shot.mjs <hash> <out.png> [--hold] [--cm roles|act|length|load] [--view front|back|left|right|top]
+//   node tools/shot.mjs <hash> <out.png> [--hold] [--cm roles|act|length|load] [--view front|back|left|right|top] [--click <css selector>]
 //   e.g. node tools/shot.mjs asana/virabhadrasana_2 /tmp/w2.png --hold --cm act
+//        node tools/shot.mjs topic/anterior_pelvic_tilt /tmp/apt.png --click '[data-topic-pose="1"]'
 // Needs Playwright (not a project dependency): uses a local install if present, else the global one.
 import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -14,7 +15,7 @@ const opt = (name) => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : null;
 };
-const positional = args.filter((a, i) => !a.startsWith('--') && !['--cm', '--view'].includes(args[i - 1]));
+const positional = args.filter((a, i) => !a.startsWith('--') && !['--cm', '--view', '--click'].includes(args[i - 1]));
 const [hash, out] = positional;
 if (!hash || !out) {
   console.log('Usage: node tools/shot.mjs <hash, e.g. asana/tadasana | muscle/hamstrings> <out.png> [--hold] [--cm act] [--view left]');
@@ -46,6 +47,8 @@ try {
   await page.waitForFunction(() => document.querySelector('#loading')?.hidden !== false, null, { timeout: 30000 }).catch(() => {});
   await page.waitForTimeout(2500);
   if (args.includes('--hold')) await page.click('#hold-btn');
+  const click = opt('--click');
+  if (click) await page.click(click);
   const cm = opt('--cm');
   if (cm) await page.click(`#color-mode .seg[data-cm="${cm}"]`);
   const view = opt('--view');

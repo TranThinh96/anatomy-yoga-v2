@@ -11,6 +11,7 @@ import { BONES } from './data/bones.js';
 import { MUSCLES, MUSCLE_GROUPS } from './data/muscles.js';
 import { JOINTS } from './data/joints.js';
 import { ASANAS, ASANA_BY_ID, CATEGORIES } from './data/asanas.js';
+import { TOPICS, TOPIC_BY_ID } from './data/topics.js';
 
 // ---------------------------------------------------------------- setup
 const $ = (s, el = document) => el.querySelector(s);
@@ -72,6 +73,10 @@ const state = {
   phys: null, // latest static analysis
   act: null, // latest muscle activation estimate (static optimisation)
   compare: null, // variant comparison table (html)
+  topicId: TOPICS[0].id,
+  topicPose: 'auto', // 0 = reference pose, 1 = condition pose, 'auto' = move between them
+  topicRef: new Map(), // muscle object -> length in the topic's reference pose
+  topicChange: [], // [{ id, change }] muscle length change reference → condition (both sides)
 };
 
 // ---------------------------------------------------------------- helpers
@@ -171,6 +176,7 @@ function setMode(mode) {
   $$('.mode-tab').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
   $$('.mode-section').forEach((s) => (s.hidden = s.dataset.for !== mode));
   $('#legend').hidden = mode !== 'asana';
+  $('#topic-legend').hidden = mode !== 'topic';
   $('#player').hidden = mode !== 'asana';
   $('#phys-hud').hidden = mode !== 'asana';
   overlay.setVisible(mode === 'asana');
@@ -184,6 +190,11 @@ function setMode(mode) {
     viewer.flyTo([0, 0.95, 0], [0.45, 0.2, 1], 3.6);
     renderAnatomyList();
     renderWelcome();
+  } else if (mode === 'topic') {
+    body.setLayer('muscles', true);
+    body.setLayer('bones', true);
+    body.setLayer('joints', true);
+    loadTopic(state.topicId);
   } else {
     body.setLayer('muscles', true);
     body.setLayer('bones', state.showBonesAsana);
@@ -282,6 +293,8 @@ function select(sel, { fly = false } = {}) {
     renderAnatomyList();
     const active = $('#anat-list .list-item.active');
     active?.scrollIntoView({ block: 'nearest' });
+  } else if (state.mode === 'topic') {
+    renderTopicInfo();
   } else {
     renderAsanaInfo();
   }
@@ -361,7 +374,7 @@ viewer.onPick = (obj, stack, e) => {
   if (state.mode === 'anatomy') obj = pickLayer(stack, e);
   const { kind, id, side } = obj.userData;
   const s = sideKey(side);
-  if (state.mode === 'asana' && kind !== 'muscle') return;
+  if (state.mode !== 'anatomy' && kind !== 'muscle') return;
   select({ kind, id, side: s });
   // the tooltip names what the click selected (a deeper layer after a repeated click)
   viewer.onHover?.(obj, e);
@@ -381,6 +394,7 @@ viewer.onHover = (obj, e) => {
   const s = sideKey(side);
   let extra = s ? ` <small>(${SIDE_LABEL[s]})</small>` : '';
   if (state.mode === 'asana' && kind === 'muscle') extra += ` <small>· độ dài ${fmtPct(lengthPct(id, s))}</small>`;
+  if (state.mode === 'topic' && kind === 'muscle') extra += ` <small>· ${fmtPct(topicLengthPct(id, s))} so với ${esc(TOPIC_BY_ID[state.topicId].compare[0].label.toLowerCase())}</small>`;
   tooltip.innerHTML = `${esc(info.name)}${extra}`;
   const rect = $('.stage').getBoundingClientRect();
   tooltip.style.left = `${e.clientX - rect.left}px`;
@@ -403,6 +417,7 @@ function renderWelcome() {
         <li><span class="k">⇣</span><span>Cơ sâu bị che? <b>Nhấp lại đúng điểm đó</b> để chọn lớp nằm bên dưới (vd. cơ trên gai dưới cơ thang).</span></li>
         <li><span class="k">✦</span><span>Mỗi mục có phần <b>Ứng dụng trong yoga</b> gợi ý cách hướng dẫn học viên.</span></li>
         <li><span class="k">▶</span><span>Chuyển sang tab <b>Asana 3D</b> để xem tư thế chuyển động và các cơ được tác động.</span></li>
+        <li><span class="k">◧</span><span>Tab <b>Chủ đề</b> dành cho workshop: so sánh một tư thế lệch (vd. đổ chậu trước) với tư thế trung tính, xem cơ nào ngắn lại, cơ nào dài ra.</span></li>
       </ul>
     </div>`;
   }
@@ -998,6 +1013,182 @@ function updateLiveNumbers(force = false) {
   $$('.steps-list li').forEach((li) => li.classList.toggle('current', parseInt(li.dataset.step, 10) === cur));
 }
 
+// ---------------------------------------------------------------- workshop topics
+function renderTopicList() {
+  $('#topic-list').innerHTML = TOPICS.map(
+    (t) => `<button class="asana-card topic-card${t.id === state.topicId ? ' active' : ''}" data-topic="${t.id}">
+      <span><div class="ac-title">${esc(t.title)}</div><div class="ac-sub">${esc(t.area)}</div></span>
+    </button>`,
+  ).join('');
+}
+$('#topic-list').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-topic]');
+  if (!b) return;
+  loadTopic(b.dataset.topic);
+  closeDrawers();
+});
+
+/** Muscle lengths in a pose (balanced and grounded like the animator plays it). */
+function muscleLengthsIn(pose) {
+  body.rig.applyQuats(anim.quatsFor(pose));
+  body.rig.ground();
+  body.update();
+  return new Map(body.muscleSystem.muscles.map((m) => [m, m.length]));
+}
+
+function loadTopic(id) {
+  const t = TOPIC_BY_ID[id];
+  if (!t) return;
+  state.topicId = id;
+  state.selection = null;
+  const [ref, cond] = t.compare;
+  state.topicRef = muscleLengthsIn(ref.pose);
+  const condLen = muscleLengthsIn(cond.pose);
+  const byId = new Map();
+  for (const m of body.muscleSystem.muscles) {
+    if (!byId.has(m.id)) byId.set(m.id, []);
+    byId.get(m.id).push(condLen.get(m) / state.topicRef.get(m) - 1);
+  }
+  state.topicChange = [...byId].map(([mid, list]) => ({ id: mid, change: list.reduce((a, b) => a + b, 0) / list.length }));
+  anim.setSequence(
+    [
+      { pose: ref.pose, hold: 2 },
+      { pose: cond.pose, hold: 2, move: 2, anchor: ['ankle_L', 'ankle_R'] },
+    ],
+    { loop: 'pingpong' },
+  );
+  frameTopic(t);
+  setTopicPose(state.topicPose);
+  renderTopicList();
+  updateHash();
+}
+
+function frameTopic(t) {
+  const pelvis = body.rig.pelvis.getWorldPosition(new THREE.Vector3());
+  viewer.mat.position.set(pelvis.x, -0.002, pelvis.z);
+  viewer.mat.rotation.y = 0;
+  viewer.flyTo([pelvis.x, pelvis.y + 0.02, pelvis.z], t.view || VIEW_DIRS.left, 2.2, 0.9);
+}
+
+/** 0 = reference pose, 1 = condition pose, 'auto' = move between the two */
+function setTopicPose(p) {
+  state.topicPose = p;
+  if (p === 'auto') anim.playing = true;
+  else {
+    anim.seekStep(p);
+    anim.playing = false;
+  }
+  renderTopicInfo();
+  applyVisuals();
+}
+
+function topicLengthPct(id, side) {
+  const list = body.muscleSystem.muscles.filter((m) => m.id === id && (!side || m.side === side));
+  if (!list.length) return 0;
+  return (list.reduce((a, m) => a + m.length / state.topicRef.get(m), 0) / list.length - 1) * 100;
+}
+
+const TOPIC_MIN_CHANGE = 0.01; // muscles that change less than 1 % are left out of the lists
+function renderTopicInfo() {
+  const t = TOPIC_BY_ID[state.topicId];
+  const [ref, cond] = t.compare;
+  const sel = state.selection;
+  const chips = [
+    [0, ref.label],
+    [1, cond.label],
+    ['auto', '⇄ Chuyển qua lại'],
+  ]
+    .map(([v, l]) => `<button class="chip${state.topicPose === v ? ' active' : ''}" data-topic-pose="${v}">${esc(l)}</button>`)
+    .join('');
+  $('#topic-legend-chips').innerHTML = chips;
+  const tags = (list, cls) =>
+    list
+      .map((c) => {
+        const active = sel && sel.id === c.id;
+        return `<button class="tag ${cls}${active ? ' active' : ''}" data-muscle="${c.id}">${esc(MUSCLES[c.id]?.name || c.id)}<span class="len" data-topic-len="${c.id}"></span></button>`;
+      })
+      .join('') || '<span class="empty-note">—</span>';
+  const shorter = state.topicChange.filter((c) => c.change <= -TOPIC_MIN_CHANGE).sort((a, b) => a.change - b.change);
+  const longer = state.topicChange.filter((c) => c.change >= TOPIC_MIN_CHANGE).sort((a, b) => b.change - a.change);
+
+  let selected = '';
+  if (sel && sel.kind === 'muscle' && MUSCLES[sel.id]) {
+    const m = MUSCLES[sel.id];
+    selected = `<div class="selected-card"><button class="sc-close" aria-label="Đóng">✕</button>
+      <div class="sc-title">${esc(m.name)}${sel.side ? ` <small class="pill side">${SIDE_LABEL[sel.side]}</small>` : ''}</div>
+      <div class="info-latin">${esc(m.latin)}</div>
+      <div class="hint">Độ dài so với ${esc(ref.label.toLowerCase())}: <b id="topic-sel-len">—</b></div>
+      <p style="font-size:13.5px;line-height:1.5;margin:8px 0 0"><b>Chức năng:</b> ${esc(m.action)}</p>
+      <p style="font-size:13.5px;line-height:1.5;margin:6px 0 0;color:var(--muted)">${esc(m.yoga)}</p></div>`;
+  }
+  const list = (title, arr, cls = '') =>
+    arr && arr.length ? `<div class="info-section ${cls}"><h4>${title}</h4><ul>${arr.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '';
+  const asanas = (t.asanas || [])
+    .map(([id, note]) => {
+      const a = ASANA_BY_ID[id];
+      return `<button class="topic-asana" data-goto-asana="${id}"><b>${esc(a.sanskrit)}</b> <span>${esc(a.vi)}</span><small>${esc(note)}</small></button>`;
+    })
+    .join('');
+
+  $('#info').innerHTML = `<div class="info-kicker">Chủ đề workshop · ${esc(t.area)}</div>
+    <div class="info-title">${esc(t.title)}</div>
+    <div class="info-latin">${esc(t.en)}</div>
+    <div class="chips topic-pose-chips">${chips}</div>
+    ${selected}
+    <div class="info-section"><p>${esc(t.intro)}</p></div>
+    <div class="info-section"><h4>Độ dài cơ: ${esc(cond.label.toLowerCase())} so với ${esc(ref.label.toLowerCase())}</h4>
+      <div class="role-block"><div class="role-head"><i class="sw len-short"></i>Ngắn lại</div><div class="role-tags">${tags(shorter, 'shorter')}</div></div>
+      <div class="role-block"><div class="role-head"><i class="sw len-long"></i>Dài ra</div><div class="role-tags">${tags(longer, 'longer')}</div></div>
+      <p class="hint" style="margin-top:8px">Tính trực tiếp từ đường đi của cơ trên mô hình 3D (số % cập nhật theo tư thế đang hiển thị). Độ dài không nói lên cơ yếu hay căng cứng.</p></div>
+    ${t.sections.map((sec) => list(esc(sec.title), sec.items)).join('')}
+    ${asanas ? `<div class="info-section"><h4>Asana liên quan</h4><div class="topic-asanas">${asanas}</div></div>` : ''}
+    ${list('Lưu ý & khi nào cần giới thiệu đi khám', t.cautions, 'caution')}
+    ${list('Giới hạn của mô hình', t.limits)}`;
+  updateTopicNumbers(true);
+}
+
+for (const el of [$('#info'), $('#topic-legend')]) {
+  el.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-topic-pose]');
+    if (!b) return;
+    const v = b.dataset.topicPose;
+    setTopicPose(v === 'auto' ? 'auto' : parseInt(v, 10));
+  });
+}
+
+let lastTopicUpdate = 0;
+function updateTopicNumbers(force = false) {
+  const now = performance.now();
+  if (!force && now - lastTopicUpdate < 150) return;
+  lastTopicUpdate = now;
+  for (const el of $$('[data-topic-len]')) el.textContent = fmtPct(topicLengthPct(el.dataset.topicLen));
+  const sel = state.selection;
+  const selLen = $('#topic-sel-len');
+  if (sel && selLen) selLen.textContent = fmtPct(topicLengthPct(sel.id, sel.side));
+  const { index, alpha } = anim.locate(anim.time);
+  const moving = index > 0 && alpha < 1;
+  const t = TOPIC_BY_ID[state.topicId];
+  $('#topic-state').textContent = moving ? 'Đang chuyển…' : t.compare[anim.currentStep % 2].label;
+}
+
+const TOPIC_LEN_SCALE = 0.06; // a 6 % length change gives the full colour
+function animateTopicVisuals(time) {
+  const pulse = 0.5 + 0.5 * Math.sin(time * 4.2);
+  const sel = state.selection;
+  for (const ms of body.muscleSystem.muscles) {
+    const mat = ms.mesh.material;
+    const isSel = sel && ms.id === sel.id && (!sel.side || ms.side === sel.side);
+    const ref = state.topicRef.get(ms);
+    const d = ref ? THREE.MathUtils.clamp((ms.length / ref - 1) / TOPIC_LEN_SCALE, -1, 1) : 0;
+    tmpColor.copy(LEN_MID).lerp(d > 0 ? LEN_LONG : LEN_SHORT, Math.abs(d));
+    mat.color.copy(tmpColor);
+    mat.opacity = isSel || Math.abs(d) >= 0.15 ? 1 : 0.22;
+    mat.depthWrite = mat.opacity > 0.95;
+    mat.emissive.copy(tmpColor).multiplyScalar(0.2 * Math.abs(d));
+    if (isSel) mat.emissive.lerp(SELECT_EMISSIVE, 0.25 + 0.2 * pulse);
+  }
+}
+
 // ---------------------------------------------------------------- visuals
 function applyVisuals() {
   body.resetColors({ muscleOpacity: state.mode === 'anatomy' ? state.muscleOpacity : 1 });
@@ -1031,6 +1222,28 @@ function applyVisuals() {
         m.material.depthWrite = false;
       }
     }
+    return;
+  }
+
+  if (state.mode === 'topic') {
+    const t = TOPIC_BY_ID[state.topicId];
+    const focus = new Set(t.joints || []);
+    for (const j of body.jointMarkers) {
+      const on = focus.has(j.userData.id);
+      j.visible = on;
+      if (on) {
+        j.material.color.set('#7ff5e4');
+        j.material.emissive.set('#39c6b5').multiplyScalar(0.6);
+        j.scale.setScalar(1.25);
+      }
+    }
+    const bones = new Set(t.bones || []);
+    for (const b of body.bones) {
+      if (!bones.has(b.userData.id)) continue;
+      b.material.color.set('#ffd98a');
+      b.material.emissive.set('#b8860b').multiplyScalar(0.25);
+    }
+    animateVisuals(0);
     return;
   }
 
@@ -1097,6 +1310,10 @@ const LEN_SHORT = new THREE.Color('#ff3b2f');
 const LEN_LONG = new THREE.Color('#2f8fff');
 const LEN_MID = new THREE.Color('#7d6f6c');
 function animateVisuals(time) {
+  if (state.mode === 'topic') {
+    animateTopicVisuals(time);
+    return;
+  }
   if (state.mode !== 'asana') return;
   const pulse = 0.5 + 0.5 * Math.sin(time * 4.2);
   const sel = state.selection;
@@ -1227,6 +1444,7 @@ $('.view-buttons').addEventListener('click', (e) => {
   const v = b.dataset.view;
   if (v === 'reset') {
     if (state.mode === 'asana') frameAsana(ASANA_BY_ID[state.asanaId]);
+    else if (state.mode === 'topic') frameTopic(TOPIC_BY_ID[state.topicId]);
     else viewer.flyTo([0, 0.95, 0], [0.45, 0.2, 1], 3.6);
     return;
   }
@@ -1265,6 +1483,11 @@ window.addEventListener('keydown', (e) => {
     anim.seekStep((cur + (e.key === 'ArrowRight' ? 1 : n - 1)) % n);
     anim.playing = false;
     syncPlayButton();
+  } else if (e.key === ' ' && state.mode === 'topic') {
+    e.preventDefault();
+    setTopicPose(state.topicPose === 'auto' ? anim.currentStep % 2 : 'auto');
+  } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && state.mode === 'topic') {
+    setTopicPose(state.topicPose === 1 ? 0 : 1);
   } else if (e.key === 'p' || e.key === 'P') {
     togglePresent();
   } else if (e.key === 'Escape') {
@@ -1276,6 +1499,7 @@ window.addEventListener('keydown', (e) => {
 function updateHash() {
   let h = '';
   if (state.mode === 'asana') h = `#asana/${state.asanaId}`;
+  else if (state.mode === 'topic') h = `#topic/${state.topicId}`;
   else if (state.selection) h = `#${state.selection.kind}/${state.selection.id}`;
   if (location.hash !== h) history.replaceState(null, '', h || location.pathname + location.search);
 }
@@ -1286,6 +1510,11 @@ function readHash() {
     setMode('asana');
     return;
   }
+  if (kind === 'topic' && TOPIC_BY_ID[id]) {
+    state.topicId = id;
+    setMode('topic');
+    return;
+  }
   setMode('anatomy');
   if ((kind === 'muscle' || kind === 'bone' || kind === 'joint') && infoFor(kind, id)) select({ kind, id, side: null }, { fly: true });
 }
@@ -1294,6 +1523,12 @@ function readHash() {
 let clockTime = 0;
 viewer.onTick = (dt) => {
   clockTime += dt;
+  if (state.mode === 'topic') {
+    anim.tick(dt);
+    animateVisuals(clockTime);
+    updateTopicNumbers();
+    return;
+  }
   if (state.mode !== 'asana') return;
   anim.tick(dt);
   const step = anim.currentStep;
@@ -1319,6 +1554,7 @@ viewer.onTick = (dt) => {
 // ---------------------------------------------------------------- boot
 renderCategoryChips();
 renderAsanaList();
+renderTopicList();
 readHash();
 window.addEventListener('hashchange', readHash);
 

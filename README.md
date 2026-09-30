@@ -24,6 +24,17 @@ chuyển động với các cơ được tác động được tô sáng theo th
 - Khớp chính của tư thế được làm nổi bật; cue hướng dẫn, lợi ích, lưu ý & chống chỉ định.
 - Trình phát: phát/dừng, tua, tốc độ, "Giữ tư thế"; chế độ **Trình chiếu** để chiếu cho lớp.
 
+### Chủ đề workshop
+- Tab **Chủ đề**: mỗi chủ đề so sánh một tư thế lệch với tư thế trung tính trên mô hình 3D, để giáo viên
+  giảng giải phẫu của một vấn đề cơ thể trong workshop / khoá học. Chủ đề đầu tiên: **Đổ chậu trước**.
+- Chọn "trung tính", "tư thế lệch" hoặc "chuyển qua lại" (phím ← → / Space); cơ được tô màu theo độ dài
+  so với tư thế trung tính (đỏ = ngắn lại, xanh = dài ra), xương liên quan được tô vàng.
+- Danh sách cơ ngắn lại / dài ra được tính trực tiếp từ mô hình; `npm run check` kiểm tra các cơ mà
+  nội dung chủ đề ghi là ngắn lại / dài ra thật sự thay đổi như vậy (≥ 1,5 %).
+- Nội dung: giải thích, "cần hiểu đúng", quan sát trên lớp, hướng tiếp cận yoga cân bằng – phục hồi,
+  asana liên quan (nhấp để mở), lưu ý & khi nào cần giới thiệu đi khám, giới hạn của mô hình.
+- Đường link chia sẻ: `#topic/anterior_pelvic_tilt`.
+
 ### Cơ sinh học (tải trọng tĩnh)
 Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh trực tiếp trên mô hình:
 - **Trọng tâm & chân đế**: trọng tâm cơ thể (chấm tím, dây dọi xuống sàn) và đa giác chân đế;
@@ -146,6 +157,7 @@ src/
   data/muscle-strength.js   Sức tối đa từng bó cơ (PCSA, có nguồn)
   data/poses.js             Góc khớp của từng tư thế
   data/asanas.js            Asana: chuỗi chuyển động, vai trò cơ, cue, lưu ý
+  data/topics.js            Chủ đề workshop: cặp tư thế so sánh, cơ ngắn lại / dài ra, nội dung giảng dạy
   data/{bones,muscles,joints}.js  Nội dung giải phẫu tiếng Việt
 tools/                      bp3d-build, fit-poses, check-*, shot (chụp màn hình)
 ```

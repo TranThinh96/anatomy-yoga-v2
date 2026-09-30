@@ -12,7 +12,8 @@ npm run dev                         # http://localhost:5173
 npm run check                       # data + physics + muscle model + picking checks – must pass before a commit
 npm run build                       # production build into dist/ (not committed)
 npm run fit-poses -- [--dry] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
-node tools/shot.mjs asana/<id> out.png [--hold] [--cm act] [--view left]   # screenshot, fails on page errors
+node tools/shot.mjs asana/<id> out.png [--hold] [--cm act] [--view left] [--click <selector>]   # screenshot, fails on page errors
+node tools/shot.mjs topic/<id> out.png --click '[data-topic-pose="1"]'     # a topic's condition pose
 node tools/review-poses.mjs <dir> [asana…] [--views front,left,top]        # every pose framed on the body, UI hidden
 npm run build-model -- <BodyParts3D_data>   # regenerate the body model (rarely; needs the BodyParts3D download)
 ```
@@ -29,7 +30,7 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses, anchors (feet/hands stay put), balances each pose once (cached)
-main.js          all UI (two modes: anatomy / asana), colour modes, physics card, URL hash routing
+main.js          all UI (three modes: anatomy / asana / topic), colour modes, physics card, URL hash routing
 data/            content + parameters (see below); body-model.gen.js is GENERATED
 tools/           build-model, fit-poses, check-* (run by npm run check), shot.mjs
 ```
@@ -37,6 +38,9 @@ tools/           build-model, fit-poses, check-* (run by npm run check), shot.mj
 Data files:
 - `poses.js` – `POSES` (joint angles in degrees) and `POSE_FIT` (floor contacts + fitter goals).
 - `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants.
+- `topics.js` – workshop topics (e.g. anterior pelvic tilt): a reference and a condition pose compared on
+  the model, muscles coloured by length relative to the reference; `shorter` / `longer` muscles are
+  verified by `npm run check`. Condition poses live in the "Postural deviations" section of `poses.js`.
 - `muscles.js`, `bones.js`, `joints.js` – Vietnamese anatomy text, keyed by id.
 - `muscle-strength.js` – max isometric force per fibre bundle, with literature sources.
 - `anthropometry.js` – segment masses / COM (de Leva 1996).
@@ -97,6 +101,11 @@ Data files:
 Poses are used to teach anatomy in workshops (balanced / restorative yoga): each must read like the
 textbook form from the front and the side (see the checklist in the add-asana skill). `npm run check`
 also fails when an asana lists a muscle under `stretch` that does not lengthen in its pose.
+
+Topic text is teaching content about body conditions: keep claims qualitative unless a source is cited,
+say what yoga cannot do, include when to refer to a doctor, and state the model's limits. Topics are chosen
+for what the 3D model can explain (posture, muscle length, joint load); conditions the model cannot show
+(endocrine, organs) are out of scope until the model has the anatomy.
 
 ## Recurring tasks
 

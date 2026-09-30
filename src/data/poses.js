@@ -283,6 +283,11 @@ export const POSES = {
     neck: { flex: 6 },
   },
 
+  // ---------------- Postural deviations (topics, see topics.js) ----------------
+  // Illustrative 10° of extra anterior pelvic tilt: the pelvis tips forward, the hips flex by the
+  // same amount so the thighs stay vertical, the lumbar spine extends so the trunk stays upright.
+  anterior_pelvic_tilt: { ...ARMS_DOWN, root: { pitch: 10 }, hip: { flex: 10 }, lumbar: { flex: -10 } },
+
   // ---------------- Variants (for load comparison) ----------------
   phalakasana_knees: {
     root: { pitch: 51 },
