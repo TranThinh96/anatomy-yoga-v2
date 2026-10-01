@@ -14,6 +14,17 @@ export const POSES = {
     shoulder: { flex: -12, abd: 10 },
     wrist: { ext: 80 },
   },
+  // Dandasana with the hands just lifted off the floor (elbows soft, palms still facing down):
+  // the step before leaning back into Navasana. Going there directly, the wrist straightening from
+  // 80° drives the fingers into the floor and props the body up off the sit bones.
+  dandasana_hands_up: {
+    hip: { flex: 90 },
+    ankle: { dorsi: 1 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -30, abd: 10 },
+    elbow: { flex: 75 },
+    wrist: { ext: 90 },
+  },
   supine: {
     root: { pitch: -90 },
     shoulder: { abd: 18 },
@@ -180,7 +191,7 @@ export const POSES = {
     ankle: { dorsi: 42 },
     lumbar: { flex: -4 },
     thorax: { flex: -4 },
-    shoulder: { flex: 177, rot: 20 },
+    shoulder: { flex: 177, rot: 20, abd: -6 },
     wrist: { ext: 42, pron: 180 },
     neck: { flex: 5 },
     scapula: { elev: 6 },
@@ -194,12 +205,12 @@ export const POSES = {
     neck: { flex: -12 },
   },
   chaturanga: {
-    root: { pitch: 83 },
+    root: { pitch: 81 },
     hip: { flex: 0 },
-    ankle: { dorsi: 5 },
-    shoulder: { flex: -2 },
-    elbow: { flex: 90 },
-    wrist: { ext: 92, pron: 180 },
+    ankle: { dorsi: 24 },
+    shoulder: { flex: -8 },
+    elbow: { flex: 80 },
+    wrist: { ext: 86, pron: 180 },
     neck: { flex: -10 },
   },
   urdhva_mukha_svanasana: {
@@ -209,7 +220,7 @@ export const POSES = {
     lumbar: { flex: -18 },
     thorax: { flex: -12 },
     neck: { flex: -10 },
-    shoulder: { flex: 23 },
+    shoulder: { flex: 23, abd: 4 },
     wrist: { ext: 85, pron: 180 },
     scapula: { elev: -4 },
   },
@@ -315,7 +326,7 @@ export const POSES = {
     ankle: { dorsi: 35 },
     lumbar: { flex: -6 },
     thorax: { flex: -6 },
-    shoulder: { flex: 179, rot: 20 },
+    shoulder: { flex: 180, rot: 20, abd: -7 },
     wrist: { ext: 42, pron: 180 },
     neck: { flex: 5 },
     scapula: { elev: 6 },
@@ -450,13 +461,30 @@ export const POSE_FIT = {
     above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R'], ['hip_L', 'knee_L'], ['hip_R', 'knee_R']], // hands under shoulders, knees under hips
     params: ['root.pitch&hip.flex&shoulder.flex', 'shoulder.flex', 'hip.flex', 'wrist.ext'],
   },
-  adho_mukha_svanasana: { support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], params: ['shoulder.flex', 'hip.flex'] },
+  adho_mukha_svanasana: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    rel: [['wrist_R', 'wrist_L', [0.329, 0]]], // hands shoulder-width apart, as in tabletop / plank
+    params: ['shoulder.flex', 'hip.flex', 'shoulder.abd'],
+  },
   phalakasana: { support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], params: ['root.pitch&shoulder.flex'] },
   phalakasana_knees: { support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'], params: ['root.pitch&shoulder.flex', 'root.pitch'] },
-  chaturanga: { support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], params: ['root.pitch&shoulder.flex'] },
+  chaturanga: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    above: [['elbow_L', 'wrist_L'], ['elbow_R', 'wrist_R']], // forearms vertical
+    dir: [['shoulder_L', [0, -1, 0], [0, 0, -1]], ['shoulder_R', [0, -1, 0], [0, 0, -1]]], // upper arms parallel to the floor
+    params: ['wrist.ext', 'ankle.dorsi'],
+  },
   chaturanga_knees: { support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'], params: ['root.pitch&shoulder.flex', 'root.pitch'] },
-  urdhva_mukha_svanasana: { support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], params: ['root.pitch&shoulder.flex', 'hip.flex'] },
-  adho_mukha_svanasana_bent: { support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], params: ['shoulder.flex', 'hip.flex'] },
+  urdhva_mukha_svanasana: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    rel: [['wrist_R', 'wrist_L', [0.329, 0]]], // hands shoulder-width apart, as in tabletop / plank
+    params: ['root.pitch&shoulder.flex', 'hip.flex', 'shoulder.abd'],
+  },
+  adho_mukha_svanasana_bent: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    rel: [['wrist_R', 'wrist_L', [0.329, 0]]], // hands shoulder-width apart, as in tabletop / plank
+    params: ['shoulder.flex', 'hip.flex', 'shoulder.abd'],
+  },
   balasana: {
     support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R', 'head', 'wrist_L', 'wrist_R'],
     // sit bones resting on the heels (a rest pose), forehead and forearms down

@@ -409,7 +409,7 @@ export const ASANAS = [
     category: 'Chống tay',
     level: 'Trung bình',
     variants: [{ label: 'Hạ gối', pose: 'chaturanga_knees' }],
-    steps: [{ pose: 'phalakasana' }, { pose: 'chaturanga', anchor: FEET, move: 2 }],
+    steps: [{ pose: 'phalakasana' }, { pose: 'chaturanga', anchor: HANDS, move: 2 }],
     loop: 'pingpong',
     roles: {
       contract: ['triceps_brachii', 'pectoralis_major', 'deltoid', 'serratus_anterior', 'rectus_abdominis', 'external_oblique', ...QUADS],
@@ -626,7 +626,7 @@ export const ASANAS = [
     category: 'Ngồi & nằm',
     level: 'Trung bình',
     variants: [{ label: 'Gập gối (Ardha)', pose: 'navasana_bent' }],
-    steps: [{ pose: 'dandasana' }, { pose: 'navasana', anchor: HIPS, move: 2.2, hold: 2 }],
+    steps: [{ pose: 'dandasana' }, { pose: 'dandasana_hands_up', anchor: HIPS, move: 0.8, hold: 0.2 }, { pose: 'navasana', anchor: HIPS, move: 1.8, hold: 2 }],
     loop: 'pingpong',
     roles: {
       contract: ['iliopsoas', 'rectus_femoris', 'rectus_abdominis', 'external_oblique', 'vastus_lateralis', 'vastus_medialis', 'erector_spinae', 'deltoid'],
@@ -673,7 +673,7 @@ export const ASANAS = [
       { pose: 'ardha_uttanasana', anchor: FEET, move: 1.2, hold: 0.5, label: 'Hít vào – Ardha Uttanasana', roles: 'ardha_uttanasana' },
       { pose: 'uttanasana', anchor: FEET, move: 1.0, hold: 0.2, label: 'Thở ra – đặt tay xuống sàn', roles: 'uttanasana' },
       { pose: 'phalakasana', anchor: HANDS, move: 1.4, hold: 0.5, label: 'Bước/nhảy về – Phalakasana', roles: 'phalakasana' },
-      { pose: 'chaturanga', anchor: FEET, move: 1.4, hold: 0.5, label: 'Thở ra – Chaturanga', roles: 'chaturanga' },
+      { pose: 'chaturanga', anchor: HANDS, move: 1.4, hold: 0.5, label: 'Thở ra – Chaturanga', roles: 'chaturanga' },
       { pose: 'urdhva_mukha_svanasana', anchor: HANDS, move: 1.5, hold: 0.7, label: 'Hít vào – Chó ngửa mặt', roles: 'urdhva_mukha_svanasana' },
       { pose: 'adho_mukha_svanasana', anchor: HANDS, move: 1.8, hold: 2.0, label: 'Thở ra – Chó úp mặt (5 hơi thở)', roles: 'adho_mukha_svanasana' },
       { pose: 'uttanasana', anchor: HANDS, move: 1.8, hold: 0.4, label: 'Bước/nhảy lên – Uttanasana', roles: 'uttanasana' },
