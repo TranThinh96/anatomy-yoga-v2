@@ -40,10 +40,20 @@ function solve3(A, b) {
 
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
+/** Cubic Hermite basis at t ∈ [0, 1]: weights of p0, m0, p1, m1. */
+const hermite = (t) => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return [2 * t3 - 3 * t2 + 1, t3 - 2 * t2 + t, -2 * t3 + 3 * t2, t3 - t2];
+};
+
 /**
- * Plays a sequence of poses. Each step: { pose, move (s), hold (s), anchor: [segments] }.
+ * Plays a sequence of poses. Each step: { pose, move (s), hold (s), anchor: [segments], via }.
  * The anchor (e.g. the feet) stays fixed on the floor during the move into that step,
  * which is what makes a transition read like a real movement.
+ * A `via` step is a pose the body passes through without stopping (e.g. lifting the knee on
+ * the way into Tree): the moves into it and out of it form one eased curve, a Hermite spline
+ * through the poses, instead of two moves that each slow to a halt.
  */
 export class Animator {
   constructor(rig, onFrame, { prepare = null } = {}) {
@@ -61,6 +71,7 @@ export class Animator {
   setSequence(steps, { loop = 'cycle' } = {}) {
     this.loop = loop;
     this.steps = steps.map((s) => ({ move: 1.6, hold: 1.5, anchor: null, ...s, quats: this.quatsFor(s.pose) }));
+    for (const s of this.steps) if (s.via) s.hold = 0;
     if (loop === 'pingpong' && this.steps.length > 1) {
       const back = this.steps
         .slice(0, -1)
@@ -77,9 +88,59 @@ export class Animator {
       s.end = t;
     });
     this.duration = t;
+    this._computeChains();
     this._computeOffsets();
     this.time = 0;
     this.render();
+  }
+
+  /** Groups each run of moves joined by `via` steps into one chain with a shared easing. */
+  _computeChains() {
+    const steps = this.steps;
+    for (const s of steps) s.chain = null;
+    for (let i = 1; i < steps.length; i++) {
+      if (!steps[i].via || steps[i - 1].via) continue;
+      let j = i;
+      while (j + 1 < steps.length && steps[j].via && steps[j + 1].moveDur > 0) j++;
+      if (j === i) continue;
+      const members = steps.slice(i, j + 1);
+      const keys = [steps[i - 1], ...members];
+      const dur = members.reduce((a, m) => a + m.moveDur, 0);
+      // key parameters along the chain: cumulative share of its duration
+      const u = [0];
+      for (const m of members) u.push(u[u.length - 1] + m.moveDur / dur);
+      u[u.length - 1] = 1;
+      const chain = { start: steps[i].start, dur, keys, u };
+      for (const m of members) m.chain = chain;
+    }
+  }
+
+  /** Joint rotations along a chain at parameter u (C1 Hermite spline through the key poses, per quaternion component). */
+  _chainQuats(chain, n, local) {
+    const { keys, u } = chain;
+    const quats = {};
+    const at = (key, name) => key.quats[name] || new THREE.Quaternion();
+    const h = hermite(local);
+    const du = u[n + 1] - u[n];
+    for (const name in this.rig.joints) {
+      // sign-align the key quaternions so the spline takes the short way round
+      const q = keys.map((k) => at(k, name).clone());
+      for (let i = 1; i < q.length; i++) if (q[i].dot(q[i - 1]) < 0) q[i].set(-q[i].x, -q[i].y, -q[i].z, -q[i].w);
+      const v = (i) => [q[i].x, q[i].y, q[i].z, q[i].w];
+      // tangent at key i (d quat / d u): one-sided at the ends, central inside
+      const tangent = (i) => {
+        const a = Math.max(i - 1, 0);
+        const b = Math.min(i + 1, q.length - 1);
+        return v(b).map((x, c) => (x - v(a)[c]) / (u[b] - u[a]));
+      };
+      const p0 = v(n);
+      const p1 = v(n + 1);
+      const m0 = tangent(n);
+      const m1 = tangent(n + 1);
+      const r = p0.map((x, c) => h[0] * x + h[1] * du * m0[c] + h[2] * p1[c] + h[3] * du * m1[c]);
+      quats[name] = new THREE.Quaternion(...r).normalize();
+    }
+    return quats;
   }
 
   quatsFor(pose) {
@@ -303,6 +364,15 @@ export class Animator {
     const { index, alpha } = this.locate(t);
     const s = this.steps[index];
     const prev = this.steps[Math.max(index - 1, 0)];
+    if (s.chain) {
+      // the eased chain parameter, not the clock, decides which move of the chain is playing
+      const { chain } = s;
+      const w = ease(THREE.MathUtils.clamp((t - chain.start) / chain.dur, 0, 1));
+      let n = 0;
+      while (n < chain.keys.length - 2 && w > chain.u[n + 1]) n++;
+      const local = THREE.MathUtils.clamp((w - chain.u[n]) / (chain.u[n + 1] - chain.u[n]), 0, 1);
+      return { quats: this._chainQuats(chain, n, local), s: chain.keys[n + 1], prev: chain.keys[n], k: local };
+    }
     const k = ease(alpha);
     const quats = {};
     const q = new THREE.Quaternion();

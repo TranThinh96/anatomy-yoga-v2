@@ -125,6 +125,10 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   Tadasana) – `npm run check` fails otherwise. Typical traps: calves are not stretched in a fold
   with vertical shins or in Dandasana with neutral ankles; the back hip is *adducted* in Trikonasana
   (its adductors shorten); Cobra / Up Dog stretch the abdominals more than the pectorals.
+- A transition that looks wrong when interpolated in one go (a foot dipping into the floor before
+  it lifts, a limb passing through the body) gets an intermediate pose marked `via: true`, e.g.
+  Tree: `{ pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, via: true }`. The body
+  passes through it without stopping (one eased spline); without `via` it halts there.
 - Flows (sequences): `flow: true`, `loop: 'cycle'`, each step with a `label` and `roles: '<asana id>'`
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.

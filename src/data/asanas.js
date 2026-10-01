@@ -159,7 +159,7 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [
       { pose: 'tadasana' },
-      { pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, hold: 0.2 },
+      { pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, via: true },
       { pose: 'vrksasana', anchor: ['ankle_R'], move: 1.6 },
     ],
     loop: 'pingpong',
