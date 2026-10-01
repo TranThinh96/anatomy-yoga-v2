@@ -24,6 +24,12 @@ const TOLERANCE = 0.005;
 // Largest tilt (rad) per iteration: the least-squares step is linearised.
 const MAX_STEP = 0.05;
 
+// Anchored pairs whose distance apart is held during a move: [end segment, limb root].
+const LIMB_PAIRS = [
+  ['wrist', 'shoulder'],
+  ['ankle', 'hip'],
+];
+
 /** Solves the 3×3 system A·x = b (Cramer's rule). */
 function solve3(A, b) {
   const det = (m) =>
@@ -114,6 +120,7 @@ export class Animator {
       }
       s.offset = off;
       s.keep = s.anchor ? this._floorTargets(prev, s) : null;
+      s.width = s.anchor ? this._anchorWidth(prev, s) : null;
     }
     // Centre the whole sequence around the origin (use the most "important" step).
     const key = this.steps[Math.min(1, this.steps.length - 1)];
@@ -129,6 +136,56 @@ export class Animator {
       if (!(c.seg in h) || y < h[c.seg]) h[c.seg] = y;
     }
     return h;
+  }
+
+  /**
+   * Both hands (or both feet) as the anchor: their distance apart in both poses. Interpolating
+   * the shoulder angles swings the arms through an arc (Upward → Downward Dog spreads the hands
+   * from 33 to 54 cm and back), so _keepWidth holds the distance during the move.
+   */
+  _anchorWidth(prev, s) {
+    const pair = LIMB_PAIRS.find(([end]) => s.anchor.includes(`${end}_L`) && s.anchor.includes(`${end}_R`));
+    if (!pair) return null;
+    const [end, root] = pair;
+    const width = (quats) => {
+      this.rig.applyQuats(quats);
+      return this._horizontal(`${end}_L`, `${end}_R`).length();
+    };
+    return { end, root, w0: width(prev.quats), w1: width(s.quats) };
+  }
+
+  /** Horizontal vector from joint b to joint a in the current rig state. */
+  _horizontal(a, b) {
+    const pa = this.rig.worldPoint(a, new THREE.Vector3(), new THREE.Vector3());
+    const pb = this.rig.worldPoint(b, new THREE.Vector3(), new THREE.Vector3());
+    return pa.sub(pb).setY(0);
+  }
+
+  /** Rotates the limb roots (shoulders / hips) in `quats` so the anchored pair keeps its interpolated width. */
+  _keepWidth(quats, { end, root, w0, w1 }, k) {
+    const want = w0 + (w1 - w0) * k;
+    const rig = this.rig;
+    const parentQ = new THREE.Quaternion();
+    const rot = new THREE.Quaternion();
+    for (let it = 0; it < 3; it++) {
+      rig.applyQuats(quats);
+      const lat = this._horizontal(`${end}_L`, `${end}_R`);
+      const err = want - lat.length();
+      if (Math.abs(err) < 5e-4) break;
+      lat.normalize();
+      for (const [side, sign] of [['_L', 1], ['_R', -1]]) {
+        // move this end by err/2 along the left-right line, by turning the limb about its root
+        const v = rig.worldPoint(`${end}${side}`, new THREE.Vector3(), new THREE.Vector3()).sub(rig.worldPoint(`${root}${side}`, new THREE.Vector3(), new THREE.Vector3()));
+        const d = lat.clone().multiplyScalar((sign * err) / 2);
+        const axis = v.clone().cross(d);
+        if (axis.lengthSq() < 1e-12) continue;
+        rot.setFromAxisAngle(axis.normalize(), d.length() / v.length());
+        // world-space rotation → local: parent⁻¹ · R · parent · q
+        rig.joints[`${root}${side}`].parent.getWorldQuaternion(parentQ);
+        const local = parentQ.clone().invert().multiply(rot).multiply(parentQ);
+        quats[`${root}${side}`] = local.multiply(quats[`${root}${side}`]);
+      }
+    }
   }
 
   /** Lowest contact point (y and world position) of each segment in the current rig state. */
@@ -262,6 +319,7 @@ export class Animator {
     const cx = this.center.x;
     const cz = this.center.z;
     if (s.anchor && s !== prev) {
+      if (s.width && k > 0 && k < 1) this._keepWidth(quats, s.width, k);
       // keep the anchor where it was at the start of the move
       this.rig.applyQuats(quats, { x: 0, z: 0 });
       this.rig.ground();
