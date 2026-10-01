@@ -67,6 +67,7 @@ const state = {
   roleFilter: { contract: true, stretch: true, stabilize: true },
   showBonesAsana: true,
   muscleOpacity: 1,
+  muscleStyle: 'real', // anatomy mode: 'real' BodyParts3D surfaces or 'tube' force paths
   layers: { bones: true, muscles: true, joints: true },
   lastStep: -1,
   variant: 0, // 0 = standard form, n = asana.variants[n - 1]
@@ -181,6 +182,9 @@ function setMode(mode) {
   $('#phys-hud').hidden = mode !== 'asana';
   overlay.setVisible(mode === 'asana');
   state.selection = null;
+  // the real muscle surfaces only follow the skeleton well in standing poses: anatomy mode only
+  body.setMuscleStyle(mode === 'anatomy' ? state.muscleStyle : 'tube');
+  viewer.pickables = body.pickables;
   if (mode === 'anatomy') {
     anim.setSequence([{ pose: 'tadasana', hold: 1 }], { loop: 'static' });
     anim.playing = false;
@@ -266,6 +270,17 @@ $$('.layer-toggles input').forEach((inp) =>
     applyVisuals();
   }),
 );
+$('#muscle-style').addEventListener('click', (e) => {
+  const b = e.target.closest('.seg');
+  if (!b) return;
+  state.muscleStyle = b.dataset.style;
+  $$('#muscle-style .seg').forEach((x) => x.classList.toggle('active', x === b));
+  body.setMuscleStyle(state.muscleStyle);
+  viewer.pickables = body.pickables;
+  lastClick = null;
+  applyVisuals();
+  if (state.selection) renderInfo(state.selection);
+});
 $('#muscle-opacity').addEventListener('input', (e) => {
   state.muscleOpacity = parseFloat(e.target.value);
   applyVisuals();
@@ -447,6 +462,7 @@ function renderInfo(sel) {
         <dt>Chức năng</dt><dd>${esc(d.action)}</dd>
       </dl></div>
       <div class="info-section yoga-note"><h4>Ứng dụng trong yoga</h4><p>${esc(d.yoga)}</p></div>
+      ${realMuscleHtml(sel)}
       ${mechanicsHtml(sel)}
       ${usedHtml(used)}`;
   } else {
@@ -486,6 +502,20 @@ function realBoneHtml(id) {
     <p style="font-size:13px;color:var(--muted)">Hình dạng từ BodyParts3D (dữ liệu chụp cơ thể người thật, cao ${m.statureM} m), © DBCLS, giấy phép CC BY-SA 2.1 JP.
     ${names.length > 1 ? `Gồm ${names.length} bộ phận.` : ''}</p>
     ${rows ? `<table class="rom-table">${rows}</table><p class="hint" style="margin-top:6px">Tâm khớp của khung xương được tính từ chính các bề mặt xương này.</p>` : ''}</div>`;
+}
+
+/** Where the muscle's 3D shape comes from and what the two drawing styles mean. */
+function realMuscleHtml(sel) {
+  const parts = [...new Set(body.realMuscles?.meshes.filter((m) => m.userData.id === sel.id).map((m) => m.userData.name) || [])];
+  if (!parts.length) return '';
+  const shown = body.muscleStyle === 'real';
+  return `<div class="info-section"><h4>Hình 3D</h4>
+    <p style="font-size:13px;color:var(--muted)">${
+      shown
+        ? `Bề mặt cơ thật từ BodyParts3D (cùng người mẫu với khung xương)${parts.length > 1 ? `, ghép từ ${parts.length} phần (đầu / bó cơ)` : ''}.`
+        : 'Đang vẽ dạng ống theo đường lực của cơ (đường dùng để tính độ dài, cánh tay đòn và lực).'
+    }
+    Ở tab Asana và Chủ đề cơ luôn được vẽ dạng ống: mesh cơ thật chưa biến dạng đúng khi khớp gập sâu.</p></div>`;
 }
 
 /** Moment arms in the anatomical position and strength of a muscle (anatomy mode). */
@@ -1562,6 +1592,8 @@ window.addEventListener('hashchange', readHash);
 
 // Skeleton (BodyParts3D), then the asana silhouettes for the list.
 function makeThumbnails() {
+  const style = body.muscleStyle;
+  body.setMuscleStyle('tube'); // thumbnails show asana poses: tubes, as in asana mode
   try {
     const thumbAnim = new Animator(body.rig, () => body.update(), { prepare: balance });
     const maker = new ThumbnailMaker(viewer, body, thumbAnim);
@@ -1570,24 +1602,26 @@ function makeThumbnails() {
   } catch (err) {
     console.warn('Thumbnail generation failed', err);
   }
+  body.setMuscleStyle(style);
   anim.render();
   renderAsanaList();
 }
 $('#loading').hidden = false;
-body
-  .loadBones(`${import.meta.env.BASE_URL}models/bp3d/skeleton.bin`)
-  .then(() => {
-    viewer.pickables = body.pickables;
-    applyVisuals();
-    if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
-  })
-  .catch((err) => {
-    console.warn('Skeleton unavailable', err);
-    $('#loading').textContent = 'Không tải được mô hình xương.';
-  })
-  .finally(() => {
-    if (body.bones.length) $('#loading').hidden = true;
-    setTimeout(makeThumbnails, 50);
-  });
+const bonesLoaded = body.loadBones(`${import.meta.env.BASE_URL}models/bp3d/skeleton.bin`).catch((err) => {
+  console.warn('Skeleton unavailable', err);
+  $('#loading').textContent = 'Không tải được mô hình xương.';
+});
+// real muscle surfaces (anatomy mode); without them the muscles stay tubes
+const musclesLoaded = body.loadMuscleMeshes(`${import.meta.env.BASE_URL}models/bp3d/muscles.bin`).catch((err) => {
+  console.warn('Muscle meshes unavailable', err);
+});
+Promise.all([bonesLoaded, musclesLoaded]).then(() => {
+  body.setMuscleStyle(state.mode === 'anatomy' ? state.muscleStyle : 'tube');
+  viewer.pickables = body.pickables;
+  applyVisuals();
+  if (state.mode === 'anatomy' && state.selection) renderInfo(state.selection);
+  if (body.bones.length) $('#loading').hidden = true;
+  setTimeout(makeThumbnails, 50);
+});
 
 window.__app = { viewer, body, anim, state, loadAsana, setMode, select, physics, forces };
