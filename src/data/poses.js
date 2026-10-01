@@ -108,6 +108,15 @@ export const POSES = {
     shoulder: { flex: 160, abd: 4 },
     scapula: { elev: 8 },
   },
+  // Standing on the right leg with the left knee lifted in front: the step before opening the knee
+  // into Vrksasana. Going there directly, the slerped hip rotation and knee bend drive the left
+  // toes into the floor before the foot leaves it, and the body rocks onto the standing foot late.
+  vrksasana_knee_up: {
+    ...ARMS_DOWN,
+    hip_L: { flex: 75, rot: 20 },
+    knee_L: { flex: 100 },
+    ankle_L: { dorsi: 0 },
+  },
   vrksasana: {
     root: { roll: 0 },
     hip_R: { flex: 0, abd: 2 },

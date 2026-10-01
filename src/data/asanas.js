@@ -157,7 +157,11 @@ export const ASANAS = [
     en: 'Tree Pose',
     category: 'Đứng',
     level: 'Cơ bản',
-    steps: [{ pose: 'tadasana' }, { pose: 'vrksasana', anchor: ['ankle_R'], move: 2 }],
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, hold: 0.2 },
+      { pose: 'vrksasana', anchor: ['ankle_R'], move: 1.6 },
+    ],
     loop: 'pingpong',
     roles: {
       contract: [...side(QUADS, 'R'), 'gluteus_medius_R', 'piriformis_L', 'sartorius_L', 'gluteus_maximus_L', 'iliopsoas_L', 'deltoid', 'triceps_brachii'],
