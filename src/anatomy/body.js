@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Rig, baseOf } from './rig.js';
 import { MuscleSystem, MUSCLE_COLOR } from './muscles.js';
 import { loadSkeleton } from './bp3d.js';
+import { loadRealMuscles } from './realMuscles.js';
 import { MODEL } from '../data/body-model.gen.js';
 
 export const BONE_COLOR = new THREE.Color('#e9dfc8');
@@ -24,7 +25,13 @@ export class Body {
     this.bones = []; // filled by loadBones()
     this.muscleSystem = new MuscleSystem(this.rig);
     scene.add(this.muscleSystem.group);
-    this.muscles = this.muscleSystem.muscles.map((m) => m.mesh);
+    // muscles drawn as tubes along their force paths (all modes) or, once loaded, as the real
+    // BodyParts3D surfaces (anatomy mode); `muscles` is the set currently shown and picked
+    this.tubeMuscles = this.muscleSystem.muscles.map((m) => m.mesh);
+    this.realMuscles = null;
+    this.muscleStyle = 'tube';
+    this.muscles = this.tubeMuscles;
+    this._scene = scene;
 
     this.jointMarkers = JOINT_MARKERS.map(([seg, id, r, world, side]) => {
       const m = new THREE.Mesh(
@@ -68,18 +75,38 @@ export class Body {
     return this.bones;
   }
 
+  /** Loads the real muscle meshes; they are shown after setMuscleStyle('real'). */
+  async loadMuscleMeshes(url) {
+    this.realMuscles = await loadRealMuscles(url, this.rig);
+    this._scene.add(this.realMuscles.group);
+    this.setMuscleStyle(this.muscleStyle);
+    return this.realMuscles.meshes;
+  }
+
+  /** 'real' (BodyParts3D surfaces, if loaded) or 'tube' (force paths). */
+  setMuscleStyle(style) {
+    this.muscleStyle = style;
+    const real = style === 'real' && !!this.realMuscles;
+    this.muscles = real ? this.realMuscles.meshes : this.tubeMuscles;
+    for (const m of this.tubeMuscles) m.visible = !real && this.layers.muscles;
+    if (this.realMuscles) for (const m of this.realMuscles.meshes) m.visible = real && this.layers.muscles;
+    if (real) this.realMuscles.update();
+  }
+
   get pickables() {
     return [...this.bones, ...this.muscles, ...this.jointMarkers];
   }
 
   update() {
     this.muscleSystem.update();
+    if (this.muscleStyle === 'real' && this.realMuscles && this.layers.muscles) this.realMuscles.update();
   }
 
   setLayer(layer, on) {
     this.layers[layer] = on;
     const list = layer === 'bones' ? this.bones : layer === 'muscles' ? this.muscles : this.jointMarkers;
     for (const m of list) m.visible = on;
+    if (layer === 'muscles' && on && this.muscles !== this.tubeMuscles) this.realMuscles.update();
   }
 
   /** Resets all materials to their neutral colours. */
@@ -89,11 +116,11 @@ export class Body {
       if (b.userData.baseColor) b.material.color.set(b.userData.baseColor);
       else b.material.color.copy(BONE_COLOR);
     }
-    for (const m of this.muscleSystem.muscles) {
-      m.mesh.material.color.copy(MUSCLE_COLOR);
-      m.mesh.material.emissive.setRGB(0, 0, 0);
-      m.mesh.material.opacity = muscleOpacity;
-      m.mesh.material.depthWrite = muscleOpacity > 0.95;
+    for (const m of [...this.tubeMuscles, ...(this.realMuscles?.meshes || [])]) {
+      m.material.color.copy(MUSCLE_COLOR);
+      m.material.emissive.setRGB(0, 0, 0);
+      m.material.opacity = muscleOpacity;
+      m.material.depthWrite = muscleOpacity > 0.95;
     }
     for (const j of this.jointMarkers) {
       j.material.color.copy(JOINT_COLOR);

@@ -115,6 +115,13 @@ bằng `tools/bp3d-build.mjs`:
   cơ sinh học cũng lấy từ bề mặt xương / cơ.
 - Cánh tay được xoay quanh tâm vai cho thẳng đứng (tư thế trung tính của khung xương); bên phải là ảnh
   gương của bên trái. Mesh xương giảm từ 1,13 triệu còn 124 nghìn tam giác (1,1 MB).
+- **Hình cơ thật (tab Giải phẫu)**: bề mặt 67 bộ phận cơ BodyParts3D thuộc 33 cơ/nhóm cơ (vd. nhóm
+  cơ khép gồm cả cơ thon), giảm từ 4,18 triệu còn 110 nghìn tam giác mỗi bên (1,2 MB) bằng
+  meshoptimizer. Mỗi đỉnh bám theo đoạn chi có xương gần nhất, trong vùng 4 cm giữa hai đoạn thì pha
+  trộn hai đoạn (skinning), nên cơ vắt qua khớp (cơ ngực lớn: sườn → xương cánh tay) không bị rách.
+  Nút **Cơ: hình thật / đường lực** chuyển giữa mesh thật và dạng ống. Ở tab Asana và Chủ đề cơ luôn là
+  ống: mesh thật chưa biến dạng đúng khi khớp gập sâu. `npm run check` kiểm tra đường lực của mọi bó cơ
+  nằm trong 4 cm quanh mesh cơ thật.
 
 ### Phím tắt
 | Phím | Chức năng |
@@ -152,6 +159,7 @@ src/
   anatomy/animator.js       Nội suy tư thế (quaternion), neo tay/chân trên sàn
   anatomy/physics.js        Trọng tâm, chân đế, lực sàn ít tốn sức nhất (có ma sát), mô-men khớp, tự cân bằng
   anatomy/bp3d.js           Nạp mesh xương (public/models/bp3d/skeleton.bin)
+  anatomy/realMuscles.js    Nạp + skinning mesh cơ thật (public/models/bp3d/muscles.bin, tab Giải phẫu)
   data/body-model.gen.js    Tâm khớp, điểm bám & đường đi cơ, điểm chạm sàn, mốc (sinh tự động)
   data/anthropometry.js     Khối lượng / trọng tâm đoạn cơ thể (de Leva 1996)
   data/muscle-strength.js   Sức tối đa từng bó cơ (PCSA, có nguồn)

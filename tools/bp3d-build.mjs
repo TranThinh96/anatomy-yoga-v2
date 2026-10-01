@@ -7,6 +7,7 @@
 //   src/data/body-model.gen.js   joint centres, floor-contact points, segment landmarks,
 //                                joint markers, muscle paths, measurements, mesh index
 //   public/models/bp3d/skeleton.bin   simplified, 16-bit quantised bone meshes
+//   public/models/bp3d/muscles.bin    simplified muscle meshes with skinning weights (anatomy mode)
 //
 // Method (all on the left side + midline; the right side is the mirror image)
 //   • joint centres from the bone surfaces: least-squares spheres on the femoral and
@@ -20,6 +21,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import * as THREE from 'three';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { MeshoptSimplifier } from 'meshoptimizer';
 
 const DATA = process.argv[2];
 if (!DATA) {
@@ -742,6 +744,123 @@ mkdirSync(new URL('public/models/bp3d/', ROOT), { recursive: true });
 writeFileSync(new URL('public/models/bp3d/skeleton.bin', ROOT), Buffer.concat(chunks));
 log(`bones: ${displayParts.length} parts, ${totalTris} → ${outTris} triangles, ${(offset / 1024).toFixed(0)} KB`);
 
+// ------------------------------------------------------------------ muscle meshes
+// The real muscle surfaces, shown in anatomy mode. Every vertex follows the nearest bone's segment;
+// within BLEND of a second segment's bones it is blended with that one (linear blend skinning), so
+// a muscle crossing a joint (pectoralis major: ribs → humerus) stretches instead of tearing.
+// The display may include more parts than the path above (all heads of a group, e.g. gracilis
+// with the adductors); parts under the 33 muscles only – the rest of BodyParts3D is not shown.
+const MUSCLE_DISPLAY_EXTRA = {
+  erector_spinae: ['left spinalis thoracis', 'left longissimus cervicis', 'left iliocostalis cervicis', 'left spinalis cervicis'],
+  forearm_flexors: ['left palmaris longus', 'humeroulnar head of left flexor digitorum superficialis', 'radial head of left flexor digitorum superficialis', 'left flexor digitorum profundus'],
+  forearm_extensors: ['left extensor carpi radialis brevis', 'humeral head of left extensor carpi ulnaris', 'left extensor digiti minimi'],
+  hamstrings: ['short head of left biceps femoris'],
+  adductors: ['left gracilis'],
+};
+const SEGS = ['pelvis', 'lumbar', 'thorax', 'neck', 'head', 'scapula', 'shoulder', 'elbow', 'wrist', 'hip', 'knee', 'ankle'];
+const BLEND = 0.04; // m: distance band in which two segments share a vertex
+const MUSCLE_BUDGET = 110000; // triangles, left side (mirrored at runtime)
+const segGrid = new Grid(0.01);
+for (const n of ALL_BONES) part(n).verts.forEach((p, i) => i % 2 === 0 && segGrid.add(p, BONE_SEG[n]));
+/** the two segments whose bones are nearest to p: [{ s, d }, { s, d }?], nearest first */
+function segDistances(p) {
+  const c = segGrid.cell;
+  const cx = Math.floor(p.x / c);
+  const cy = Math.floor(p.y / c);
+  const cz = Math.floor(p.z / c);
+  const best = new Map();
+  // grow the search shell by shell until the second segment is found or cannot matter any more
+  for (let R = 0; R <= 40; R++) {
+    for (let i = -R; i <= R; i++)
+      for (let j = -R; j <= R; j++)
+        for (let k = -R; k <= R; k++) {
+          if (Math.max(Math.abs(i), Math.abs(j), Math.abs(k)) !== R) continue;
+          const list = segGrid.map.get(segGrid.key(cx + i, cy + j, cz + k));
+          if (!list) continue;
+          for (const [q, s] of list) {
+            const d = q.distanceTo(p);
+            if (!best.has(s) || d < best.get(s)) best.set(s, d);
+          }
+        }
+    const sorted = [...best].map(([s, d]) => ({ s, d })).sort((a, b) => a.d - b.d);
+    const reach = R * c; // every point closer than this has been seen
+    if (sorted.length >= 2 && sorted[1].d <= reach) return sorted.slice(0, 2);
+    if (sorted.length && reach > sorted[0].d + BLEND) return sorted.slice(0, 1);
+  }
+  return [...best].map(([s, d]) => ({ s, d })).sort((a, b) => a.d - b.d).slice(0, 2);
+}
+
+/** quadric edge-collapse simplification (meshoptimizer): keeps thin muscle sheets closed */
+function simplifyQuadric(pt, target) {
+  if (pt.tris <= target) return { verts: pt.verts, index: Array.from(pt.index) };
+  const pos = new Float32Array(pt.verts.length * 3);
+  pt.verts.forEach((p, i) => p.toArray(pos, i * 3));
+  const [idx] = MeshoptSimplifier.simplify(Uint32Array.from(pt.index), pos, 3, target * 3, 0.01, []);
+  const remap = new Map();
+  const verts = [];
+  const index = Array.from(idx, (v) => {
+    if (!remap.has(v)) {
+      remap.set(v, verts.length);
+      verts.push(pt.verts[v]);
+    }
+    return remap.get(v);
+  });
+  return { verts, index };
+}
+
+await MeshoptSimplifier.ready;
+log('muscle meshes …');
+const muscleParts = MUSCLES.flatMap((def) => [...new Set([...def.parts.flat(), ...(MUSCLE_DISPLAY_EXTRA[def.id] || [])])].map((name) => ({ id: def.id, name })));
+const muscleTris = muscleParts.reduce((a, d) => a + part(d.name).tris, 0);
+const muscleChunks = [];
+const muscleIndex = [];
+let mOffset = 0;
+let mOutTris = 0;
+let blended = 0;
+let mVerts = 0;
+for (const d of muscleParts) {
+  const pt = part(d.name);
+  const target = Math.max(150, Math.round((pt.tris / muscleTris) * MUSCLE_BUDGET));
+  const s = simplifyQuadric(pt, target);
+  const skin = new Uint8Array(s.verts.length * 4); // [segment 1, segment 2, weight of segment 2 (0–255), 0]
+  const vs = s.verts.map((p, i) => {
+    const [a, b] = segDistances(p);
+    const w = b ? THREE.MathUtils.clamp(0.5 * (1 - (b.d - a.d) / BLEND), 0, 0.5) : 0;
+    const w8 = Math.round(w * 255);
+    skin[i * 4] = SEGS.indexOf(a.s);
+    skin[i * 4 + 1] = SEGS.indexOf(w8 ? b.s : a.s);
+    skin[i * 4 + 2] = w8;
+    if (w8) blended++;
+    // rest position: the blend of where the two segments put the point (they differ only for the arm,
+    // which is turned to hang vertically)
+    return w8 ? X(p, a.s).lerp(X(p, b.s), w8 / 255) : X(p, a.s);
+  });
+  const box = bbox(vs);
+  const q = new Uint16Array(vs.length * 3);
+  vs.forEach((p, i) => {
+    for (let k = 0; k < 3; k++) {
+      const lo = box.min.getComponent(k);
+      const hi = box.max.getComponent(k);
+      q[i * 3 + k] = Math.round(((p.getComponent(k) - lo) / (hi - lo || 1)) * 65535);
+    }
+  });
+  const idx32 = vs.length > 65535;
+  const index = idx32 ? Uint32Array.from(s.index) : Uint16Array.from(s.index);
+  let buf = Buffer.concat([Buffer.from(q.buffer), Buffer.from(skin.buffer), Buffer.from(index.buffer)]);
+  if (buf.length % 4) buf = Buffer.concat([buf, Buffer.alloc(4 - (buf.length % 4))]);
+  muscleChunks.push(buf);
+  muscleIndex.push({
+    id: d.id, name: d.name, fma: pt.id,
+    offset: mOffset, vertices: vs.length, indices: index.length, index32: idx32,
+    min: box.min.toArray().map((v) => +v.toFixed(5)), max: box.max.toArray().map((v) => +v.toFixed(5)),
+  });
+  mOffset += buf.length;
+  mOutTris += index.length / 3;
+  mVerts += vs.length;
+}
+writeFileSync(new URL('public/models/bp3d/muscles.bin', ROOT), Buffer.concat(muscleChunks));
+log(`muscles: ${muscleParts.length} parts, ${muscleTris} → ${mOutTris} triangles, ${(mOffset / 1024).toFixed(0)} KB, ${((blended / mVerts) * 100).toFixed(0)} % of vertices blended`);
+
 // ------------------------------------------------------------------ report + write
 const stature = maxOf(P('left parietal bone').map((p) => p.y)) - floorY;
 const measurements = {
@@ -773,6 +892,7 @@ const model = {
   markers,
   muscles,
   meshes: meshIndex,
+  muscleMeshes: { segs: SEGS, parts: muscleIndex },
 };
 writeFileSync(
   new URL('src/data/body-model.gen.js', ROOT),
