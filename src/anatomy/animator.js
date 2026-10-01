@@ -23,6 +23,13 @@ const CONTACT_WEIGHT = 0.25;
 const TOLERANCE = 0.005;
 // Largest tilt (rad) per iteration: the least-squares step is linearised.
 const MAX_STEP = 0.05;
+// Softness (m) of the floor contact during an anchored move, at its middle (see _groundSoft).
+const SOFT_GROUND = 0.002;
+// A foot stepping to a new place on the floor clears it by up to this much (m), halfway along.
+const STEP_CLEARANCE = 0.08;
+// ... by bending the hip and knee of that leg, each by at most this much (rad) on top of the
+// interpolated angle.
+const MAX_STEP_KNEE = (100 * Math.PI) / 180;
 
 // Anchored pairs whose distance apart is held during a move: [end segment, limb root].
 const LIMB_PAIRS = [
@@ -189,6 +196,19 @@ export class Animator {
       s.offset = off;
       s.keep = s.anchor ? this._floorTargets(prev, s) : null;
       s.width = s.anchor ? this._anchorWidth(prev, s) : null;
+      s.stepPaths = s.keep?.steps ? this._stepPaths(prev, s, s.keep.steps) : null;
+    }
+    // Floor targets and stepping feet of a chain of via poses (the right leg stepping back through
+    // surya_step_mid into the lunge) span the whole chain, from its first pose to its last:
+    // switching them at each via pose would kink the motion there.
+    for (const s of this.steps) {
+      const c = s.chain;
+      if (!c || c.keep !== undefined) continue;
+      const [first, last] = [c.keys[0], c.keys[c.keys.length - 1]];
+      const anchored = c.keys.slice(1).every((m) => m.anchor && m.anchor.join() === last.anchor.join());
+      c.keep = anchored ? this._floorTargets(first, last) : null;
+      c.stepPaths = c.keep?.steps ? this._stepPaths(first, last, c.keep.steps) : null;
+      c.width = anchored ? this._anchorWidth(first, last) : null;
     }
     // Centre the whole sequence around the origin (use the most "important" step).
     const key = this.steps[Math.min(1, this.steps.length - 1)];
@@ -276,6 +296,9 @@ export class Animator {
    * floor at the start but not at the end (heels lifting into Navasana) are returned as `leaving`:
    * the body may tilt them up, they must not prop it up. A segment whose neighbour takes over the
    * contact (shin → kneecap on the thigh in Plank on the knees) is not leaving: it stays a pivot.
+   * A foot that rests on the floor at both ends but moves across it while the other foot is
+   * anchored is a `step` (stepping back into a lunge): interpolating the leg drags it along the mat,
+   * so _liftSteps lifts it.
    */
   _floorTargets(prev, s) {
     this.rig.applyQuats(prev.quats, prev.offset);
@@ -289,10 +312,117 @@ export class Animator {
     for (const seg in l0) {
       const anchor = s.anchor.includes(seg);
       if (!anchor && l0[seg].y < ON_FLOOR && l1[seg].y >= ON_FLOOR && !this._neighbours(seg).some((n) => l1[n]?.y < ON_FLOOR)) targets.leaving.add(seg);
+      // a foot that moves across the floor while the other foot is anchored takes a step: it is
+      // lifted (_liftSteps), not a pivot (feet rolling over the toes from Upward to Downward Dog are not)
+      const moved = Math.hypot(l0[seg].pos.x - l1[seg].pos.x, l0[seg].pos.z - l1[seg].pos.z) >= STAYS;
+      const other = seg.endsWith('_L') ? 'ankle_R' : 'ankle_L';
+      if (!anchor && /^ankle_[LR]$/.test(seg) && s.anchor.includes(other) && l0[seg].y < ON_FLOOR && l1[seg].y < ON_FLOOR && moved) {
+        (targets.steps ||= []).push(seg);
+        targets.leaving.add(seg);
+      }
       const resting = l0[seg].y < ON_FLOOR && l1[seg].y < ON_FLOOR && Math.hypot(l0[seg].pos.x - l1[seg].pos.x, l0[seg].pos.z - l1[seg].pos.z) < STAYS;
       if (anchor || resting) targets.push({ seg, h0: l0[seg].y, h1: l1[seg].y, w: anchor ? 1 : CONTACT_WEIGHT });
     }
     return targets;
+  }
+
+  /**
+   * Foot path of each stepping leg: where the foot sits relative to the anchor (horizontal offset
+   * of the ankle from the anchor centre, height of the foot's lowest point above the anchor's) at
+   * the start and the end of the move.
+   */
+  _stepPaths(prev, s, steps) {
+    const ends = [prev.quats, s.quats].map((quats) => {
+      this.rig.applyQuats(quats);
+      return Object.fromEntries(steps.map((foot) => [foot, this._footRel(foot, s.anchor)]));
+    });
+    return steps.map((foot) => ({ foot, p0: ends[0][foot], p1: ends[1][foot] }));
+  }
+
+  /** Ankle position relative to the anchor in the current rig state (see _stepPaths). */
+  _footRel(foot, anchor) {
+    const rig = this.rig;
+    const low = this._lowestPoints();
+    const c = new THREE.Vector3();
+    for (const g of anchor) c.add(rig.worldPoint(g, new THREE.Vector3(), new THREE.Vector3()));
+    c.multiplyScalar(1 / anchor.length);
+    const a = rig.worldPoint(foot, new THREE.Vector3(), new THREE.Vector3());
+    return new THREE.Vector3(a.x - c.x, low[foot].y - Math.min(...anchor.map((g) => low[g].y)), a.z - c.z);
+  }
+
+  /**
+   * Interpolating a stepping leg's angles drags its foot along the mat or sweeps it through the
+   * floor (the front leg of a lunge straightening back into Plank goes 36 cm under it). This steers
+   * the foot instead: straight from where it was to where it lands, lifted by STEP_CLEARANCE ·
+   * sin(πk) on the way, by adding hip and knee flexion to the interpolated leg (two-joint IK,
+   * Gauss–Newton with finite-difference Jacobians, height weighted over the horizontal path).
+   * Works on the rig as it stands (the body's position and tilt are left alone).
+   */
+  _liftSteps(quats, paths, anchor, k) {
+    const lift = STEP_CLEARANCE * Math.sin(Math.PI * k);
+    const rig = this.rig;
+    const X = new THREE.Vector3(1, 0, 0);
+    const r = new THREE.Quaternion();
+    const W = [1, 3, 1]; // weights of the x, y, z errors
+    for (const { foot, p0, p1 } of paths) {
+      const side = foot.slice(-2);
+      const hip = `hip${side}`;
+      const knee = `knee${side}`;
+      const base = { hip: quats[hip].clone(), knee: quats[knee].clone() };
+      const target = p0.clone().lerp(p1, k);
+      target.y += lift;
+      // u = [extra hip flexion, extra knee flexion] (rad); hip flexion is −x in its local frame
+      // only the leg joints change, so the body keeps whatever tilt _keepOnFloor gave it
+      const at = ([dh, dk]) => {
+        quats[hip] = base.hip.clone().multiply(r.setFromAxisAngle(X, -dh));
+        quats[knee] = base.knee.clone().multiply(r.setFromAxisAngle(X, dk));
+        rig.joints[hip].quaternion.copy(quats[hip]);
+        rig.joints[knee].quaternion.copy(quats[knee]);
+        rig.root.updateMatrixWorld(true);
+        return this._footRel(foot, anchor).sub(target).toArray();
+      };
+      let u = [0, 0];
+      let e = at(u);
+      for (let it = 0; it < 8; it++) {
+        if (Math.hypot(...e) < 0.005) break;
+        const J = [0, 1].map((i) => {
+          const v = [...u];
+          v[i] += 0.02;
+          return at(v).map((x, c) => (x - e[c]) / 0.02);
+        });
+        // normal equations (2×2) with a little damping
+        const A = [[1e-3, 0], [0, 1e-3]];
+        const b = [0, 0];
+        for (let c = 0; c < 3; c++)
+          for (let i = 0; i < 2; i++) {
+            b[i] -= W[c] * J[i][c] * e[c];
+            for (let j = 0; j < 2; j++) A[i][j] += W[c] * J[i][c] * J[j][c];
+          }
+        const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+        let d = [(b[0] * A[1][1] - b[1] * A[0][1]) / det, (A[0][0] * b[1] - A[1][0] * b[0]) / det];
+        const n = Math.hypot(...d);
+        if (n > 0.4) d = d.map((x) => (x * 0.4) / n);
+        u = [THREE.MathUtils.clamp(u[0] + d[0], -MAX_STEP_KNEE, MAX_STEP_KNEE), THREE.MathUtils.clamp(u[1] + d[1], -MAX_STEP_KNEE, MAX_STEP_KNEE)];
+        e = at(u);
+      }
+    }
+  }
+
+  /**
+   * Like rig.ground(), but rests the body on a soft minimum of its contact heights
+   * (−τ·log Σ exp(−h/τ) ≤ min h, so nothing goes through the floor). When the lowest point
+   * switches between supports a few mm apart (hands and the standing foot in a lunge), the hard
+   * minimum kinks the body's height; the soft one blends them. τ = 0 is the hard minimum.
+   */
+  _groundSoft(tau) {
+    const rig = this.rig;
+    if (tau <= 1e-6) return rig.ground();
+    const p = new THREE.Vector3();
+    const hs = rig.contacts.map((c) => rig.worldPoint(c.seg, c.local, p).y - c.r);
+    const min = Math.min(...hs);
+    const soft = min - tau * Math.log(hs.reduce((a, h) => a + Math.exp(-(h - min) / tau), 0));
+    rig.pelvis.position.y -= soft;
+    rig.root.updateMatrixWorld(true);
   }
 
   /** Parent and child segments of `seg` in the rig. */
@@ -389,7 +519,7 @@ export class Animator {
       let n = 0;
       while (n < chain.keys.length - 2 && w > chain.u[n + 1]) n++;
       const local = THREE.MathUtils.clamp((w - chain.u[n]) / (chain.u[n + 1] - chain.u[n]), 0, 1);
-      return { quats: this._chainQuats(chain, n, local), s: chain.keys[n + 1], prev: chain.keys[n], k: local };
+      return { quats: this._chainQuats(chain, n, local), s: chain.keys[n + 1], prev: chain.keys[n], k: local, chain, w };
     }
     const k = ease(alpha);
     const quats = {};
@@ -403,11 +533,18 @@ export class Animator {
   }
 
   render() {
-    const { quats, s, prev, k } = this.poseAt(this.time);
+    const { quats, s, prev, k, chain, w } = this.poseAt(this.time);
     const cx = this.center.x;
     const cz = this.center.z;
     if (s.anchor && s !== prev) {
-      if (s.width && k > 0 && k < 1) this._keepWidth(quats, s.width, k);
+      // hand width, floor targets and stepping feet: per move, or across the whole chain of via poses
+      const [width, keep, paths, pk] = chain?.keep ? [chain.width, chain.keep, chain.stepPaths, w] : [s.width, s.keep, s.stepPaths, k];
+      if (width && pk > 0 && pk < 1) this._keepWidth(quats, width, pk);
+      const stepping = paths && pk > 0 && pk < 1;
+      if (stepping) {
+        this.rig.applyQuats(quats);
+        this._liftSteps(quats, paths, s.anchor, pk);
+      }
       // keep the anchor where it was at the start of the move
       this.rig.applyQuats(quats, { x: 0, z: 0 });
       this.rig.ground();
@@ -417,7 +554,12 @@ export class Animator {
       acc.multiplyScalar(1 / s.anchor.length);
       this.rig.applyQuats(quats, { x: s.anchorTarget.x - acc.x - cx, z: s.anchorTarget.z - acc.z - cz });
       this.rig.ground();
-      if (s.keep && k > 0 && k < 1) this._keepOnFloor(s.keep, k, s.anchor, { x: s.anchorTarget.x - cx, z: s.anchorTarget.z - cz });
+      if (keep && pk > 0 && pk < 1) this._keepOnFloor(keep, pk, s.anchor, { x: s.anchorTarget.x - cx, z: s.anchorTarget.z - cz });
+      // _keepOnFloor tilts the body to put the anchor down, which moves the stepping foot: steer it again
+      if (stepping) this._liftSteps(quats, paths, s.anchor, pk);
+      this._groundSoft(SOFT_GROUND * Math.sin(Math.PI * pk));
+      this.onFrame?.();
+      return;
     } else {
       const ox = prev.offset.x + (s.offset.x - prev.offset.x) * k;
       const oz = prev.offset.z + (s.offset.z - prev.offset.z) * k;

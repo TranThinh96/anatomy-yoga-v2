@@ -129,6 +129,11 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   it lifts, a limb passing through the body) gets an intermediate pose marked `via: true`, e.g.
   Tree: `{ pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, via: true }`. The body
   passes through it without stopping (one eased spline); without `via` it halts there.
+- Stepping: a foot that moves to a new place on the floor while the other foot is in the `anchor`
+  is stepped by the animator (lifted ~8 cm on an arc, `Animator._liftSteps`), so anchor the
+  standing foot for one-leg steps (`[...HANDS, 'ankle_L']` while the right leg steps back in
+  Surya Namaskar). Put the landing foot of the end pose where its ball / heel should land (fit it
+  with `rel`), otherwise it slides on landing.
 - Flows (sequences): `flow: true`, `loop: 'cycle'`, each step with a `label` and `roles: '<asana id>'`
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
