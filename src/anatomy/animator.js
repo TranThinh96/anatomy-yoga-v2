@@ -52,8 +52,8 @@ const hermite = (t) => {
  * The anchor (e.g. the feet) stays fixed on the floor during the move into that step,
  * which is what makes a transition read like a real movement.
  * A `via` step is a pose the body passes through without stopping (e.g. lifting the knee on
- * the way into Tree): the moves into it and out of it form one eased curve, a Hermite spline
- * through the poses, instead of two moves that each slow to a halt.
+ * the way into Tree): the moves into it and out of it form one eased curve, a monotone Hermite
+ * spline through the poses, instead of two moves that each slow to a halt.
  */
 export class Animator {
   constructor(rig, onFrame, { prepare = null } = {}) {
@@ -127,11 +127,18 @@ export class Animator {
       const q = keys.map((k) => at(k, name).clone());
       for (let i = 1; i < q.length; i++) if (q[i].dot(q[i - 1]) < 0) q[i].set(-q[i].x, -q[i].y, -q[i].z, -q[i].w);
       const v = (i) => [q[i].x, q[i].y, q[i].z, q[i].w];
-      // tangent at key i (d quat / d u): one-sided at the ends, central inside
+      // tangent at key i (d quat / d u): the secant at the ends; inside, monotone (PCHIP,
+      // Fritsch–Butland) so a joint that holds still before a via pose does not start the next
+      // move early (leaning back into Navasana while the hands are still being lifted) and a
+      // component never overshoots the keys
+      const slope = (i) => v(i + 1).map((x, c) => (x - v(i)[c]) / (u[i + 1] - u[i]));
       const tangent = (i) => {
-        const a = Math.max(i - 1, 0);
-        const b = Math.min(i + 1, q.length - 1);
-        return v(b).map((x, c) => (x - v(a)[c]) / (u[b] - u[a]));
+        if (i === 0) return slope(0);
+        if (i === q.length - 1) return slope(i - 1);
+        const [d0, d1] = [slope(i - 1), slope(i)];
+        const [h0, h1] = [u[i] - u[i - 1], u[i + 1] - u[i]];
+        const [w0, w1] = [2 * h1 + h0, h1 + 2 * h0];
+        return d0.map((a, c) => (a * d1[c] <= 0 ? 0 : (w0 + w1) / (w0 / a + w1 / d1[c])));
       };
       const p0 = v(n);
       const p1 = v(n + 1);
@@ -265,7 +272,10 @@ export class Animator {
    * Downward Dog the slerped arms and legs no longer reach the floor together, so grounding the
    * lowest point (the feet) lifts the hands and the whole body "jumps". This records the height
    * of the anchor, and of every other segment resting on the floor in both poses without moving
-   * across it, so that _keepOnFloor can hold them during the move.
+   * across it, so that _keepOnFloor can hold them during the move. Segments that rest on the
+   * floor at the start but not at the end (heels lifting into Navasana) are returned as `leaving`:
+   * the body may tilt them up, they must not prop it up. A segment whose neighbour takes over the
+   * contact (shin → kneecap on the thigh in Plank on the knees) is not leaving: it stays a pivot.
    */
   _floorTargets(prev, s) {
     this.rig.applyQuats(prev.quats, prev.offset);
@@ -275,12 +285,20 @@ export class Animator {
     this.rig.ground();
     const l1 = this._lowestPoints();
     const targets = [];
+    targets.leaving = new Set();
     for (const seg in l0) {
       const anchor = s.anchor.includes(seg);
+      if (!anchor && l0[seg].y < ON_FLOOR && l1[seg].y >= ON_FLOOR && !this._neighbours(seg).some((n) => l1[n]?.y < ON_FLOOR)) targets.leaving.add(seg);
       const resting = l0[seg].y < ON_FLOOR && l1[seg].y < ON_FLOOR && Math.hypot(l0[seg].pos.x - l1[seg].pos.x, l0[seg].pos.z - l1[seg].pos.z) < STAYS;
       if (anchor || resting) targets.push({ seg, h0: l0[seg].y, h1: l1[seg].y, w: anchor ? 1 : CONTACT_WEIGHT });
     }
     return targets;
+  }
+
+  /** Parent and child segments of `seg` in the rig. */
+  _neighbours(seg) {
+    const j = this.rig.joints[seg];
+    return [j.parent, ...j.children].map((g) => g?.name).filter((n) => n in this.rig.joints);
   }
 
   /**
@@ -307,7 +325,7 @@ export class Animator {
       const b = [0, 0, 0];
       // whatever rests (or rested in an earlier iteration) on the floor is the pivot: it should stay there
       const minY = Math.min(...Object.values(low).map((l) => l.y));
-      for (const seg in low) if (low[seg].y < minY + 0.005) pivots.add(seg);
+      for (const seg in low) if (low[seg].y < minY + 0.005 && !keep.leaving?.has(seg)) pivots.add(seg);
       const rows = keep.map((t) => ({ seg: t.seg, want: t.h0 + (t.h1 - t.h0) * k, w: t.w }));
       for (const seg of pivots) if (!rows.some((t) => t.seg === seg)) rows.push({ seg, want: 0, w: CONTACT_WEIGHT });
       let worst = 0;

@@ -7,18 +7,31 @@ const ARMS_DOWN = { shoulder: { abd: 6 } };
 export const POSES = {
   // ---------------- Base positions ----------------
   tadasana: { ...ARMS_DOWN, ankle: { dorsi: 0 } },
+  // Sit bones, heels and palms all on the floor. With hip 90° / shoulder −12° the hands and heels
+  // propped the sit bones 15 mm up, and the body dropped onto them on the way into Navasana. The
+  // fitter cannot find this alone: it needs hip and shoulder to change together.
   dandasana: {
-    hip: { flex: 90 },
+    hip: { flex: 91 },
     ankle: { dorsi: 1 },
     lumbar: { flex: -4 },
-    shoulder: { flex: -12, abd: 10 },
+    shoulder: { flex: -16, abd: 10 },
     wrist: { ext: 80 },
   },
-  // Dandasana with the hands just lifted off the floor (elbows soft, palms still facing down):
-  // the step before leaning back into Navasana. Going there directly, the wrist straightening from
-  // 80° drives the fingers into the floor and props the body up off the sit bones.
+  // Dandasana with the hands lifted a few cm by extending the shoulders, arms straight: the first
+  // pose passed through on the way into Navasana. Bending the elbows while the hands are still
+  // down drives the fingers into the floor and props the sit bones up (~2 cm).
+  dandasana_hands_off: {
+    hip: { flex: 91 },
+    ankle: { dorsi: 1 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -24, abd: 10 },
+    wrist: { ext: 90 },
+  },
+  // Then the elbows bend, palms still facing down: the second pose passed through before leaning
+  // back into Navasana. Going there directly, the wrist straightening from 80° drives the fingers
+  // into the floor and props the body up off the sit bones.
   dandasana_hands_up: {
-    hip: { flex: 90 },
+    hip: { flex: 91 },
     ankle: { dorsi: 1 },
     lumbar: { flex: -4 },
     shoulder: { flex: -30, abd: 10 },

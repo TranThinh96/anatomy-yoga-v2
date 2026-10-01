@@ -630,7 +630,12 @@ export const ASANAS = [
     category: 'Ngồi & nằm',
     level: 'Trung bình',
     variants: [{ label: 'Gập gối (Ardha)', pose: 'navasana_bent' }],
-    steps: [{ pose: 'dandasana' }, { pose: 'dandasana_hands_up', anchor: HIPS, move: 0.8, hold: 0.2 }, { pose: 'navasana', anchor: HIPS, move: 1.8, hold: 2 }],
+    steps: [
+      { pose: 'dandasana' },
+      { pose: 'dandasana_hands_off', anchor: HIPS, move: 0.6, via: true },
+      { pose: 'dandasana_hands_up', anchor: HIPS, move: 1.0, via: true },
+      { pose: 'navasana', anchor: HIPS, move: 1.4, hold: 2 },
+    ],
     loop: 'pingpong',
     roles: {
       contract: ['iliopsoas', 'rectus_femoris', 'rectus_abdominis', 'external_oblique', 'vastus_lateralis', 'vastus_medialis', 'erector_spinae', 'deltoid'],
