@@ -7,18 +7,31 @@ const ARMS_DOWN = { shoulder: { abd: 6 } };
 export const POSES = {
   // ---------------- Base positions ----------------
   tadasana: { ...ARMS_DOWN, ankle: { dorsi: 0 } },
+  // Sit bones, heels and palms all on the floor. With hip 90° / shoulder −12° the hands and heels
+  // propped the sit bones 15 mm up, and the body dropped onto them on the way into Navasana. The
+  // fitter cannot find this alone: it needs hip and shoulder to change together.
   dandasana: {
-    hip: { flex: 90 },
+    hip: { flex: 91 },
     ankle: { dorsi: 1 },
     lumbar: { flex: -4 },
-    shoulder: { flex: -12, abd: 10 },
+    shoulder: { flex: -16, abd: 10 },
     wrist: { ext: 80 },
   },
-  // Dandasana with the hands just lifted off the floor (elbows soft, palms still facing down):
-  // the step before leaning back into Navasana. Going there directly, the wrist straightening from
-  // 80° drives the fingers into the floor and props the body up off the sit bones.
+  // Dandasana with the hands lifted a few cm by extending the shoulders, arms straight: the first
+  // pose passed through on the way into Navasana. Bending the elbows while the hands are still
+  // down drives the fingers into the floor and props the sit bones up (~2 cm).
+  dandasana_hands_off: {
+    hip: { flex: 91 },
+    ankle: { dorsi: 1 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -24, abd: 10 },
+    wrist: { ext: 90 },
+  },
+  // Then the elbows bend, palms still facing down: the second pose passed through before leaning
+  // back into Navasana. Going there directly, the wrist straightening from 80° drives the fingers
+  // into the floor and props the body up off the sit bones.
   dandasana_hands_up: {
-    hip: { flex: 90 },
+    hip: { flex: 91 },
     ankle: { dorsi: 1 },
     lumbar: { flex: -4 },
     shoulder: { flex: -30, abd: 10 },
@@ -89,6 +102,19 @@ export const POSES = {
     elbow: { flex: 5 },
     wrist: { ext: 90, pron: 180 },
   },
+  // Uttanasana with the palms shoulder-width apart (as wide as in Plank) beside the feet: where the
+  // hands land in Surya Namaskar, so they do not slide apart while the legs step back.
+  uttanasana_hands_wide: {
+    root: { pitch: 104 },
+    hip: { flex: 104 },
+    lumbar: { flex: 20 },
+    thorax: { flex: 15 },
+    neck: { flex: 15 },
+    shoulder: { flex: 91, abd: 0 },
+    ankle: { dorsi: 0 },
+    elbow: { flex: 29 },
+    wrist: { ext: 90, pron: 180 },
+  },
   ardha_uttanasana: {
     root: { pitch: 101 },
     hip: { flex: 101 },
@@ -107,6 +133,15 @@ export const POSES = {
     thorax: { flex: -4 },
     shoulder: { flex: 160, abd: 4 },
     scapula: { elev: 8 },
+  },
+  // Standing on the right leg with the left knee lifted in front: the step before opening the knee
+  // into Vrksasana. Going there directly, the slerped hip rotation and knee bend drive the left
+  // toes into the floor before the foot leaves it, and the body rocks onto the standing foot late.
+  vrksasana_knee_up: {
+    ...ARMS_DOWN,
+    hip_L: { flex: 75, rot: 20 },
+    knee_L: { flex: 100 },
+    ankle_L: { dorsi: 0 },
   },
   vrksasana: {
     root: { roll: 0 },
@@ -203,6 +238,121 @@ export const POSES = {
     shoulder: { flex: 69 },
     wrist: { ext: 80, pron: 180 },
     neck: { flex: -12 },
+  },
+  // Low lunge with the hands down (Ashwa Sanchalanasana), left foot forward between the hands,
+  // right leg straight back on the toes: the step between Uttanasana and Plank in Surya Namaskar,
+  // so the legs step back one at a time. The front foot sits where it is in Uttanasana and the back
+  // foot where it is in Plank, so the hands and the standing foot stay put during each step.
+  ashwa_sanchalanasana: {
+    root: { pitch: 58 },
+    lumbar: { flex: 12 },
+    thorax: { flex: 16 },
+    neck: { flex: -15 },
+    hip_L: { flex: 146 },
+    knee_L: { flex: 97 },
+    ankle_L: { dorsi: 11 },
+    hip_R: { flex: -7 },
+    ankle_R: { dorsi: 1 },
+    shoulder: { flex: 88, abd: -3 },
+    wrist: { ext: 80, pron: 180 },
+  },
+  // Halfway between Uttanasana (hands wide) and the lunge, hips half lowered, hands and left foot
+  // down: the pose the body passes through while the right leg steps back (or forward again).
+  // Interpolating straight from the fold to the lunge does not keep the hands and the standing foot
+  // on the floor together; holding them there made the hips hang high and then drop 36 cm in
+  // 0.4 s. The right leg is steered by the animator while it steps (Animator._liftSteps).
+  surya_step_mid: {
+    root: { pitch: 85 },
+    lumbar: { flex: 16 },
+    thorax: { flex: 15 },
+    neck: { flex: 0 },
+    hip_L: { flex: 133 },
+    knee_L: { flex: 63 },
+    ankle_L: { dorsi: 9 },
+    hip_R: { flex: 55 },
+    shoulder: { flex: 89 },
+    elbow: { flex: 15 },
+    wrist: { ext: 85, pron: 180 },
+    ankle_R: { dorsi: 35 },
+  },
+  // A quarter and three quarters of the way from Uttanasana to the lunge (hands and left foot down,
+  // fitted): with surya_step_mid they keep the hands and the standing foot within the animator's
+  // floor tolerance while the right leg steps back, so the body is not tilted to fix them.
+  surya_step_q1: {
+    root: { pitch: 99 },
+    lumbar: { flex: 19 },
+    thorax: { flex: 15 },
+    neck: { flex: 7 },
+    shoulder: { flex: 90 },
+    elbow: { flex: 22 },
+    wrist: { ext: 88, pron: 180 },
+    hip_L: { flex: 117 },
+    hip_R: { flex: 81 },
+    knee_L: { flex: 31 },
+    ankle_L: { dorsi: 11 },
+    ankle_R: { dorsi: 22 },
+  },
+  surya_step_q3: {
+    root: { pitch: 73 },
+    lumbar: { flex: 14 },
+    thorax: { flex: 16 },
+    neck: { flex: -7 },
+    shoulder: { flex: 87 },
+    elbow: { flex: 7 },
+    wrist: { ext: 83, pron: 180 },
+    hip_L: { flex: 137 },
+    hip_R: { flex: 29 },
+    knee_L: { flex: 81 },
+    ankle_L: { dorsi: 13 },
+    ankle_R: { dorsi: 35 },
+  },
+  // The same lunge with the ball of the back foot where it is in Downward Dog (6 cm further back
+  // than in Plank): the step on the way forward from Downward Dog.
+  ashwa_sanchalanasana_long: {
+    root: { pitch: 58 },
+    lumbar: { flex: 12 },
+    thorax: { flex: 18 },
+    neck: { flex: -15 },
+    hip_L: { flex: 148 },
+    knee_L: { flex: 95 },
+    ankle_L: { dorsi: 2 },
+    hip_R: { flex: -2 },
+    knee_R: { flex: 11 },
+    ankle_R: { dorsi: 3 },
+    shoulder: { flex: 93, abd: 0 },
+    wrist: { ext: 80, pron: 180 },
+  },
+  // Halfway through the left leg's step between the lunge and Plank (back) and between Downward
+  // Dog and the long lunge (forward): hands and right foot down, left knee drawn in with the ankle
+  // ~8 cm above its path. Interpolating straight between the ends swept the left foot 36 cm
+  // under the floor, and lifting it out made the leg whip through at ~1000°/s.
+  surya_step_back_L: {
+    root: { pitch: 72 },
+    lumbar: { flex: 6 },
+    thorax: { flex: 8 },
+    neck: { flex: -13 },
+    shoulder: { flex: 88, abd: -1 },
+    wrist: { ext: 80, pron: 180 },
+    hip_L: { flex: 107 },
+    hip_R: { flex: 11 },
+    knee_L: { flex: 129 },
+    ankle_L: { dorsi: -27 },
+    ankle_R: { dorsi: 6 },
+  },
+  surya_step_up_L: {
+    root: { pitch: 95 },
+    lumbar: { flex: 4 },
+    thorax: { flex: 7 },
+    neck: { flex: -5 },
+    scapula: { elev: 3 },
+    shoulder: { flex: 133, rot: 10, abd: -3 },
+    wrist: { ext: 61, pron: 180 },
+    hip_L: { flex: 150 },
+    hip_R: { flex: 45 },
+    knee_L: { flex: 130 },
+    knee_R: { flex: 6 },
+    ankle_L: { dorsi: 14 },
+    ankle_R: { dorsi: 5 },
   },
   chaturanga: {
     root: { pitch: 81 },
@@ -412,6 +562,14 @@ export const POSE_FIT = {
     at: [['wrist_L', 'ankle_L', [0.06, -0.02, 0.13]], ['wrist_R', 'ankle_R', [-0.06, -0.02, 0.13]]],
     params: ['root.pitch&hip.flex', 'shoulder.flex', 'shoulder.abd'],
   },
+  uttanasana_hands_wide: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    balance: true,
+    // palms beside the feet, as wide as in Plank (see ashwa_sanchalanasana)
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]]],
+    params: ['root.pitch&hip.flex', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
   vrksasana: {
     support: ['ankle_R'],
     flat: ['ankle_R'],
@@ -467,6 +625,58 @@ export const POSE_FIT = {
     params: ['shoulder.flex', 'hip.flex', 'shoulder.abd'],
   },
   phalakasana: { support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], params: ['root.pitch&shoulder.flex'] },
+  ashwa_sanchalanasana: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'wrist_L', 'wrist_R'],
+    balance: true,
+    // hands as wide as in Plank, front foot where it is in uttanasana_hands_wide, ball of the back
+    // foot where it is in Plank (the ankle joint target is offset for the foot angle)
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]], ['wrist_L', 'ankle_R', [-0.244, -1.2]]],
+    params: ['root.pitch', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'shoulder.abd', 'lumbar.flex', 'thorax.flex'],
+  },
+  surya_step_mid: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L'],
+    flat: ['ankle_L', 'wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]]],
+    // arms held at their interpolated angles so every joint moves one way through the step
+    params: ['root.pitch', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'lumbar.flex'],
+  },
+  surya_step_q1: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L'],
+    flat: ['ankle_L', 'wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]]],
+    // arms held at their interpolated angles so every joint moves one way through the step
+    params: ['root.pitch', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'lumbar.flex'],
+  },
+  surya_step_q3: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L'],
+    flat: ['ankle_L', 'wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]]],
+    // arms held at their interpolated angles so every joint moves one way through the step
+    params: ['root.pitch', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'lumbar.flex'],
+  },
+  ashwa_sanchalanasana_long: {
+    support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'wrist_L', 'wrist_R'],
+    balance: true,
+    // hands as wide as in Plank, front foot where it is in uttanasana_hands_wide, ball of the back
+    // foot where it is in Downward Dog (heel down there, on the toes here: the ankle sits 10 cm further forward)
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]], ['wrist_L', 'ankle_R', [-0.244, -1.269]]],
+    params: ['root.pitch', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'shoulder.abd', 'lumbar.flex', 'thorax.flex'],
+  },
+
+  surya_step_back_L: {
+    support: ['wrist_L', 'wrist_R', 'ankle_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
+    params: ['root.pitch', 'shoulder.flex', 'hip_R.flex', 'ankle_R.dorsi'],
+  },
+  surya_step_up_L: {
+    support: ['wrist_L', 'wrist_R', 'ankle_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
+    params: ['root.pitch', 'shoulder.flex', 'hip_R.flex', 'ankle_R.dorsi'],
+  },
   phalakasana_knees: { support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'], params: ['root.pitch&shoulder.flex', 'root.pitch'] },
   chaturanga: {
     support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],

@@ -20,7 +20,12 @@ Read `CLAUDE.md` first for the axis and angle conventions.
   (left leg forward, like the existing Warriors).
 - Which body parts touch the floor in the target pose → the `support` list.
 - Which segments stay fixed during the transition → `anchor` (e.g. `['ankle_R']` for the back foot,
-  `HANDS`, `FEET`, `[...HANDS, ...KNEES]`).
+  `HANDS`, `FEET`, `[...HANDS, ...KNEES]`). Anchor what a teacher keeps planted: anchoring the feet
+  from Plank to Chaturanga slid the hands 17 cm; a one-leg step anchors the hands *and* the standing
+  foot (`[...HANDS, 'ankle_L']`).
+- Plan the path, not just the end pose: how does a person really get there? Feet step one at a
+  time (never both at once), a knee lifts before it opens out (Tree), hands leave the floor before
+  the body leans back (Navasana). Each of those is an intermediate `via` pose (section 4).
 
 ## 2. Joint angles (`POSES`)
 
@@ -87,6 +92,19 @@ npm run fit-poses -- my_pose         # writes the fitted angles into poses.js
 
 Gaps should end near 0.0 for every support. If not, add or change params rather than forcing angles.
 
+- The fitter changes one param at a time, so it stalls when two angles must move together:
+  Dandasana's sit bones floated 15 mm (propped on hands and heels) until hip *and* shoulder were
+  changed together (hip 91°, shoulder −16°). If a gap will not close, try a few combined values by
+  hand (or a seed: set the angle near the expected answer, e.g. a back knee at 25°, and refit).
+- Check *every* support in the dry run, also ones the pose "obviously" rests on – a 1.5 cm gap
+  under the sit bones becomes a visible drop when the next move starts.
+- Poses the body moves between must agree on where planted parts are: the same hand width
+  (`rel: [['wrist_R', 'wrist_L', [0.33, 0]]]`, as Plank / Dog), the front foot in the same place
+  relative to the hands, the **ball** of a back foot where it was (on the toes the ankle sits
+  ~10 cm further forward than with the heel down, so offset the ankle target). Otherwise the
+  planted hand or foot slides during the move. Compare with `rel` values measured on the
+  neighbouring poses.
+
 ## 4. Asana entry (`ASANAS` in `src/data/asanas.js`)
 
 ```js
@@ -125,6 +143,30 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   Tadasana) – `npm run check` fails otherwise. Typical traps: calves are not stretched in a fold
   with vertical shins or in Dandasana with neutral ankles; the back hip is *adducted* in Trikonasana
   (its adductors shorten); Cobra / Up Dog stretch the abdominals more than the pectorals.
+- Interpolating joint angles in one go is often not how a body moves: a foot dips into the floor
+  before it lifts, a hand digs in, a leg sweeps under the floor. Add an intermediate pose marked
+  `via: true`, e.g. Tree: `{ pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, via: true }`.
+  The body passes through it without stopping (one eased spline through the poses); a step *without*
+  `via` eases to a halt there (and `hold` adds a pause) – Tree stopped at the lifted knee that way.
+  - A via pose must itself be fitted: planted parts on the floor (a `POSE_FIT` entry with the
+    planted hands / feet as `support`), lifted parts clear of it (Navasana's first via pose still had
+    the sit bones off the floor and the body bounced 2 cm).
+  - Order the sub-movements as a person does: lift the hands by extending the shoulders *before*
+    bending the elbows (bending them on the floor drives the fingers in), lift the knee *before*
+    opening it, draw a stepping knee in *before* the leg extends back.
+  - Keep each joint moving one way through the via poses where you can (hold the arms at their
+    interpolated angles and let the trunk / legs fit): a joint that reverses at a via pose stops
+    there, and the body lurches around it.
+  - Split the chain's time by how far the body moves in each part (pelvis travel), not evenly:
+    a part with most of the travel squeezed into a short time is a lurch.
+- Stepping: a foot that moves to a new place on the floor while the other foot is in the `anchor`
+  is stepped by the animator (`Animator._liftSteps` bends hip and knee to clear it ~8 cm on an arc),
+  so anchor the standing foot for one-leg steps (`[...HANDS, 'ankle_L']` while the right leg steps
+  back in Surya Namaskar). The lift only corrects the interpolated leg; when that leg sweeps far
+  under the floor (a deep lunge's front leg going back to Plank) add a via pose with the knee drawn
+  in and the foot ~8 cm up halfway (`surya_step_back_L`), or the leg whips through at ~1000 °/s.
+  Put the landing foot of the end pose where its ball / heel should land (fit it with `rel`),
+  otherwise it slides on landing.
 - Flows (sequences): `flow: true`, `loop: 'cycle'`, each step with a `label` and `roles: '<asana id>'`
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
@@ -133,19 +175,42 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
 
 ```bash
 npm run check    # data ids, equilibrium, COM over the supports, supports touch, L/R symmetry,
-                 # muscle model, picking – all must pass
+                 # muscle model, picking, animated transitions – all must pass
 npm run build
 ```
 
-`check-physics` treats poses whose id matches `vrksasana|virabhadrasana|trikonasana` as asymmetric;
-add your one-sided pose to that regex in `tools/check-physics.mjs` if the symmetry check fails for it.
+`check-physics` treats poses whose id matches `vrksasana|virabhadrasana|trikonasana|ashwa_sanchalanasana|surya_step`
+as asymmetric; add your one-sided pose (and one-sided via poses) to that regex in
+`tools/check-physics.mjs` if the symmetry check fails for it.
+
+`tools/check-transitions.mjs` (part of `npm run check`) plays every sequence at 60 fps and fails on
+what static checks and key-pose screenshots cannot see – every bug users reported in animations so
+far was one of these:
+
+| failure | what it was in the past | usual fix |
+|---|---|---|
+| pelvis wobbles > 6 mm off its smooth path | Tree: the lifting foot dipped 23 mm into the floor, the body pivoted on it and dropped onto the standing foot; Navasana: body propped on heels / fingers, then dropped 2 cm | a `via` pose that lifts the limb first; fit the supports of every pose in the chain |
+| anchor > 15 mm off the floor | hands lifted 12 cm from tabletop to Down Dog (feet grounded instead); body propped on a dragging foot | anchor what stays planted; via pose / stepping (section 4) |
+| joint > 900 °/s | stepping IK jumping between "leg straight back" and "knee bent" solutions | look at the frames around the time; usually a missing via pose |
+| knee / elbow bent backwards | stepping IK with an unconstrained knee | keep solvers inside the joint range |
+| stepping foot clears < 5 cm | both feet sliding at once; a foot dragging along the mat | step one foot at a time, anchor the other |
+
+`node tools/check-transitions.mjs my_asana --verbose --steps` prints the numbers and when each move
+runs. Passing is necessary, not sufficient: also look at frames in the middle of each move
+(section 6). Check the joint angles too, not only where hands and feet end up – a foot can land
+exactly right with the knee bent backwards.
 
 ## 6. Look at it – workshop quality
 
 ```bash
 node tools/review-poses.mjs /tmp/review my_asana --views front,left,top   # framed on the body, UI hidden
+node tools/review-poses.mjs /tmp/review my_asana --views left --at 2.0,2.4 # mid-transition frames (s)
 node tools/shot.mjs asana/my_asana /tmp/b.png --hold --cm act --view left  # with the UI, activation colours
 ```
+
+Screenshots show one instant; the user sees the motion. For every move look at 2–3 frames in the
+middle (`--at`, times from `check-transitions --steps`): a stepping foot lifted and the knee bent
+forwards, planted hands and feet still down, nothing through the floor or the body.
 
 The app is used to teach anatomy in workshops (balanced / restorative yoga), so a pose must read
 like the textbook form from the front AND the side. Checklist:
@@ -183,6 +248,12 @@ model has no passive tension and lacks some deep muscles – see README "Giới 
 | COM behind the heels, all weight on the hands | `balance: true` (poses with hand contacts are not auto-balanced) |
 | a wrist ends at 110–130° extension | add the hands to `flat`; the ROM limit is 95° |
 | `check` says a stretched muscle is not longer | the role is wrong for this shape – fix the role (or the pose), don't lower the threshold |
+| body stops for a moment at an intermediate pose | mark it `via: true` (and no `hold`) |
+| body bounces / drops when a limb leaves the floor | a support was not really on the floor in one pose of the chain (dry-run its fit), or the limb digs in before it lifts – add a via pose that lifts it first |
+| feet slide together on the mat in a flow | step one foot at a time: a lunge (or other) pose in between, the standing foot in the `anchor` |
+| a planted hand / foot slides during a move | the poses disagree on where it is: fit them to the same `rel` (hand width, foot to hands, ball of the foot) |
+| a leg whips through or the hips lurch in a chain | a via pose with the limb mid-swing; split the chain's time by pelvis travel |
+| fitter will not close a gap that two angles could close together | set both by hand / seed one of them, then refit |
 
 ## Done when
 
