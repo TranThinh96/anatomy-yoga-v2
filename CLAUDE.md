@@ -9,12 +9,14 @@ muscle activation). Vite + three.js, vanilla JS, no framework, no TypeScript. Se
 
 ```bash
 npm run dev                         # http://localhost:5173
-npm run check                       # data + physics + muscle model + picking checks – must pass before a commit
+npm run check                       # data + physics + muscle model + picking + transition checks – must pass before a commit
 npm run build                       # production build into dist/ (not committed)
 npm run fit-poses -- [--dry] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
 node tools/shot.mjs asana/<id> out.png [--hold] [--cm act] [--view left] [--click <selector>]   # screenshot, fails on page errors
 node tools/shot.mjs topic/<id> out.png --click '[data-topic-pose="1"]'     # a topic's condition pose
 node tools/review-poses.mjs <dir> [asana…] [--views front,left,top]        # every pose framed on the body, UI hidden
+node tools/review-poses.mjs <dir> <asana> --views left --at 2.0,2.4        # frames in the middle of a move (s)
+node tools/check-transitions.mjs [asana…] [--verbose] [--steps]            # animated moves: wobble, anchors, joint speed, steps
 npm run build-model -- <BodyParts3D_data>   # regenerate the body model (rarely; needs the BodyParts3D download)
 ```
 
@@ -31,7 +33,8 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
                  (display only – lengths, moment arms and forces always come from the tubes)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
-animator.js      quaternion slerp between poses, anchors (feet/hands stay put), balances each pose once (cached)
+animator.js      quaternion slerp between poses (a spline through `via` poses), anchors (feet/hands stay put),
+                 floor correction, stepping feet lifted (_liftSteps); balances each pose once (cached)
 main.js          all UI (three modes: anatomy / asana / topic), colour modes, physics card, URL hash routing
 data/            content + parameters (see below); body-model.gen.js is GENERATED
 tools/           build-model, fit-poses, check-* (run by npm run check), shot.mjs
@@ -77,9 +80,12 @@ Data files:
 
 ## Verifying a change
 
-1. `npm run check` (all four checks) and `npm run build`.
+1. `npm run check` (all five checks) and `npm run build`.
 2. For anything visible: `node tools/shot.mjs …` and look at the PNG (the headless renderer is slow,
    ~2 fps – do not judge performance from it).
+3. For anything that moves (poses in a sequence, the animator): `check-transitions` passing is not
+   enough – look at mid-move frames (`review-poses --at`) and at joint angles, not only at where the
+   hands and feet end up.
 
 ## CI / deployment
 

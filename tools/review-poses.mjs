@@ -1,9 +1,12 @@
 // Renders every asana (and variant) in its target pose from fixed views, framed on the body,
 // with the UI overlays hidden – for reviewing pose quality by eye. Prints the physics summary
 // (stability margin, weight distribution, largest joint loads) of each pose.
-//   node tools/review-poses.mjs <out-dir> [asana-id …] [--views front,left,top]
+//   node tools/review-poses.mjs <out-dir> [asana-id …] [--views front,left,top] [--at 2.1,2.4]
 //   e.g. node tools/review-poses.mjs /tmp/review trikonasana vrksasana --views front,left,top
-// Needs Playwright (as tools/shot.mjs). Hidden asanas (cat / cow) are rendered only when named.
+// --at renders the named asanas at those times (s) of their animation instead of the target pose:
+// frames in the middle of a transition (a foot stepping, a body tilting), where the static views
+// show nothing wrong. Times of each step: node tools/check-transitions.mjs <asana> --steps
+// Needs Playwright (as tools/shot.mjs). Hidden asanas (cat / cow) and flows are rendered only when named.
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -14,7 +17,9 @@ import { ASANAS } from '../src/data/asanas.js';
 const args = process.argv.slice(2);
 const vi = args.indexOf('--views');
 const views = vi >= 0 ? args[vi + 1].split(',') : ['front', 'left'];
-const positional = args.filter((a, i) => !a.startsWith('--') && (vi < 0 || i !== vi + 1));
+const ti = args.indexOf('--at');
+const times = ti >= 0 ? args[ti + 1].split(',').map(Number) : [null];
+const positional = args.filter((a, i) => !a.startsWith('--') && (vi < 0 || i !== vi + 1) && (ti < 0 || i !== ti + 1));
 const [out, ...only] = positional;
 if (!out) {
   console.log('Usage: node tools/review-poses.mjs <out-dir> [asana-id …] [--views front,left,top]');
@@ -45,15 +50,17 @@ try {
   await page.waitForTimeout(3000);
   await page.addStyleTag({ content: '#legend,#phys-hud,#player,.view-buttons,#left-panel,#right-panel,header{display:none!important}' });
   for (const a of ASANAS) {
-    if (a.flow || (only.length ? !only.includes(a.id) : a.hidden)) continue;
-    for (const v of [0, ...(a.variants || []).map((_, i) => i + 1)]) {
-      await page.evaluate(([id, variant]) => {
+    if (only.length ? !only.includes(a.id) : a.hidden || a.flow) continue;
+    for (const v of [0, ...(a.variants || []).map((_, i) => i + 1)])
+    for (const tm of times) {
+      await page.evaluate(([id, variant, tm]) => {
         const app = window.__app;
         app.loadAsana(id, variant);
         const an = app.anim;
-        an.seekStep(an.steps.length > 1 ? Math.floor(an.steps.length / 2) : 0);
+        if (tm !== null) an.seek(tm);
+        else an.seekStep(an.steps.length > 1 ? Math.floor(an.steps.length / 2) : 0);
         an.playing = false;
-      }, [a.id, v]);
+      }, [a.id, v, tm]);
       await page.waitForTimeout(600);
       for (const view of views) {
         // frame the body: joints + floor contacts, camera from the given side
@@ -74,7 +81,7 @@ try {
           app.viewer.flyTo(c, dir, ext * 1.55 + 0.35, 0.01);
         }, view);
         await page.waitForTimeout(1200);
-        await page.locator('#viewport').screenshot({ path: join(out, `${a.id}${v ? `_v${v}` : ''}_${view}.png`) });
+        await page.locator('#viewport').screenshot({ path: join(out, `${a.id}${v ? `_v${v}` : ''}${tm !== null ? `_t${tm.toFixed(2)}` : ''}_${view}.png`) });
       }
       const info = await page.evaluate(() => {
         const r = window.__app.state.phys;
@@ -83,7 +90,7 @@ try {
           .map((j) => `${j.name} ${Math.round(j.total)} N·m`)
           .join(', ')}`;
       });
-      console.log(`${a.id}${v ? ` (variant ${v})` : ''}: ${info}`);
+      console.log(`${a.id}${v ? ` (variant ${v})` : ''}${tm !== null ? ` at ${tm} s` : ''}: ${info}`);
     }
   }
 } finally {

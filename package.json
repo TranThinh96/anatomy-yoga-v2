@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "fit-poses": "node tools/fit-poses.mjs",
-    "check": "node tools/check-data.mjs && node tools/check-physics.mjs && node tools/check-muscles.mjs && node tools/check-picking.mjs",
+    "check": "node tools/check-data.mjs && node tools/check-physics.mjs && node tools/check-muscles.mjs && node tools/check-picking.mjs && node tools/check-transitions.mjs",
     "build-model": "node --max-old-space-size=8000 tools/bp3d-build.mjs"
   },
   "dependencies": {
