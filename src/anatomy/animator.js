@@ -27,9 +27,13 @@ const MAX_STEP = 0.05;
 const SOFT_GROUND = 0.002;
 // A foot stepping to a new place on the floor clears it by up to this much (m), halfway along.
 const STEP_CLEARANCE = 0.08;
-// ... by bending the hip and knee of that leg, each by at most this much (rad) on top of the
-// interpolated angle.
-const MAX_STEP_KNEE = (100 * Math.PI) / 180;
+// ... by bending the knee of that leg by up to this much (rad) on top of the interpolated angle,
+// and the hip by HIP_PER_KNEE of it, within LEG_ROM (rad of flexion).
+const STEP_KNEE = (100 * Math.PI) / 180;
+const HIP_PER_KNEE = 0.5;
+// Weight (m/rad) of that marching ratio against the height gradient when choosing how to bend.
+const STEP_BLEND = 0.05;
+const LEG_ROM = { hip: [(-30 * Math.PI) / 180, (150 * Math.PI) / 180], knee: [0, (150 * Math.PI) / 180], dorsi: (40 * Math.PI) / 180 };
 
 // Anchored pairs whose distance apart is held during a move: [end segment, limb root].
 const LIMB_PAIRS = [
@@ -352,60 +356,77 @@ export class Animator {
 
   /**
    * Interpolating a stepping leg's angles drags its foot along the mat or sweeps it through the
-   * floor (the front leg of a lunge straightening back into Plank goes 36 cm under it). This steers
-   * the foot instead: straight from where it was to where it lands, lifted by STEP_CLEARANCE ·
-   * sin(πk) on the way, by adding hip and knee flexion to the interpolated leg (two-joint IK,
-   * Gauss–Newton with finite-difference Jacobians, height weighted over the horizontal path).
+   * floor (the front leg of a lunge straightening back into Plank goes 36 cm under it). The leg
+   * is lifted the way a person steps: hip and knee bend together, in the direction that raises the
+   * foot (blended with HIP_PER_KNEE), by the amount s ∈ [0, 1] of STEP_KNEE that raises the foot's
+   * lowest point STEP_CLEARANCE · sin(πk) above its height at the ends of the move, relative to
+   * the anchor (bisection). The ankle dorsiflexes to keep the foot's angle, so the whole foot
+   * rises with the ankle and the height grows steadily with s: one parameter with a unique root
+   * keeps the motion continuous. (An IK on the foot position jumped between "leg straight back"
+   * and "knee bent" solutions; a fixed hip / knee ratio first lowered a leg reaching back.) The
+   * angles stay within LEG_ROM, so the knee never bends backwards.
    * Works on the rig as it stands (the body's position and tilt are left alone).
    */
   _liftSteps(quats, paths, anchor, k) {
-    const lift = STEP_CLEARANCE * Math.sin(Math.PI * k);
+    const arc = STEP_CLEARANCE * Math.sin(Math.PI * k);
+    if (arc < 1e-4) return;
     const rig = this.rig;
     const X = new THREE.Vector3(1, 0, 0);
     const r = new THREE.Quaternion();
-    const W = [1, 3, 1]; // weights of the x, y, z errors
     for (const { foot, p0, p1 } of paths) {
+      // above the foot's own height at the two ends (a landing foot a few mm below the standing
+      // one must not be lifted to it: near a straight knee that takes a large bend, which then
+      // snapped back at the end of the move)
+      const want = p0.y + (p1.y - p0.y) * k + arc;
       const side = foot.slice(-2);
       const hip = `hip${side}`;
       const knee = `knee${side}`;
-      const base = { hip: quats[hip].clone(), knee: quats[knee].clone() };
-      const target = p0.clone().lerp(p1, k);
-      target.y += lift;
-      // u = [extra hip flexion, extra knee flexion] (rad); hip flexion is −x in its local frame
-      // only the leg joints change, so the body keeps whatever tilt _keepOnFloor gave it
-      const at = ([dh, dk]) => {
-        quats[hip] = base.hip.clone().multiply(r.setFromAxisAngle(X, -dh));
+      const ankle = foot;
+      const base = { hip: quats[hip].clone(), knee: quats[knee].clone(), ankle: quats[ankle].clone() };
+      const hipFlex = -new THREE.Euler().setFromQuaternion(base.hip, 'ZYX').x;
+      const kneeFlex = 2 * Math.atan2(base.knee.x, base.knee.w);
+      const dorsi = -2 * Math.atan2(base.ankle.x, base.ankle.w);
+      // height of the foot for extra hip / knee flexion (rad)
+      const height = (dh0, dk0) => {
+        const dk = THREE.MathUtils.clamp(dk0, LEG_ROM.knee[0] - kneeFlex, LEG_ROM.knee[1] - kneeFlex);
+        const dh = THREE.MathUtils.clamp(dh0, LEG_ROM.hip[0] - hipFlex, LEG_ROM.hip[1] - hipFlex);
+        // the ankle dorsiflexes by what the knee bends beyond the hip, so the foot keeps its angle
+        // and only rises (otherwise the toes dip as the heel lifts and the lift jumps)
+        const dd = THREE.MathUtils.clamp(dk - dh, -Infinity, LEG_ROM.dorsi - dorsi);
+        quats[hip] = base.hip.clone().multiply(r.setFromAxisAngle(X, -dh)); // hip flexion is −x locally
         quats[knee] = base.knee.clone().multiply(r.setFromAxisAngle(X, dk));
-        rig.joints[hip].quaternion.copy(quats[hip]);
-        rig.joints[knee].quaternion.copy(quats[knee]);
+        quats[ankle] = base.ankle.clone().multiply(r.setFromAxisAngle(X, -dd)); // dorsiflexion is −x
+        for (const j of [hip, knee, ankle]) rig.joints[j].quaternion.copy(quats[j]);
         rig.root.updateMatrixWorld(true);
-        return this._footRel(foot, anchor).sub(target).toArray();
+        return this._footRel(foot, anchor).y;
       };
-      let u = [0, 0];
-      let e = at(u);
-      for (let it = 0; it < 8; it++) {
-        if (Math.hypot(...e) < 0.005) break;
-        const J = [0, 1].map((i) => {
-          const v = [...u];
-          v[i] += 0.02;
-          return at(v).map((x, c) => (x - e[c]) / 0.02);
-        });
-        // normal equations (2×2) with a little damping
-        const A = [[1e-3, 0], [0, 1e-3]];
-        const b = [0, 0];
-        for (let c = 0; c < 3; c++)
-          for (let i = 0; i < 2; i++) {
-            b[i] -= W[c] * J[i][c] * e[c];
-            for (let j = 0; j < 2; j++) A[i][j] += W[c] * J[i][c] * J[j][c];
-          }
-        const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
-        let d = [(b[0] * A[1][1] - b[1] * A[0][1]) / det, (A[0][0] * b[1] - A[1][0] * b[0]) / det];
-        const n = Math.hypot(...d);
-        if (n > 0.4) d = d.map((x) => (x * 0.4) / n);
-        u = [THREE.MathUtils.clamp(u[0] + d[0], -MAX_STEP_KNEE, MAX_STEP_KNEE), THREE.MathUtils.clamp(u[1] + d[1], -MAX_STEP_KNEE, MAX_STEP_KNEE)];
-        e = at(u);
+      const h0 = height(0, 0);
+      if (h0 >= want) continue;
+      // bend in the direction that raises the foot fastest right now (a leg reaching back lifts
+      // by extending the hip, a leg under the body by flexing it), blended with the marching
+      // ratio where the gradient vanishes (a straight leg hanging down); the direction changes
+      // smoothly with the pose, and along it the height rises from s = 0
+      const gh = (height(0.02, 0) - h0) / 0.02;
+      const gk = (height(0, 0.02) - h0) / 0.02;
+      const dir = [gh + STEP_BLEND * HIP_PER_KNEE, gk + STEP_BLEND];
+      const n = Math.hypot(...dir);
+      const clearance = (x) => height((x * STEP_KNEE * dir[0]) / n, (x * STEP_KNEE * dir[1]) / n);
+      if (clearance(1) < want) continue; // as high as it goes
+      let [a, b] = [0, 1];
+      for (let it = 0; it < 16; it++) {
+        const m = (a + b) / 2;
+        if (clearance(m) >= want) b = m;
+        else a = m;
       }
+      clearance(b);
     }
+  }
+
+  /** Copies of the hip, knee and ankle rotations of each stepping leg. */
+  _legQuats(quats, paths) {
+    const out = {};
+    for (const { foot } of paths) for (const j of ['hip', 'knee', 'ankle']) out[`${j}${foot.slice(-2)}`] = quats[`${j}${foot.slice(-2)}`].clone();
+    return out;
   }
 
   /**
@@ -541,6 +562,9 @@ export class Animator {
       const [width, keep, paths, pk] = chain?.keep ? [chain.width, chain.keep, chain.stepPaths, w] : [s.width, s.keep, s.stepPaths, k];
       if (width && pk > 0 && pk < 1) this._keepWidth(quats, width, pk);
       const stepping = paths && pk > 0 && pk < 1;
+      // the stepping legs as interpolated: each lift starts from them, so the second one (after
+      // _keepOnFloor) can undo a bend the first one no longer needs
+      const legs = stepping ? this._legQuats(quats, paths) : null;
       if (stepping) {
         this.rig.applyQuats(quats);
         this._liftSteps(quats, paths, s.anchor, pk);
@@ -556,7 +580,12 @@ export class Animator {
       this.rig.ground();
       if (keep && pk > 0 && pk < 1) this._keepOnFloor(keep, pk, s.anchor, { x: s.anchorTarget.x - cx, z: s.anchorTarget.z - cz });
       // _keepOnFloor tilts the body to put the anchor down, which moves the stepping foot: steer it again
-      if (stepping) this._liftSteps(quats, paths, s.anchor, pk);
+      if (stepping) {
+        Object.assign(quats, legs);
+        for (const j in legs) this.rig.joints[j].quaternion.copy(legs[j]);
+        this.rig.root.updateMatrixWorld(true);
+        this._liftSteps(quats, paths, s.anchor, pk);
+      }
       this._groundSoft(SOFT_GROUND * Math.sin(Math.PI * pk));
       this.onFrame?.();
       return;

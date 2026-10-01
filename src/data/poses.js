@@ -322,6 +322,38 @@ export const POSES = {
     shoulder: { flex: 93, abd: 0 },
     wrist: { ext: 80, pron: 180 },
   },
+  // Halfway through the left leg's step between the lunge and Plank (back) and between Downward
+  // Dog and the long lunge (forward): hands and right foot down, left knee drawn in with the ankle
+  // ~8 cm above its path. Interpolating straight between the ends swept the left foot 36 cm
+  // under the floor, and lifting it out made the leg whip through at ~1000°/s.
+  surya_step_back_L: {
+    root: { pitch: 72 },
+    lumbar: { flex: 6 },
+    thorax: { flex: 8 },
+    neck: { flex: -13 },
+    shoulder: { flex: 88, abd: -1 },
+    wrist: { ext: 80, pron: 180 },
+    hip_L: { flex: 107 },
+    hip_R: { flex: 11 },
+    knee_L: { flex: 129 },
+    ankle_L: { dorsi: -27 },
+    ankle_R: { dorsi: 6 },
+  },
+  surya_step_up_L: {
+    root: { pitch: 95 },
+    lumbar: { flex: 4 },
+    thorax: { flex: 7 },
+    neck: { flex: -5 },
+    scapula: { elev: 3 },
+    shoulder: { flex: 133, rot: 10, abd: -3 },
+    wrist: { ext: 61, pron: 180 },
+    hip_L: { flex: 150 },
+    hip_R: { flex: 45 },
+    knee_L: { flex: 130 },
+    knee_R: { flex: 6 },
+    ankle_L: { dorsi: 14 },
+    ankle_R: { dorsi: 5 },
+  },
   chaturanga: {
     root: { pitch: 81 },
     hip: { flex: 0 },
@@ -633,6 +665,18 @@ export const POSE_FIT = {
     params: ['root.pitch', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'shoulder.abd', 'lumbar.flex', 'thorax.flex'],
   },
 
+  surya_step_back_L: {
+    support: ['wrist_L', 'wrist_R', 'ankle_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
+    params: ['root.pitch', 'shoulder.flex', 'hip_R.flex', 'ankle_R.dorsi'],
+  },
+  surya_step_up_L: {
+    support: ['wrist_L', 'wrist_R', 'ankle_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
+    params: ['root.pitch', 'shoulder.flex', 'hip_R.flex', 'ankle_R.dorsi'],
+  },
   phalakasana_knees: { support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'], params: ['root.pitch&shoulder.flex', 'root.pitch'] },
   chaturanga: {
     support: ['wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
