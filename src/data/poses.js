@@ -14,6 +14,17 @@ export const POSES = {
     shoulder: { flex: -12, abd: 10 },
     wrist: { ext: 80 },
   },
+  // Dandasana with the hands just lifted off the floor (elbows soft, palms still facing down):
+  // the step before leaning back into Navasana. Going there directly, the wrist straightening from
+  // 80° drives the fingers into the floor and props the body up off the sit bones.
+  dandasana_hands_up: {
+    hip: { flex: 90 },
+    ankle: { dorsi: 1 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -30, abd: 10 },
+    elbow: { flex: 75 },
+    wrist: { ext: 90 },
+  },
   supine: {
     root: { pitch: -90 },
     shoulder: { abd: 18 },

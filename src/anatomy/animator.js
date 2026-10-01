@@ -13,10 +13,24 @@ export function poseToQuats(poseId) {
   return q;
 }
 
-// A contact counts as "on the floor" when it is within this height (m) of it.
+// A segment counts as resting on the floor when it is within this height (m) of it ...
 const ON_FLOOR = 0.015;
-// Contacts closer together than this (m) cannot tilt the body against each other.
-const MIN_SPAN = 0.3;
+// ... and as staying put when it moves less than this (m) across the floor between two poses.
+const STAYS = 0.1;
+// Floor contacts weigh less than the anchor when they cannot all be kept down.
+const CONTACT_WEIGHT = 0.25;
+// Lifts smaller than this (m) are left alone (soft tissue; avoids rocking between heel and toes).
+const TOLERANCE = 0.005;
+// Largest tilt (rad) per iteration: the least-squares step is linearised.
+const MAX_STEP = 0.05;
+
+/** Solves the 3×3 system A·x = b (Cramer's rule). */
+function solve3(A, b) {
+  const det = (m) =>
+    m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+  const d = det(A);
+  return [0, 1, 2].map((i) => det(A.map((row, r) => row.map((v, j) => (j === i ? b[r] : v)))) / d);
+}
 
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
@@ -99,7 +113,7 @@ export class Animator {
         off = { ...prev.offset };
       }
       s.offset = off;
-      s.keep = s.anchor ? this._floorPair(prev, s) : null;
+      s.keep = s.anchor ? this._floorTargets(prev, s) : null;
     }
     // Centre the whole sequence around the origin (use the most "important" step).
     const key = this.steps[Math.min(1, this.steps.length - 1)];
@@ -117,62 +131,94 @@ export class Animator {
     return h;
   }
 
-  /**
-   * Interpolating joint angles does not keep every contact on the floor: going from tabletop to
-   * Downward Dog the slerped legs and arms no longer reach the floor together, so grounding the
-   * lowest point (the feet) lifts the hands and the whole body "jumps". Segments resting on the
-   * floor in both poses are split into two far-apart groups; during the move the body is tilted
-   * so both groups keep their height difference (see _keepOnFloor).
-   */
-  _floorPair(prev, s) {
-    this.rig.applyQuats(prev.quats, prev.offset);
-    this.rig.ground();
-    const h0 = this._segmentHeights();
-    this.rig.applyQuats(s.quats, s.offset);
-    this.rig.ground();
-    const h1 = this._segmentHeights();
-    const common = Object.keys(h0).filter((seg) => h0[seg] < ON_FLOOR && h1[seg] < ON_FLOOR);
-    if (common.length < 2) return null;
-    // split by the farthest pair (positions in the target pose)
-    const pos = Object.fromEntries(common.map((seg) => [seg, this.rig.worldPoint(seg, new THREE.Vector3(), new THREE.Vector3())]));
-    const dist = (a, b) => Math.hypot(pos[a].x - pos[b].x, pos[a].z - pos[b].z);
-    let best = [null, null, 0];
-    for (const a of common) for (const b of common) if (dist(a, b) > best[2]) best = [a, b, dist(a, b)];
-    if (best[2] < MIN_SPAN) return null;
-    const g1 = common.filter((seg) => dist(seg, best[0]) <= dist(seg, best[1]));
-    const g2 = common.filter((seg) => !g1.includes(seg));
-    const gap = (h) => Math.min(...g2.map((x) => h[x])) - Math.min(...g1.map((x) => h[x]));
-    return { g1, g2, d0: gap(h0), d1: gap(h1) };
+  /** Lowest contact point (y and world position) of each segment in the current rig state. */
+  _lowestPoints() {
+    const low = {};
+    const p = new THREE.Vector3();
+    for (const c of this.rig.contacts) {
+      const y = this.rig.worldPoint(c.seg, c.local, p).y - c.r;
+      if (!low[c.seg] || y < low[c.seg].y) low[c.seg] = { y, pos: p.clone() };
+    }
+    return low;
   }
 
-  /** Tilts the grounded rig so the two floor groups of `keep` stay down, anchor fixed in x/z. */
+  /**
+   * Interpolating joint angles does not keep the supports on the floor: going from tabletop to
+   * Downward Dog the slerped arms and legs no longer reach the floor together, so grounding the
+   * lowest point (the feet) lifts the hands and the whole body "jumps". This records the height
+   * of the anchor, and of every other segment resting on the floor in both poses without moving
+   * across it, so that _keepOnFloor can hold them during the move.
+   */
+  _floorTargets(prev, s) {
+    this.rig.applyQuats(prev.quats, prev.offset);
+    this.rig.ground();
+    const l0 = this._lowestPoints();
+    this.rig.applyQuats(s.quats, s.offset);
+    this.rig.ground();
+    const l1 = this._lowestPoints();
+    const targets = [];
+    for (const seg in l0) {
+      const anchor = s.anchor.includes(seg);
+      const resting = l0[seg].y < ON_FLOOR && l1[seg].y < ON_FLOOR && Math.hypot(l0[seg].pos.x - l1[seg].pos.x, l0[seg].pos.z - l1[seg].pos.z) < STAYS;
+      if (anchor || resting) targets.push({ seg, h0: l0[seg].y, h1: l1[seg].y, w: anchor ? 1 : CONTACT_WEIGHT });
+    }
+    return targets;
+  }
+
+  /**
+   * Tilts (pitch / roll) and lifts the grounded rig so the recorded segments are as close as
+   * possible to their interpolated heights (weighted least squares, linearised and iterated),
+   * keeping the anchor fixed in x/z; ground() then keeps everything above the floor.
+   */
   _keepOnFloor(keep, k, anchor, target) {
     const rig = this.rig;
-    const centroid = (segs) => {
-      const c = new THREE.Vector3();
-      for (const seg of segs) c.add(rig.worldPoint(seg, new THREE.Vector3(), new THREE.Vector3()));
-      return c.multiplyScalar(1 / segs.length);
-    };
-    const want = keep.d0 + (keep.d1 - keep.d0) * k;
+    const pel = rig.pelvis;
+    const p = new THREE.Vector3();
     const rot = new THREE.Quaternion();
-    for (let it = 0; it < 4; it++) {
-      const h = this._segmentHeights();
-      const err = Math.min(...keep.g2.map((x) => h[x])) - Math.min(...keep.g1.map((x) => h[x])) - want;
-      if (Math.abs(err) < 5e-4) break;
-      const c1 = centroid(keep.g1);
-      const dir = centroid(keep.g2).sub(c1).setY(0);
-      const len = dir.length();
-      if (len < 1e-3) break;
-      // a positive rotation about up × dir lowers group 2 relative to group 1
-      rot.setFromAxisAngle(new THREE.Vector3(dir.z, 0, -dir.x).normalize(), Math.atan2(err, len));
-      const pel = rig.pelvis;
+    const qx = new THREE.Quaternion();
+    const X = new THREE.Vector3(1, 0, 0);
+    const Z = new THREE.Vector3(0, 0, 1);
+    const pivots = new Set();
+    for (let it = 0; it < 6; it++) {
+      const low = this._lowestPoints();
+      const c = new THREE.Vector3();
+      for (const seg of anchor) c.add(low[seg].pos);
+      c.multiplyScalar(1 / anchor.length);
+      // unknowns u = [dy, ax, az]: a rotation ax about X lowers a point by ax·dz, az about Z raises it by az·dx
+      const A = [[1e-6, 0, 0], [0, 1e-4, 0], [0, 0, 1e-4]];
+      const b = [0, 0, 0];
+      // whatever rests (or rested in an earlier iteration) on the floor is the pivot: it should stay there
+      const minY = Math.min(...Object.values(low).map((l) => l.y));
+      for (const seg in low) if (low[seg].y < minY + 0.005) pivots.add(seg);
+      const rows = keep.map((t) => ({ seg: t.seg, want: t.h0 + (t.h1 - t.h0) * k, w: t.w }));
+      for (const seg of pivots) if (!rows.some((t) => t.seg === seg)) rows.push({ seg, want: 0, w: CONTACT_WEIGHT });
+      let worst = 0;
+      for (const t of rows) {
+        const l = low[t.seg];
+        // only pull segments down: one lower than its target (a thigh rising off the floor
+        // more slowly than in the end pose) is not floating
+        const r = keep.some((x) => x.seg === t.seg) ? Math.max(0, l.y - t.want - TOLERANCE) : l.y;
+        if (keep.some((x) => x.seg === t.seg)) worst = Math.max(worst, r * t.w);
+        const J = [1, -(l.pos.z - c.z), l.pos.x - c.x];
+        for (let i = 0; i < 3; i++) {
+          b[i] -= t.w * J[i] * r;
+          for (let j = 0; j < 3; j++) A[i][j] += t.w * J[i] * J[j];
+        }
+      }
+      if (worst < 5e-4) break;
+      let [, ax, az] = solve3(A, b);
+      const step = Math.hypot(ax, az);
+      if (step > MAX_STEP) [ax, az] = [(ax * MAX_STEP) / step, (az * MAX_STEP) / step];
+      rot.setFromAxisAngle(X, ax).multiply(qx.setFromAxisAngle(Z, az));
       pel.quaternion.premultiply(rot);
-      pel.position.sub(c1).applyQuaternion(rot).add(c1);
+      pel.position.sub(c).applyQuaternion(rot).add(c);
       rig.root.updateMatrixWorld(true);
       // hold the anchor where it was, then put the body back on the floor
-      const a = centroid(anchor);
-      pel.position.x += target.x - a.x;
-      pel.position.z += target.z - a.z;
+      c.set(0, 0, 0);
+      for (const seg of anchor) c.add(rig.worldPoint(seg, new THREE.Vector3(), p));
+      c.multiplyScalar(1 / anchor.length);
+      pel.position.x += target.x - c.x;
+      pel.position.z += target.z - c.z;
       rig.root.updateMatrixWorld(true);
       rig.ground();
     }

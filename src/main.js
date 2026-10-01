@@ -1425,9 +1425,11 @@ function stepLabel() {
     return cur.label || a.vi;
   }
   if (a.loop === 'static') return `${a.sanskrit} – giữ tư thế`;
-  const target = anim.steps[Math.floor(anim.steps.length / 2)];
-  if (alpha < 1 && index > 0) return s === target ? `Đi vào ${a.sanskrit}…` : 'Trở về tư thế ban đầu…';
-  return s === target ? `${a.sanskrit} – giữ tư thế, thở đều` : 'Tư thế bắt đầu';
+  // ping-pong sequence: start → (intermediate steps) → target → … → start
+  const ti = Math.floor(anim.steps.length / 2);
+  if (alpha < 1 && index > 0) return index <= ti ? `Đi vào ${a.sanskrit}…` : 'Trở về tư thế ban đầu…';
+  if (index === ti) return `${a.sanskrit} – giữ tư thế, thở đều`;
+  return index === 0 || index === anim.steps.length - 1 ? 'Tư thế bắt đầu' : index < ti ? `Đi vào ${a.sanskrit}…` : 'Trở về tư thế ban đầu…';
 }
 
 // ---------------------------------------------------------------- views
