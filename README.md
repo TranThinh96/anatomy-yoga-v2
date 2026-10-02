@@ -58,8 +58,9 @@ Phương pháp:
 5. Mô-men khớp: tĩnh học ngược trên phần cơ thể phía xa khớp (trọng lực + lực sàn).
 
 ### Mức hoạt động cơ & kiểu co (mô hình · thử nghiệm)
-> **Thử nghiệm:** đây là ước lượng của mô hình, **chưa đối chiếu với đo EMG thật**. Dùng để minh hoạ xu hướng,
-> không trích dẫn như số đo. Vai trò cơ theo tài liệu giải phẫu / EMG nằm ở chế độ tô màu mặc định **"Vai trò"**.
+> **Thử nghiệm:** đây là ước lượng của mô hình. Đã đối chiếu với EMG đo thật ở một số tư thế đứng và **chưa khớp**
+> (xem *Đối chiếu với EMG* bên dưới). Không trích dẫn như số đo. Vai trò cơ theo tài liệu giải phẫu / EMG nằm ở chế độ
+> tô màu mặc định **"Vai trò"**.
 
 Chế độ tô màu **"Hoạt động"** và mục *Mức hoạt động cơ* trong thẻ cơ sinh học ước lượng **từng cơ làm việc
 bao nhiêu % sức tối đa** và **kiểu co**: đồng tâm (ngắn lại khi làm việc), ly tâm (dài ra khi làm việc),
@@ -97,6 +98,22 @@ gập sâu, cơ bị kéo giãn gánh một phần tải — app cảnh báo khi
 vững khớp). Đai vai là một đoạn cứng quay quanh khớp ức–đòn, chưa tựa lên lồng ngực: cơ nào kéo xương bả vai
 (như cơ lưng rộng) bị mô hình "ngại" dùng, nên ở tư thế tay qua đầu (Chó úp mặt) nhóm chóp xoay vẫn bị tính cao. Dùng để **so sánh xu hướng**, không thay thế đo EMG
 hay số đo lâm sàng.
+
+#### Đối chiếu với EMG
+`src/data/emg.js` chứa EMG bề mặt đo ở người tập, chép từ bảng kết quả (toàn văn trên PubMed Central) của 3 nghiên cứu:
+- Liu et al. 2021 (*Int J Environ Res Public Health* 18:8402, Table 2): 11 nữ giáo viên yoga, %MVC trung bình;
+  cơ rộng ngoài, thẳng đùi, rộng trong, nhị đầu đùi, bán gân trong Ghế, Cây (chân trụ), Chiến binh I và II (chân trước / sau).
+- Lehecka et al. 2021 (*Int J Sports Phys Ther* 16:662, Table 4): 31 người trẻ, %MVIC đỉnh; cơ mông lớn, mông nhỡ
+  trong Cây (chân trụ / chân nâng) và Chiến binh II.
+- Wang et al. 2013 (*BMC Complement Altern Med* 13:8, Table 1): 20 người cao tuổi, % đỉnh EMG khi đi bộ (chỉ so thứ
+  hạng); cơ bụng chân, gân kheo, rộng ngoài, mông nhỡ trong Ghế, Cây và Chiến binh II.
+
+`node tools/check-emg.mjs --verbose` so từng giá trị với mô hình (trung bình các bó của cơ, hoặc đúng bó khi bài đo riêng
+một đầu cơ). Kết quả hiện tại: hệ số tương quan thứ hạng 0,23 (Liu), −0,38 (Lehecka), 0,27 (Wang); với Liu, mô hình thấp
+hơn EMG quá 1 độ lệch chuẩn ở 25/30 giá trị. Mô hình tối ưu tĩnh chọn cách ít tốn sức nhất, nên bỏ qua việc co nhiều cơ
+cùng lúc để giữ vững khớp và thăng bằng: cơ đùi trước của chân trụ trong tư thế Cây gần như 0 % trong mô hình nhưng đo được
+khoảng 30 %MVC; chân sau của Chiến binh I/II cũng vậy. Vì vậy mức hoạt động vẫn ghi **thử nghiệm**. Khi chọn một cơ có số
+liệu ở tư thế đang giữ, thẻ cơ hiển thị EMG đo được bên cạnh số của mô hình, kèm nguồn.
 
 ### Mô hình từ xương & cơ thật (BodyParts3D)
 Toàn bộ khung xương (117 bộ phận: sọ, từng đốt sống, 24 xương sườn, xương cổ tay, đốt ngón…)

@@ -409,3 +409,5 @@ button { cursor: pointer; }
   .brand { display: none; }
   .mode-tab { padding: 6px 9px; font-size: 13px; }
 }
+.emg-row { margin-top: 4px; padding: 3px 6px; border-left: 2px solid #4fb3ff; background: rgba(79, 179, 255, 0.08); border-radius: 4px; }
+.emg-row a { color: #8fcfff; }
