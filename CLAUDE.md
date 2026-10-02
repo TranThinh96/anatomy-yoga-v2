@@ -100,10 +100,12 @@ Data files:
 
 - `.claude/hooks/session-start.sh` runs `npm install` in remote sessions.
 - Chromium for Playwright is at `/opt/pw-browsers/chromium`; Playwright is installed globally, not in package.json.
-- The network policy blocks literature sites (PubMed/PMC, Wiley, eScholarship, Europe PMC, ResearchGate);
-  ask the user for PDFs or for the domains to be allowed rather than guessing numbers.
-- BodyParts3D is only reachable as a git mirror (github.com/Kevin-Mattheus-Moerman/BodyParts3D);
-  lifesciencedb.jp is blocked. Its data is CC BY-SA 2.1 JP – keep the attribution in README,
+- The environment has open network access. PubMed, PMC full text, eScholarship and the Europe PMC REST API
+  (`www.ebi.ac.uk/europepmc/webservices/rest/…`) are reachable. europepmc.org, Wiley and ResearchGate answer
+  403 (a Cloudflare bot challenge from the site, not the proxy): look for the PMC copy or the Europe PMC API,
+  otherwise ask the user for the PDF. Never guess numbers.
+- BodyParts3D: use the 3.0 git mirror (github.com/Kevin-Mattheus-Moerman/BodyParts3D) – `build-model` expects it;
+  lifesciencedb.jp is reachable too. Its data is CC BY-SA 2.1 JP – keep the attribution in README,
   the app and `public/models/bp3d/LICENSE.txt`.
 
 ## Pose quality bar
