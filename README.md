@@ -115,6 +115,12 @@ cùng lúc để giữ vững khớp và thăng bằng: cơ đùi trước của
 khoảng 30 %MVC; chân sau của Chiến binh I/II cũng vậy. Vì vậy mức hoạt động vẫn ghi **thử nghiệm**. Khi chọn một cơ có số
 liệu ở tư thế đang giữ, thẻ cơ hiển thị EMG đo được bên cạnh số của mô hình, kèm nguồn.
 
+Đã thử thêm **đồng co để giữ vững khớp**: yêu cầu độ cứng của cơ (độ cứng tầm ngắn q·F/L, Bergmark 1989) lớn hơn độ
+cứng gây đổ của tải trọng ở mỗi khớp (tiêu chí con lắc ngược, Winter et al. 1998), như Brown & Potvin 2005 làm cho cột
+sống. Hằng số q chỉ được biết trong khoảng 1–40 (Barrett et al. 2024). Trên cả khoảng đó, kết quả lúc tốt lúc xấu tùy
+tham số (ví dụ số giá trị khớp EMG của Liu tăng, nhưng thứ hạng không tốt hơn và bài Lehecka xấu đi), nên chưa bật
+trong app. Muốn làm lại cần chiều dài sợi cơ tối ưu của từng cơ từ tài liệu (`node tools/check-emg.mjs --sweep`).
+
 ### Mô hình từ xương & cơ thật (BodyParts3D)
 Toàn bộ khung xương (117 bộ phận: sọ, từng đốt sống, 24 xương sườn, xương cổ tay, đốt ngón…)
 và đường đi của 33 cơ được dựng từ **BodyParts3D** (dữ liệu chụp cơ thể người thật, nam, cao 1,64 m)

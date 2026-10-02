@@ -74,6 +74,16 @@ Data files:
   co-contraction for joint stiffness and balance). Keep the "thử nghiệm" labels and "Vai trò" (literature roles)
   as the default colour mode. When the muscle model changes, re-run check-emg and update the numbers quoted in
   README and in the activation note (main.js). New EMG values: copy from a paper's table, never read off a figure.
+- Co-contraction by a joint-stability constraint is implemented but OFF (`solve(moments, { q, load })`,
+  `physics.loadStiffness`, `node tools/check-emg.mjs --sweep` / `--q <n>`): muscle short-range stiffness
+  q·F·r²/L (Bergmark 1989) must exceed the load's tipping stiffness (Winter 1998), as in Brown & Potvin 2005.
+  Over q = 1–40 (the literature range, Barrett 2024) and slack weights 1–10 it moved values into 1 SD of the
+  EMG for Liu (4 → up to 11 of 30) but did not improve rank correlation, made Lehecka worse (−0.38 → −0.75)
+  and changed with every parameter: no robust gain, so it stays off. It routes stiffness to whichever fibre
+  has the largest r²/L (biceps femoris in Utkatasana, rectus femoris instead of the vasti in Vrksasana) because
+  L is the whole muscle–tendon length; a retry needs optimal fibre lengths per muscle from a cited table
+  (Ward et al. 2009, Clin Orthop Relat Res 467:1074 – full text not reachable here, ask the user for the PDF).
+  Never pick q or the slack weight to fit the EMG.
 - Passive muscle tension is deliberately NOT modelled. A ROM-based version (slack at standing
   length, Thelen 2003 passive curve up to the textbook range end) was tried and made results worse
   (muscles pinned at 90–100 % went from 5 to 9–14 across the 33 poses): the dominant errors in
