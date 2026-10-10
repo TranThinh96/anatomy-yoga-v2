@@ -10,7 +10,7 @@ import { Rig, semanticToQuat, baseOf } from '../src/anatomy/rig.js';
 import { MuscleSystem } from '../src/anatomy/muscles.js';
 import { Physics } from '../src/anatomy/physics.js';
 import { MuscleForces, JOINT_AXES } from '../src/anatomy/muscleForces.js';
-import { poseToQuats } from '../src/anatomy/animator.js';
+import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { ASANAS } from '../src/data/asanas.js';
 import { TOPICS } from '../src/data/topics.js';
 
@@ -175,6 +175,7 @@ for (const [joint, key, angles, list] of RANGES) {
   const STRETCH_MIN = 0.025; // at least 2.5 % longer than in Tadasana
   for (const a of ASANAS) {
     if (a.flow) continue;
+    rig.env = poseEnv(a.steps[a.steps.length - 1].pose);
     rig.applyQuats(physics.balance(poseToQuats(a.steps[a.steps.length - 1].pose)));
     rig.ground();
     mf.updatePoints();
@@ -192,6 +193,7 @@ for (const [joint, key, angles, list] of RANGES) {
 {
   const CHANGE_MIN = 0.015; // at least 1.5 % shorter / longer than in the reference pose
   const lengths = (pose) => {
+    rig.env = poseEnv(pose);
     rig.applyQuats(physics.balance(poseToQuats(pose)));
     rig.ground();
     mf.updatePoints();
@@ -223,6 +225,7 @@ for (const a of ASANAS) {
 }
 const NAMES = { L: 'T', R: 'P' };
 for (const pose of poses) {
+  rig.env = poseEnv(pose);
   rig.applyQuats(physics.balance(poseToQuats(pose)));
   rig.ground();
   const r = physics.compute();

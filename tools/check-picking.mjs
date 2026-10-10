@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { RealMuscles } from '../src/anatomy/realMuscles.js';
 import { Rig } from '../src/anatomy/rig.js';
 import { MuscleSystem } from '../src/anatomy/muscles.js';
-import { poseToQuats } from '../src/anatomy/animator.js';
+import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { ASANAS } from '../src/data/asanas.js';
 
 const rig = new Rig();
@@ -34,6 +34,7 @@ function beam(mesh) {
 }
 
 for (const pose of poses) {
+  rig.env = poseEnv(pose);
   rig.applyQuats(poseToQuats(pose));
   rig.ground();
   system.update();
@@ -58,6 +59,7 @@ console.log(`picking: ${rays} rays over ${poses.length} poses, ${failures} misse
 // ---- real muscle meshes (anatomy mode: Tadasana)
 const bin = readFileSync(new URL('../public/models/bp3d/muscles.bin', import.meta.url));
 const real = new RealMuscles(rig, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength));
+rig.env = poseEnv('tadasana');
 rig.applyQuats(poseToQuats('tadasana'));
 rig.ground();
 system.update();

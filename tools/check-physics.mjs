@@ -2,12 +2,12 @@
 //   node tools/check-physics.mjs      (npm run check)
 // - vertical floor forces add up to body weight, horizontal ones cancel
 // - the centre of mass lies over the base of support
-// - the segments listed in POSE_FIT[pose].support touch the floor
+// - the segments listed in POSE_FIT[pose].support touch the floor (or a prop), those in .wall a wall
 // - symmetric poses give (nearly) symmetric joint loads
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
 import { Physics } from '../src/anatomy/physics.js';
-import { poseToQuats } from '../src/anatomy/animator.js';
+import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { POSE_FIT } from '../src/data/poses.js';
 import { ASANAS } from '../src/data/asanas.js';
 
@@ -26,6 +26,7 @@ const fail = (pose, msg) => {
 };
 
 for (const pose of poses) {
+  rig.env = poseEnv(pose);
   rig.applyQuats(physics.balance(poseToQuats(pose)));
   rig.ground();
   const r = physics.compute();
@@ -36,6 +37,9 @@ for (const pose of poses) {
   for (const spec of POSE_FIT[pose]?.support || []) {
     const segs = spec.split('|');
     if (!r.contacts.some((c) => segs.includes(c.seg))) fail(pose, `${spec} should touch the floor`);
+  }
+  for (const seg of POSE_FIT[pose]?.wall || []) {
+    if (!r.contacts.some((c) => c.seg === seg && c.n.y < 0.5)) fail(pose, `${seg} should lean on the wall`);
   }
   if (!ASYMMETRIC.test(pose)) {
     const by = Object.fromEntries(r.joints.map((j) => [j.joint, j.total]));

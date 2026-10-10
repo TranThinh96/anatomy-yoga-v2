@@ -457,23 +457,21 @@ export const POSES = {
     ankle: { dorsi: -25 },
     shoulder: { abd: 18, rot: -80 },
   },
-  // Lying on the back with the knees drawn toward the chest: passed through on the way from
-  // supine_knees into Viparita Karani, so the legs fold in before they extend up.
-  supine_knees_chest: {
+  // Legs up the wall, knees bent and soles flat on the wall: the start (and the way out).
+  viparita_karani_bent: {
     root: { pitch: -90 },
-    hip: { flex: 105 },
-    knee: { flex: 110 },
-    ankle: { dorsi: -10 },
-    shoulder: { abd: 14, rot: -80 },
+    hip: { flex: 124 },
+    knee: { flex: 81 },
+    ankle: { dorsi: 7 },
+    shoulder: { abd: 30, rot: 80 },
   },
-  // Legs up (the wall is not modelled): legs vertical over the hips, knees soft, arms resting
-  // out to the sides, palms up. With the legs stacked over the hip joints the hip moment is
-  // near zero, as with the wall holding them.
+  // Legs up the wall: heels and calves resting on the wall, buttocks a little away from it, knees
+  // soft, arms out to the sides, palms up.
   viparita_karani: {
     root: { pitch: -90 },
     hip: { flex: 90 },
-    knee: { flex: 5 },
-    ankle: { dorsi: -15 },
+    knee: { flex: 7 },
+    ankle: { dorsi: -10 },
     shoulder: { abd: 30, rot: 80 },
   },
   // ---------------- Seated ----------------
@@ -672,6 +670,14 @@ export function expandPose(pose) {
   }
   return out;
 }
+
+// Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
+// pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
+export const POSE_PROPS = {
+  // the wall a little beyond the buttocks (legs up the wall)
+  viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
+  viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
+};
 
 // Floor-contact constraints used by tools/fit-poses.mjs: `support` lists the
 // segments that must touch the floor ("a|b" = either), `params` the angles the fitter may adjust
@@ -888,11 +894,15 @@ export const POSE_FIT = {
     ],
     params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi'],
   },
-  supine_knees_chest: { support: ['pelvis', 'thorax', 'head'], params: [] },
+  viparita_karani_bent: {
+    support: ['pelvis', 'thorax', 'head'],
+    wall: ['ankle_L', 'ankle_R'], // soles on the wall
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi'],
+  },
   viparita_karani: {
     support: ['pelvis', 'thorax', 'head'],
-    dir: [['hip_L', [0, -1, 0], [0, 1, 0]], ['hip_R', [0, -1, 0], [0, 1, 0]]], // legs vertical
-    params: ['hip.flex'],
+    wall: ['ankle_L', 'ankle_R'], // heels on the wall (the calves come within a few cm)
+    params: ['hip.flex', 'knee.flex'],
   },
   ardha_matsyendrasana_knee_up: {
     support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],

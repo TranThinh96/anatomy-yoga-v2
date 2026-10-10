@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { Viewer } from './viewer.js';
 import { Body } from './anatomy/body.js';
-import { Animator } from './anatomy/animator.js';
+import { Animator, poseEnv } from './anatomy/animator.js';
+import { propMeshes } from './anatomy/props.js';
 import { ThumbnailMaker } from './ui/thumbnails.js';
 import { Physics } from './anatomy/physics.js';
 import { PhysicsOverlay } from './ui/physicsOverlay.js';
@@ -24,7 +25,28 @@ const subject = loadSubject();
 const physics = new Physics(body.rig, subject);
 // every pose is statically balanced (centre of mass over the feet) before it is played
 const balance = (q) => physics.balance(q);
-const anim = new Animator(body.rig, () => body.update(), { prepare: balance });
+// meshes of the props (wall, blocks, bolster) of the sequence being played
+let propGroup = null;
+function syncProps(env) {
+  if (propGroup?.userData.env === env) return;
+  if (propGroup) {
+    viewer.scene.remove(propGroup);
+    propGroup.traverse((o) => o.geometry?.dispose());
+  }
+  propGroup = env && !env.empty ? propMeshes(env) : null;
+  if (propGroup) {
+    propGroup.userData.env = env;
+    viewer.scene.add(propGroup);
+  }
+}
+const anim = new Animator(
+  body.rig,
+  function () {
+    body.update();
+    syncProps(this.env);
+  },
+  { prepare: balance },
+);
 const overlay = new PhysicsOverlay(viewer.scene);
 // muscle moment arms + static optimisation (activation of every muscle)
 const forces = new MuscleForces(body.rig, body.muscleSystem);
@@ -710,6 +732,13 @@ function frameAsana(a) {
   const wide = size.x > size.z * 1.2;
   viewer.mat.position.set(c.x, -0.002, c.z);
   viewer.mat.rotation.y = wide ? Math.PI / 2 : 0;
+  // a mat ends at a wall instead of running through it
+  for (const w of anim.env.props.filter((p) => p.kind === 'wall')) {
+    const half = wide ? 0.33 : 0.95; // half the mat's length along z (0.66 × 1.9 m mat)
+    const halfX = wide ? 0.95 : 0.33;
+    if (Math.abs(w.n.z) > 0.9) viewer.mat.position.z = w.c.z + w.n.z * Math.max(0, (viewer.mat.position.z - w.c.z) * w.n.z, half);
+    if (Math.abs(w.n.x) > 0.9) viewer.mat.position.x = w.c.x + w.n.x * Math.max(0, (viewer.mat.position.x - w.c.x) * w.n.x, halfX);
+  }
   const dir = a.view || (size.y < 1.05 ? [1, 0.45, 0.45] : wide ? [0.25, 0.22, 1] : [0.75, 0.25, 1.1]);
   viewer.flyTo([c.x, c.y, c.z], dir, extent * 2.1 + 0.6, 0.9);
 }
@@ -961,6 +990,7 @@ function compareVariants() {
   if (!a.variants) return '';
   const cols = [{ label: 'Chuẩn', pose: targetPose(a) }, ...a.variants];
   const res = cols.map((c) => {
+    body.rig.env = poseEnv(c.pose);
     body.rig.applyQuats(anim.quatsFor(c.pose));
     body.rig.ground();
     const r = physics.compute();
@@ -1077,6 +1107,7 @@ $('#topic-list').addEventListener('click', (e) => {
 
 /** Muscle lengths in a pose (balanced and grounded like the animator plays it). */
 function muscleLengthsIn(pose) {
+  body.rig.env = poseEnv(pose);
   body.rig.applyQuats(anim.quatsFor(pose));
   body.rig.ground();
   body.update();

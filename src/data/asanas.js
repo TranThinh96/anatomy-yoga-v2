@@ -770,11 +770,7 @@ export const ASANAS = [
     en: 'Legs Up the Wall',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [
-      { pose: 'supine_knees' },
-      { pose: 'supine_knees_chest', move: 1.4, via: true },
-      { pose: 'viparita_karani', move: 1.6, hold: 3 },
-    ],
+    steps: [{ pose: 'viparita_karani_bent' }, { pose: 'viparita_karani', move: 2.2, hold: 3 }],
     loop: 'pingpong',
     roles: {
       contract: [],
@@ -788,13 +784,13 @@ export const ASANAS = [
     ],
     cues: [
       'Ngồi nghiêng sát tường, xoay người nằm xuống và đưa hai chân lên tường; mông cách tường một khoảng vừa đủ để gân kheo không bị kéo căng.',
+      'Bắt đầu với gối gập, lòng bàn chân áp tường; rồi duỗi dần hai chân lên cho gót tựa vào tường.',
       'Có thể kê chăn gấp hoặc gối ôm mỏng dưới xương cùng.',
       'Tay thả sang hai bên, lòng bàn tay ngửa; thả lỏng bụng, thở chậm 5–10 phút.',
       'Khi ra: gập gối, lăn nghiêng sang một bên, nghỉ vài hơi thở rồi mới ngồi dậy.',
     ],
     benefits: ['Tư thế phục hồi, dễ thư giãn', 'Kéo giãn nhẹ gân kheo'],
     cautions: [
-      'Mô hình không có tường: chân được đặt thẳng đứng trên khớp háng nên gần như không cần lực giữ, gần giống khi tường đỡ. Lệch khỏi phương thẳng đứng thì cơ gập háng phải giữ chân.',
       'Gân kheo căng: lùi mông xa tường hơn hoặc gập gối.',
       'Tăng nhãn áp, bệnh tim mạch, trào ngược dạ dày, tê chân: hỏi ý kiến bác sĩ; ra khỏi tư thế nếu chân tê hoặc khó thở.',
       'Thai kỳ (sau 3 tháng đầu): tránh nằm ngửa lâu.',

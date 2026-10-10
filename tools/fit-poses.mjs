@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
 import { Physics, convexHull, signedMargin } from '../src/anatomy/physics.js';
-import { poseToQuats } from '../src/anatomy/animator.js';
+import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { POSES, POSE_FIT } from '../src/data/poses.js';
 
 const FILE = new URL('../src/data/poses.js', import.meta.url);
@@ -33,7 +33,7 @@ function supportHeights(pose, support) {
   return support.map((spec) => {
     const segs = spec.split('|');
     let h = Infinity;
-    for (const c of rig.contacts) if (segs.includes(c.seg)) h = Math.min(h, rig.worldPoint(c.seg, c.local).y - c.r);
+    for (const c of rig.contacts) if (segs.includes(c.seg)) h = Math.min(h, rig.clearance(c, rig.worldPoint(c.seg, c.local)));
     return h;
   });
 }
@@ -90,6 +90,7 @@ const wdir = (seg, v) => new THREE.Vector3(...v).transformDirection(rig.joints[s
 
 // Optional geometric goals (all errors in cm or degrees-ish, squared):
 //   flat:  segments whose every contact point must touch (e.g. a whole foot)
+//   wall:  segments that lean on a wall of POSE_PROPS (their nearest point touches it)
 //   rel:   [segA, segB, [dx, dz]] horizontal offset of joint B from joint A (m)
 //   dir:   [seg, localVector, worldVector] a segment axis should point this way
 //   above: [upper, lower] joint `upper` stacked vertically over joint `lower`
@@ -105,7 +106,17 @@ function goals(fit) {
     if (margin < 0.03) e += ((0.03 - Math.max(margin, -0.5)) * 100) ** 2 * 3;
   }
   for (const seg of fit.flat || []) {
-    for (const c of rig.contacts) if (c.seg === seg) e += ((rig.worldPoint(c.seg, c.local).y - c.r) * 100) ** 2 * 0.3;
+    for (const c of rig.contacts) if (c.seg === seg) e += (rig.clearance(c, rig.worldPoint(c.seg, c.local)) * 100) ** 2 * 0.3;
+  }
+  // nothing goes through a wall
+  for (const c of rig.env.empty ? [] : rig.wallContacts) {
+    const gap = rig.env.wallGap(rig.worldPoint(c.seg, c.local), c.r).gap;
+    if (gap < 0) e += (gap * 100) ** 2 * 3;
+  }
+  for (const seg of fit.wall || []) {
+    let gap = Infinity;
+    for (const c of rig.wallContacts) if (c.seg === seg) gap = Math.min(gap, rig.env.wallGap(rig.worldPoint(c.seg, c.local), c.r).gap);
+    e += (gap * 100) ** 2;
   }
   for (const [a, b, [dx, dz]] of fit.rel || []) {
     const A = wp(a);
@@ -157,6 +168,7 @@ function patch(poseName, [key, field], value) {
 
 for (const [name, fit] of Object.entries(POSE_FIT)) {
   if (only.length && !only.includes(name)) continue;
+  rig.env = poseEnv(name);
   const start = POSES[name];
   const params = fit.params.map(parseParam);
   const keys = [...new Map(params.flat().map((t) => [t.key.join('.'), t.key])).values()];
