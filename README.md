@@ -16,7 +16,7 @@ chuyển động với các cơ được tác động được tô sáng theo th
 - Tìm kiếm không dấu (vd: `gan kheo`, `hang`).
 
 ### Asana 3D
-- 22 asana + 2 chuỗi động tác (**Mèo – Bò**, **Chào mặt trời A**), mỗi tư thế có chuyển động
+- 26 asana + 2 chuỗi động tác (**Mèo – Bò**, **Chào mặt trời A**), mỗi tư thế có chuyển động
   đi vào – giữ – trở ra.
 - Cơ được tô màu theo vai trò: **co cơ** (đỏ, nhấp nháy), **kéo giãn** (xanh), **ổn định** (vàng).
 - Chế độ **"Theo độ dài"**: màu tính trực tiếp từ độ dài cơ so với Tadasana – cơ ngắn lại chuyển đỏ,
