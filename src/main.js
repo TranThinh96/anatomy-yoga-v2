@@ -12,6 +12,7 @@ import { MUSCLES, MUSCLE_GROUPS } from './data/muscles.js';
 import { JOINTS } from './data/joints.js';
 import { ASANAS, ASANA_BY_ID, CATEGORIES } from './data/asanas.js';
 import { TOPICS, TOPIC_BY_ID } from './data/topics.js';
+import { emgFor, modelActivation } from './anatomy/emgCompare.js';
 
 // ---------------------------------------------------------------- setup
 const $ = (s, el = document) => el.querySelector(s);
@@ -847,7 +848,7 @@ function physicsSectionHtml(a) {
     <div id="ph-act"></div>
     ${compare}
     <p class="hint">Tính từ tư thế trên mô hình: khối lượng từng đoạn cơ thể theo de Leva (1996), cân bằng tĩnh (ΣF = 0, ΣM = 0). Khi có nhiều điểm tựa, lực đỡ từ sàn (cả lực đứng và ma sát) được chọn sao cho tổng tải khớp nhỏ nhất – người tập "thả" trọng lượng vào điểm tựa một cách khéo léo, nên tải hiển thị là mức thấp.</p>
-    <p class="hint"><b>Thử nghiệm – chưa đối chiếu với đo EMG thật.</b> Mức hoạt động cơ: mỗi bó cơ có cánh tay đòn (tính giải tích từ đường đi của cơ, có bao quanh khớp) và sức tối đa theo thiết diện sinh lý; tối ưu tĩnh chọn tổ hợp lực cơ cân bằng mọi mô-men khớp với tổng bình phương mức hoạt động nhỏ nhất (Crowninshield &amp; Brand 1981). Kiểu co lấy từ chiều thay đổi độ dài cơ khi chuyển động. Mô hình chưa tính sức căng thụ động của cơ bị kéo giãn và chưa có một số cơ sâu, nên đây là ước lượng xu hướng – không thay thế đo EMG.</p>
+    <p class="hint"><b>Thử nghiệm – đã đối chiếu với EMG đo thật và chưa khớp.</b> Ở 4 tư thế đứng (Ghế, Cây, Chiến binh I, II) và 7 cơ chân, theo 3 nghiên cứu (Liu 2021, Lehecka 2021, Wang 2013): mô hình thấp hơn EMG ở phần lớn giá trị, thứ tự giữa các tư thế cũng thường khác. Lý do chính: mô hình chọn cách ít tốn sức nhất nên bỏ qua việc người thật co nhiều cơ cùng lúc để giữ khớp và giữ thăng bằng (ví dụ cơ đùi trước của chân trụ trong tư thế Cây). Chọn một cơ ở các tư thế này để xem số EMG bên cạnh số của mô hình. Mức hoạt động cơ: mỗi bó cơ có cánh tay đòn (tính giải tích từ đường đi của cơ, có bao quanh khớp) và sức tối đa theo thiết diện sinh lý; tối ưu tĩnh chọn tổ hợp lực cơ cân bằng mọi mô-men khớp với tổng bình phương mức hoạt động nhỏ nhất (Crowninshield &amp; Brand 1981). Kiểu co lấy từ chiều thay đổi độ dài cơ khi chuyển động. Mô hình chưa tính sức căng thụ động của cơ bị kéo giãn và chưa có một số cơ sâu, nên đây là ước lượng xu hướng – không thay thế đo EMG.</p>
   </div>`;
 }
 
@@ -999,6 +1000,22 @@ function compareVariants() {
   return `${html}</tbody></table><p class="hint">% = chênh lệch so với bản chuẩn (xanh: tải nhẹ hơn / vững hơn).</p>`;
 }
 
+/** Measured EMG for the selected muscle in the pose being held (data/emg.js), next to the model. */
+function emgRows(id, sides, act) {
+  const { index, alpha } = anim.locate(anim.time);
+  if ((index > 0 && alpha < 1) || state.mode !== 'asana') return '';
+  const pose = anim.steps[index] && anim.steps[index].pose;
+  const rows = sides.flatMap((sd) => emgFor(pose, id, sd));
+  if (!rows.length) return '';
+  return rows
+    .map((e) => {
+      const part = e.part !== null ? `${MUSCLE_STRENGTH[id].names[e.part]}, ` : '';
+      const model = Math.round(100 * modelActivation(act, id, e.side, e.part));
+      return `<div class="emg-row">EMG đo được (${part}${esc(e.limb)}): <b>${Math.round(e.mean)} ± ${Math.round(e.sd)} ${esc(e.ref.norm)}</b>${e.ref.stat === 'đỉnh' ? ' (đỉnh)' : ''} · mô hình <b>${model}%</b>${part ? '' : ' (trung bình các bó)'} · <a href="https://doi.org/${e.ref.doi}" target="_blank" rel="noopener" title="${esc(`${e.ref.cite}, ${e.ref.table} – ${e.ref.subjects}. ${e.ref.note}`)}">${esc(e.ref.short)}</a></div>`;
+    })
+    .join('');
+}
+
 let lastLiveUpdate = 0;
 function updateLiveNumbers(force = false) {
   const now = performance.now();
@@ -1029,7 +1046,7 @@ function updateLiveNumbers(force = false) {
           const pct = Math.round(m.a * 100);
           return `<div>Hoạt động (mô hình, thử nghiệm)${sides.length > 1 ? ` (${SIDE_LABEL[sd]})` : ''}: <b>${pct}%</b>${m.part && pct ? ` · ${esc(m.part)}` : ''} · ${Math.round(m.force)} N${m.type ? ` <span class="ctype ${m.type}">${CONTRACTION[m.type].label}</span>` : ''}</div>`;
         })
-        .join('');
+        .join('') + emgRows(sel.id, sides, act);
     }
     const arms = $('#sel-arms');
     if (arms) {

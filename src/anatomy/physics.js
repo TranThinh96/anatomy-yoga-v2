@@ -534,7 +534,54 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0, support, joints, moments };
+    return { W, com, contacts, hull, margin, stable: margin > 0, support, joints, moments, segPos };
+  }
+
+  /**
+   * Load ("gravitational") stiffness of every joint for the result `r` of compute(): the
+   * symmetric 3×3 matrix K (world frame, N·m/rad, row-major) such that turning the part of
+   * the body that is free to rotate about the joint by a small angle δ·e changes the external
+   * moment on it by δ·K·e; eᵀKe > 0 means the load tips further over (an inverted pendulum,
+   * critical stiffness m·g·h – Winter et al. 1998, J Neurophysiol 80:1211).
+   * The free part is the distal subtree when it carries no floor force (an arm in the air, the
+   * trunk above the lumbar joint); otherwise the rest of the body rotates on the planted limb,
+   * approximated as the floor force this limb carries acting at the COM of the rest of the body.
+   * For a point force G at r from the joint: δM = (δ e × r) × G, so K = sym(r Gᵀ) − (G·r) I.
+   */
+  loadStiffness(r) {
+    const { W, contacts, segPos } = r;
+    const out = {};
+    const add = (K, rv, G) => {
+      const gr = G.dot(rv);
+      const a = [rv.x, rv.y, rv.z];
+      const g = [G.x, G.y, G.z];
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) K[i * 3 + j] += 0.5 * (a[i] * g[j] + a[j] * g[i]) - (i === j ? gr : 0);
+    };
+    const rv = new THREE.Vector3();
+    for (const name in this.rig.joints) {
+      if (name === 'pelvis') continue;
+      const sub = this.subtree[name];
+      const J = this.rig.joints[name].getWorldPosition(new THREE.Vector3());
+      const K = new Array(9).fill(0);
+      let fy = 0;
+      for (const c of contacts) if (sub.has(c.seg) && c.F) fy += c.F.y;
+      if (fy < 1e-3 * W) {
+        this.segments.forEach((s, i) => {
+          if (sub.has(s.seg)) add(K, rv.subVectors(segPos[i], J), new THREE.Vector3(0, -s.frac * W, 0));
+        });
+      } else {
+        const c = new THREE.Vector3();
+        let w = 0;
+        this.segments.forEach((s, i) => {
+          if (sub.has(s.seg)) return;
+          c.addScaledVector(segPos[i], s.frac);
+          w += s.frac;
+        });
+        if (w > 0) add(K, rv.subVectors(c.multiplyScalar(1 / w), J), new THREE.Vector3(0, -fy, 0));
+      }
+      out[name] = K;
+    }
+    return out;
   }
 
   /**

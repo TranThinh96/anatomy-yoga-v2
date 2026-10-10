@@ -46,6 +46,22 @@ const RESERVE = {
 };
 const tau0 = (joint, dof) => RESERVE[baseOf(joint)]?.[dof.key] ?? 10;
 
+// STABILITY (optional, solve(moments, { q, load })). A held pose is in equilibrium but must
+// also be stable: when a joint turns by a small angle, the muscles' restoring moment must grow
+// faster than the load's tipping moment (Bergmark 1989, Acta Orthop Scand Suppl 230; Cholewicki
+// & McGill 1996, Clin Biomech 11:1; Brown & Potvin 2005, J Biomech 38:745 put this into the
+// optimisation and got trunk co-contraction). Short-range stiffness of an active muscle is
+// k = q·F/L (Bergmark 1989), so a fibre adds q·Fmax·a·r²/L to the joint stiffness along the axis
+// (the F·dr/dθ term is left out). Per joint axis:  Σ q·Fmax·a·r²/L + κσ ≥ eᵀ K_load e  (σ ≥ 0).
+// q is poorly known: "often chosen between 1.0 and 40" (Barrett et al. 2024, PLoS ONE
+// 19:e0307977) – results must be checked over that range, not tuned to one value.
+const STAB_MIN = 1; // N·m/rad: ignore axes whose load barely tips
+// slack σ: STAB_SLACK = 1 leaves the requirement unmet at the cost of one fully active fibre;
+// a modelling choice (no literature value), so unmet stiffness stays possible but expensive
+const STAB_SLACK = 3;
+// surplus column of the ≥ row: a surplus of one requirement costs (1/STAB_SURPLUS)²
+const STAB_SURPLUS = 30;
+
 // Axes of every joint, in the anatomical sense of semanticToQuat (rig.js).
 // axis: c* = the joint's own frame, p* = its parent's; sign turns the component into
 // "positive = first label" (flexion, abduction, external rotation, to own left …).
@@ -119,10 +135,13 @@ function cholSolve(H, g, n) {
 }
 
 /**
- * min ½Σx² s.t. A x = b, 0 ≤ x_i ≤ 1 for i < nb (bounded), x free for i ≥ nb.
- * A is m×N (row-major rows of length N). The free columns must span Rᵐ (reserves do).
+ * min ½Σx² s.t. A x = b, lo_j ≤ x_j ≤ hi_j. A is m×N (row-major rows of length N). Columns
+ * without bounds (reserves) must span Rᵐ. An inequality row is written as an equality with a
+ * surplus column bounded below by 0 (see solve()).
+ * Solved through the dual: x = clip(Aᵀλ, lo, hi), Newton on λ with a line search on the
+ * (concave, piecewise quadratic) dual function.
  */
-export function solveBoundedLS(A, b, m, N, nb, lam0) {
+export function solveBoundedLS(A, b, m, N, lo, hi, lam0) {
   const lam = lam0 && lam0.length === m ? Float64Array.from(lam0) : new Float64Array(m);
   const s = new Float64Array(N);
   const x = new Float64Array(N);
@@ -131,17 +150,18 @@ export function solveBoundedLS(A, b, m, N, nb, lam0) {
       let v = 0;
       for (let i = 0; i < m; i++) v += A[i * N + j] * lam[i];
       s[j] = v;
-      x[j] = j < nb ? Math.min(1, Math.max(0, v)) : v;
+      x[j] = Math.min(hi[j], Math.max(lo[j], v));
     }
   };
+  // dual function: λ·b − Σ conj(s_j), conj of ½x² on [lo, hi]
   const dual = () => {
     let d = 0;
     for (let i = 0; i < m; i++) d += lam[i] * b[i];
     for (let j = 0; j < N; j++) {
       const v = s[j];
-      if (j >= nb) d -= 0.5 * v * v;
-      else if (v >= 1) d -= v - 0.5;
-      else if (v > 0) d -= 0.5 * v * v;
+      if (v >= hi[j]) d -= hi[j] * v - 0.5 * hi[j] * hi[j];
+      else if (v <= lo[j]) d -= lo[j] * v - 0.5 * lo[j] * lo[j];
+      else d -= 0.5 * v * v;
     }
     return d;
   };
@@ -161,7 +181,7 @@ export function solveBoundedLS(A, b, m, N, nb, lam0) {
     if (Math.sqrt(gn) < 1e-7 * scale) break;
     H.fill(0);
     for (let j = 0; j < N; j++) {
-      if (j < nb && (s[j] <= 0 || s[j] >= 1)) continue; // at a bound: no curvature
+      if (s[j] <= lo[j] || s[j] >= hi[j]) continue; // at a bound: no curvature
       for (let i = 0; i < m; i++) {
         const ai = A[i * N + j];
         if (!ai) continue;
@@ -336,32 +356,76 @@ export class MuscleForces {
    * Muscle forces that balance the joint moments `moments` (joint name → Vector3, world,
    * what the muscles must supply). Returns fibre activations and per-muscle summaries.
    */
-  solve(moments) {
+  solve(moments, stiffness = null) {
     this.updatePoints();
     const rig = this.rig;
     const nb = this.fibres.length;
     const m = this.rows.length;
-    const N = nb + m;
-    const A = new Float64Array(m * N);
-    const b = new Float64Array(m);
-    this.rows.forEach((row, i) => {
-      axisOf(rig.joints[row.joint], row.dof.axis, row.e);
-      const M = moments[row.joint];
-      b[i] = M ? M.dot(row.e) : 0;
-      A[i * N + nb + i] = tau0(row.joint, row.dof);
-    });
     const v = new THREE.Vector3();
-    this.fibres.forEach((f, j) => {
+    this.rows.forEach((row) => axisOf(rig.joints[row.joint], row.dof.axis, row.e));
+    // moment-arm components per fibre and row (sparse)
+    const arms = this.fibres.map((f) => {
+      const out = [];
       for (const cr of f.crosses) {
         this.momentArm(f, cr, v);
         for (const dof of JOINT_AXES[baseOf(cr.joint)].dofs) {
           const i = this.rowIndex[`${cr.joint}.${dof.key}`];
-          A[i * N + j] = f.fmax * v.dot(this.rows[i].e);
+          out.push([i, v.dot(this.rows[i].e)]);
         }
       }
+      return out;
     });
-    const { x, lam, iters } = solveBoundedLS(A, b, m, N, nb, this._lam);
+    // stability rows (see STABILITY above): Σ a·Fmax·q·r²/L + κσ ≥ load stiffness
+    const stab = [];
+    if (stiffness) {
+      const { q, load } = stiffness;
+      this.rows.forEach((row, i) => {
+        const K = load[row.joint];
+        if (!K) return;
+        const e = row.e;
+        const k = e.x * (K[0] * e.x + K[1] * e.y + K[2] * e.z) + e.y * (K[3] * e.x + K[4] * e.y + K[5] * e.z) + e.z * (K[6] * e.x + K[7] * e.y + K[8] * e.z);
+        if (k > STAB_MIN) stab.push({ row: i, k, q });
+      });
+    }
+    const p = stab.length;
+    const M = m + p;
+    const N = nb + m + 2 * p;
+    const A = new Float64Array(M * N);
+    const b = new Float64Array(M);
+    const lo = new Float64Array(N);
+    const hi = new Float64Array(N);
+    for (let j = 0; j < N; j++) {
+      lo[j] = j < nb ? 0 : j < nb + m ? -Infinity : 0; // σ, surplus ≥ 0
+      hi[j] = j < nb ? 1 : Infinity;
+    }
+    this.rows.forEach((row, i) => {
+      const Mj = moments[row.joint];
+      b[i] = Mj ? Mj.dot(row.e) : 0;
+      A[i * N + nb + i] = tau0(row.joint, row.dof);
+    });
+    const stabOf = new Map(stab.map((st, k) => [st.row, k]));
+    stab.forEach((st, k) => {
+      b[m + k] = st.k;
+      A[(m + k) * N + nb + m + k] = st.k / STAB_SLACK;
+      // surplus: stiffness above the requirement is (almost) free
+      A[(m + k) * N + nb + m + p + k] = -STAB_SURPLUS * st.k;
+    });
+    this.fibres.forEach((f, j) => {
+      for (const [i, r] of arms[j]) {
+        A[i * N + j] = f.fmax * r;
+        const k = stabOf.get(i);
+        if (k !== undefined) A[(m + k) * N + j] = (f.fmax * stab[k].q * r * r) / f.length;
+      }
+    });
+    const lam0 = this._lam && this._lam.length === M ? this._lam : null;
+    const { x, lam, iters } = solveBoundedLS(A, b, M, N, lo, hi, lam0);
     this._lam = lam;
+    const stability = stab.map((st, k) => {
+      const row = this.rows[st.row];
+      let have = 0;
+      for (let j = 0; j < nb; j++) have += A[(m + k) * N + j] * x[j];
+      return { joint: row.joint, dof: row.dof, need: st.k, have };
+    });
 
     const fibres = this.fibres.map((f, j) => ({ fibre: f, a: x[j], force: x[j] * f.fmax }));
     const reserves = this.rows.map((row, i) => {
@@ -383,7 +447,7 @@ export class MuscleForces {
         o.part = r.fibre.part;
       }
     }
-    return { fibres, muscles, reserves, iters };
+    return { fibres, muscles, reserves, stability, iters };
   }
 
   /**
