@@ -211,6 +211,54 @@ export const POSES = {
     shoulder: { abd: 90, rot: -90 },
   },
 
+  // Trikonasana with the lower hand on a block (standing on its end) in front of and inside the front
+  // foot: the heel of the hand on the block, the fingers reaching past it.
+  trikonasana_block: {
+    root: { roll: 42 },
+    hip_L: { abd: 83, rot: 90 },
+    hip_R: { abd: -19, rot: -17 },
+    ankle_L: { dorsi: -37 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { side: 11 },
+    thorax: { side: 30, rot: -10 },
+    neck: { rot: -35 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { flex: -12 },
+    wrist_L: { ext: 74 },
+  },
+  // trikonasana_block with the trunk a little higher (less side bend): the hand just above the block,
+  // so the last part of the move lowers it straight down onto the block.
+  trikonasana_block_above: {
+    root: { roll: 42 },
+    hip_L: { abd: 83, rot: 90 },
+    hip_R: { abd: -19, rot: -17 },
+    ankle_L: { dorsi: -37 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { side: 4 },
+    thorax: { side: 24, rot: -10 },
+    neck: { rot: -35 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { flex: -12 },
+    wrist_L: { ext: 74 },
+  },
+  // The lower hand lifted off the shin (elbow bent, arm turned out) to above and in front of the
+  // block: passed through between Trikonasana and trikonasana_block, so the hand comes down onto the
+  // block from above (swinging the straight arm forward slid the hand into the block's side).
+  trikonasana_block_reach: {
+    root: { roll: 42 },
+    hip_L: { abd: 83, rot: 90 },
+    hip_R: { abd: -19, rot: -18 },
+    ankle_L: { dorsi: -38 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { side: 12 },
+    thorax: { side: 31, rot: -10 },
+    neck: { rot: -35 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { rot: 20 },
+    elbow_L: { flex: 60 },
+    wrist_L: { ext: 40 },
+  },
+
   // ---------------- Kneeling / hands & knees ----------------
   marjaryasana: {
     // Cat
@@ -733,6 +781,8 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a block on its end in front of and inside the front (left) foot, under the lower hand
+  trikonasana_block: [{ type: 'block', stand: 'end', at: [0.56, 0.12], yaw: 90 }],
   // a folded blanket under the sit bones, lengthwise
   dandasana_blanket: [{ type: 'blanket', at: [0, -0.1], yaw: 90 }],
   paschimottanasana_blanket: [{ type: 'blanket', at: [0, -0.1], yaw: 90 }],
@@ -846,6 +896,22 @@ export const POSE_FIT = {
     at: [['wrist_L', 'knee_L', [0.02, -0.2, 0.05]]], // lower hand on the front shin
     params: ['root.roll', 'hip_L.abd', 'hip_R.abd', 'hip_R.rot', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'shoulder_L.abd', 'shoulder_R.abd'],
   },
+  trikonasana_block: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L'],
+    onProp: ['wrist_L'], // the hand on the block, not on the floor beside it
+    flat: ['ankle_L', 'ankle_R', 'ankle_L', 'ankle_R'], // feet flat (weighted twice)
+    rel: [['ankle_L', 'ankle_R', [-0.9, 0]], ['ankle_L', 'wrist_L', [0.07, 0.12]]],
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]],
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]],
+      ['thorax', [0, 0, 1], [0, 0, 1]],
+      ['shoulder_R', [0, -1, 0], [0, 1, 0]],
+      ['shoulder_L', [0, -1, 0], [0, -1, 0]], // lower arm hangs straight down to the block
+    ],
+    params: ['root.roll', 'hip_L.abd', 'hip_R.abd', 'hip_R.rot', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'shoulder_L.abd', 'shoulder_L.flex', 'shoulder_R.abd', 'wrist_L.ext'],
+  },
+  trikonasana_block_above: { support: ['ankle_L', 'ankle_R'], flat: ['ankle_L', 'ankle_R'], params: ['ankle_L.dorsi', 'ankle_R.dorsi'] },
+  trikonasana_block_reach: { support: ['ankle_L', 'ankle_R'], flat: ['ankle_L', 'ankle_R'], params: ['ankle_L.dorsi', 'ankle_R.dorsi'] },
   marjaryasana: {
     support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'],
     flat: ['wrist_L', 'wrist_R'], // palms flat

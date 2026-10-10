@@ -194,9 +194,13 @@ viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal p
 - A step shows the props of the poses it moves between. If a body part lies where the prop goes, give
   the variant its own `steps` and move it out of the way first (supported bridge: hips up, then down onto
   the block); a limb must arrive on a prop from above, not slide into its side, and a stepping foot
-  must not pass over it. (A block under Trikonasana's lower hand was tried and left out: the stepping
-  foot crossed it, and the hand would not lie flat on a 23 cm block – the fitter only got the
-  fingertips or the heel of the hand down. It needs a via pose that lifts the hand over the block.)
+  must not pass over it. Trikonasana's block variant shows the pattern: step into the pose as usual,
+  then two via poses – the hand lifted (elbow bent, arm turned out: `shoulder_L.rot`, not `abd`, which
+  swings the hanging hand sideways at shin height straight into the block), then the trunk a little
+  higher with the hand over the block – and down onto it. Give the move with the largest joint
+  travel the most time (a 0.5 s via move made the shoulder turn at 1000 °/s on the way back).
+- A hand on a 23 cm block cannot lie fully flat (the block's top is smaller than the hand): fit the
+  heel of the hand onto it with `onProp` and leave the fingers reaching past.
 - Keep the hands on the mat when lying: a hand hovering where a block goes lands on the block.
 - A body coming down onto a prop needs several angles to move together, where the one-angle-at-a-time
   fitter stalls: `npm run fit-poses -- --restarts 40 <pose>` (deterministic random restarts).

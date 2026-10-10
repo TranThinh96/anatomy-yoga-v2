@@ -301,6 +301,21 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'tadasana' }, { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4 }],
     loop: 'pingpong',
+    variants: [
+      {
+        // into the pose as usual (a block already beside the front foot would be in the stepping
+        // foot's way), then the lower hand lifts, goes over the block and comes down onto it
+        label: 'Tay đặt gạch',
+        pose: 'trikonasana_block',
+        steps: [
+          { pose: 'tadasana' },
+          { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4, hold: 0.6 },
+          { pose: 'trikonasana_block_reach', anchor: FEET, move: 0.9, via: true },
+          { pose: 'trikonasana_block_above', anchor: FEET, move: 1.0, via: true },
+          { pose: 'trikonasana_block', anchor: FEET, move: 0.6 },
+        ],
+      },
+    ],
     roles: {
       contract: [...QUADS, 'quadratus_lumborum_L', 'external_oblique_L', 'gluteus_medius_R', 'deltoid', 'trapezius', 'sternocleidomastoid_R'],
       stretch: ['hamstrings_L', 'adductors_L', 'quadratus_lumborum_R', 'external_oblique_R', 'latissimus_dorsi_R', 'pectoralis_major'],

@@ -49,6 +49,9 @@ Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh 
   (Supta Baddha Konasana – tải khớp háng ~15 → ~0 N·m), gạch dưới xương cùng (Cây cầu có điểm tựa – mô-men
   thắt lưng 28 → 5 N·m), gối ôm kê trên hai gạch (Tư thế em bé tựa gối ôm – tải gối 37 → 4 N·m), chăn gấp
   dưới mông (Paschimottanasana – tải gần như không đổi vì mô hình chưa có lực căng thụ động của gân kheo).
+  Gạch dưới tay dưới (Tam giác – tay không được tính là tựa lên ống chân, nên ở bản chuẩn thắt lưng gánh
+  89 N·m; khi tay đặt lên gạch, tay chịu một phần trọng lượng và tải khớp còn ≤ 15 N·m – mô hình chọn
+  cách tựa ít tốn sức nhất, nên người tập thật thường tì tay nhẹ hơn).
   Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.
 - Nhập **cân nặng** và **tỷ lệ cơ thể nam/nữ**; bật/tắt **ma sát với thảm**.
 
