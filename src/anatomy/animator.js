@@ -212,10 +212,11 @@ export class Animator {
       }
       s.offset = off;
     }
-    this._setEnv();
+    this._setEnvs({ x: 0, z: 0 });
     for (let i = 1; i < this.steps.length; i++) {
       const s = this.steps[i];
       const prev = this.steps[i - 1];
+      this.rig.env = s.env;
       s.keep = s.anchor ? this._floorTargets(prev, s) : null;
       s.width = s.anchor ? this._anchorWidth(prev, s) : null;
       s.stepPaths = s.keep?.steps ? this._stepPaths(prev, s, s.keep.steps) : null;
@@ -228,6 +229,7 @@ export class Animator {
       if (!c || c.keep !== undefined) continue;
       const [first, last] = [c.keys[0], c.keys[c.keys.length - 1]];
       const anchored = c.keys.slice(1).every((m) => m.anchor && m.anchor.join() === last.anchor.join());
+      this.rig.env = last.env;
       c.keep = anchored ? this._floorTargets(first, last) : null;
       c.stepPaths = c.keep?.steps ? this._stepPaths(first, last, c.keep.steps) : null;
       c.width = anchored ? this._anchorWidth(first, last) : null;
@@ -235,27 +237,36 @@ export class Animator {
     // Centre the whole sequence around the origin (use the most "important" step).
     const key = this.steps[Math.min(1, this.steps.length - 1)];
     this.center = { x: key.offset.x, z: key.offset.z };
-    this._setEnv(this.center);
+    this._setEnvs(this.center);
+    this.env = this.steps[0].env;
   }
 
   /**
-   * The props of every pose in the sequence, placed where that pose is (its offset, minus the
-   * centre once it is known). A prop listed by several poses at the same place is kept once.
+   * Props of each step: those of the pose it moves from and the pose it moves into (all poses of
+   * a chain of via poses), placed where those poses are (their offset, minus the centre once it is
+   * known). A block is there while the hips come down onto it and while they rise off it, and not
+   * before (the pelvis lies where it goes in Setu Bandha). The same prop at the same place is
+   * one prop, and steps with the same props share one Env.
    */
-  _setEnv(center = { x: 0, z: 0 }) {
-    const props = [];
-    const seen = new Set();
-    for (const s of this.steps) {
-      for (const p of POSE_PROPS[s.pose] || []) {
-        const at = [p.at[0] + s.offset.x - center.x, p.at[1] + s.offset.z - center.z];
-        const key = `${p.type}|${p.stand || ''}|${p.yaw || 0}|${p.y || 0}|${at.map((v) => Math.round(v * 50)).join(',')}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        props.push({ ...p, at });
+  _setEnvs(center) {
+    const envs = new Map();
+    this.steps.forEach((s, i) => {
+      const from = s.chain ? s.chain.keys : [this.steps[Math.max(0, i - 1)], s];
+      const props = [];
+      const keys = new Set();
+      for (const k of from) {
+        for (const p of POSE_PROPS[k.pose] || []) {
+          const at = [p.at[0] + k.offset.x - center.x, p.at[1] + k.offset.z - center.z];
+          const key = `${p.type}|${p.stand || ''}|${p.yaw || 0}|${p.y || 0}|${at.map((v) => Math.round(v * 50)).join(',')}`;
+          if (keys.has(key)) continue;
+          keys.add(key);
+          props.push({ ...p, at });
+        }
       }
-    }
-    this.env = props.length ? new Env(props) : NO_PROPS;
-    this.rig.env = this.env;
+      const id = [...keys].sort().join(';');
+      if (!envs.has(id)) envs.set(id, props.length ? new Env(props) : NO_PROPS);
+      s.env = envs.get(id);
+    });
   }
 
   /** Lowest contact height of each segment in the current rig state. */
@@ -593,8 +604,9 @@ export class Animator {
   }
 
   render() {
-    // the rig may be shared (thumbnails, static analyses): put this sequence's props back
-    this.rig.env = this.env || NO_PROPS;
+    // props of the step being played (the rig may be shared with thumbnails / static analyses)
+    this.env = this.steps[this.locate(this.time).index].env || NO_PROPS;
+    this.rig.env = this.env;
     const { quats, s, prev, k, chain, w } = this.poseAt(this.time);
     const cx = this.center.x;
     const cz = this.center.z;

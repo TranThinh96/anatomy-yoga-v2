@@ -486,6 +486,19 @@ export const POSES = {
     ankle: { dorsi: -10 },
     shoulder: { abd: 52, rot: 80, flex: -45 },
   },
+  // Supported bridge: the sacrum rests on a block lying flat, hips lower than in Setu
+  // Bandha, the legs and back let go (restorative).
+  setu_bandha_block: {
+    root: { pitch: -93 },
+    hip: { flex: 39 },
+    knee: { flex: 130 },
+    ankle: { dorsi: 1 },
+    lumbar: { flex: -11 },
+    thorax: { flex: 4 },
+    neck: { flex: 35 },
+    shoulder: { flex: -17, abd: 6 },
+    wrist: { pron: 90 },
+  },
   // ---------------- Seated ----------------
   // The steps into Ardha Matsyendrasana: right knee drawn up with the foot flat on its own side,
   // the foot lifted over the left shin (via), then planted outside the left knee, trunk still facing
@@ -686,6 +699,8 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a block lying flat (its lowest height) under the sacrum
+  setu_bandha_block: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
   // a block on its long edge under each outer thigh, along the thigh
   supta_baddha_konasana_blocks: [
     { type: 'block', stand: 'side', at: [0.3, 0.11], yaw: -37 },
@@ -912,6 +927,12 @@ export const POSE_FIT = {
       ['ankle_R', [0, -1, 0], [0.85, -0.5, 0]],
     ],
     params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
+  setu_bandha_block: {
+    support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], // sacrum on the block
+    flat: ['ankle_L', 'ankle_R'],
+    above: [['knee_L', 'ankle_L'], ['knee_R', 'ankle_R']],
+    params: ['root.pitch&hip.flex', 'root.pitch', 'knee.flex', 'hip.flex', 'ankle.dorsi', 'shoulder.flex', 'neck.flex'],
   },
   supta_baddha_konasana_blocks: {
     support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'hip_L', 'hip_R', 'wrist_L', 'wrist_R'], // the thighs on the blocks

@@ -221,7 +221,7 @@ for (const [joint, key, angles, list] of RANGES) {
 const poses = new Set();
 for (const a of ASANAS) {
   for (const s of a.steps) poses.add(s.pose);
-  for (const v of a.variants || []) poses.add(v.pose);
+  for (const v of a.variants || []) for (const st of v.steps || [{ pose: v.pose }]) poses.add(st.pose);
 }
 const NAMES = { L: 'T', R: 'P' };
 for (const pose of poses) {

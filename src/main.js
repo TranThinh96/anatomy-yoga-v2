@@ -11,7 +11,7 @@ import { MUSCLE_STRENGTH, fibreStrength } from './data/muscle-strength.js';
 import { BONES } from './data/bones.js';
 import { MUSCLES, MUSCLE_GROUPS } from './data/muscles.js';
 import { JOINTS } from './data/joints.js';
-import { ASANAS, ASANA_BY_ID, CATEGORIES } from './data/asanas.js';
+import { ASANAS, ASANA_BY_ID, CATEGORIES, asanaSteps } from './data/asanas.js';
 import { TOPICS, TOPIC_BY_ID } from './data/topics.js';
 import { emgFor, modelActivation } from './anatomy/emgCompare.js';
 
@@ -683,10 +683,7 @@ function targetPose(a) {
   return a.steps[a.steps.length - 1].pose;
 }
 function stepsFor(a, variant) {
-  const v = variant > 0 && a.variants ? a.variants[variant - 1] : null;
-  if (!v) return a.steps;
-  const target = targetPose(a);
-  return a.steps.map((s) => (s.pose === target ? { ...s, pose: v.pose } : s));
+  return asanaSteps(a, variant);
 }
 
 function loadAsana(id, variant = 0, { keepCamera = false } = {}) {

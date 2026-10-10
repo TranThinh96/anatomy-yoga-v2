@@ -11,6 +11,18 @@ const HIPS = ['hip_L', 'hip_R'];
 const QUADS = ['rectus_femoris', 'vastus_lateralis', 'vastus_medialis'];
 const side = (list, s) => list.map((m) => `${m}_${s}`);
 
+/**
+ * Steps played for an asana or one of its variants (1 = the first variant): a variant replaces
+ * the pose of the last step, or gives its own `steps` (a prop placed in the middle of the move).
+ */
+export function asanaSteps(a, variant = 0) {
+  const v = variant > 0 && a.variants ? a.variants[variant - 1] : null;
+  if (!v) return a.steps;
+  if (v.steps) return v.steps;
+  const target = a.steps[a.steps.length - 1].pose;
+  return a.steps.map((s) => (s.pose === target ? { ...s, pose: v.pose } : s));
+}
+
 export const CATEGORIES = ['Tất cả', 'Đứng', 'Gập người', 'Ngửa sau', 'Chống tay', 'Ngồi & nằm', 'Chuỗi động tác'];
 
 export const ASANAS = [
@@ -590,6 +602,18 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'supine_knees' }, { pose: 'setu_bandha', anchor: FEET, move: 2.2, hold: 2 }],
     loop: 'pingpong',
+    variants: [
+      {
+        // hips up, the block slid under the sacrum, hips lowered onto it (and back up to take it out)
+        label: 'Kê gạch dưới xương cùng',
+        pose: 'setu_bandha_block',
+        steps: [
+          { pose: 'supine_knees' },
+          { pose: 'setu_bandha', anchor: FEET, move: 2.2, hold: 1 },
+          { pose: 'setu_bandha_block', anchor: FEET, move: 1.8, hold: 3 },
+        ],
+      },
+    ],
     roles: {
       contract: ['gluteus_maximus', 'hamstrings', 'erector_spinae', 'adductors', 'rhomboids', 'triceps_brachii'],
       stretch: ['rectus_femoris', 'pectoralis_major'],

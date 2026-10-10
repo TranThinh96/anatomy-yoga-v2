@@ -172,12 +172,12 @@ export class Rig {
   /** Moves the body vertically so that its lowest contact point rests on the floor (or a prop). */
   ground() {
     // with props the supports depend on the height (a point resting on a block, not one beside
-    // it): settle in a few steps, starting from the floor
+    // it): settle in a few steps, starting with every prop solid
     for (let it = 0; it < (this.env.empty ? 1 : 4); it++) {
       let min = Infinity;
       for (const c of this.contacts) {
         const p = this.worldPoint(c.seg, c.local, this._v);
-        const y = it === 0 ? p.y - c.r : this.clearance(c, p);
+        const y = this.env.empty ? p.y - c.r : it === 0 ? p.y - this.env.rest(p.x, p.z, c.r).y : this.clearance(c, p);
         if (y < min) min = y;
       }
       this.pelvis.position.y -= min;

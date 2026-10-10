@@ -16,7 +16,7 @@ import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
 import { Physics } from '../src/anatomy/physics.js';
 import { Animator } from '../src/anatomy/animator.js';
-import { ASANAS } from '../src/data/asanas.js';
+import { ASANAS, asanaSteps } from '../src/data/asanas.js';
 
 const LIMITS = { wobble: 0.006, anchorLift: 0.015, jointSpeed: 900, hyperext: -5, clearance: 0.05 };
 const args = process.argv.slice(2);
@@ -32,9 +32,9 @@ let failures = 0;
 
 for (const a of ASANAS) {
   if (only.length && !only.includes(a.id)) continue;
-  for (const v of [null, ...(a.variants || [])]) {
+  for (const [vi, v] of [null, ...(a.variants || [])].entries()) {
     const name = `${a.id}${v ? ` / ${v.pose}` : ''}`;
-    const steps = a.steps.map((s, i) => (v && i === a.steps.length - 1 ? { ...s, pose: v.pose } : s));
+    const steps = asanaSteps(a, vi);
     const anim = new Animator(rig, null, { prepare: (q) => physics.balance(q) });
     anim.setSequence(steps, { loop: a.loop });
     if (anim.duration <= 0 || anim.steps.length < 2) continue;
