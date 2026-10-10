@@ -208,6 +208,23 @@ export const POSES = {
     shoulder_R: { abd: 167, rot: -90, flex: -7 },
     scapula_R: { elev: 10 },
   },
+  // Extended side angle with the lower hand on a block (on its end) inside the front foot: the
+  // trunk long over the front thigh, the lower arm straight down to the block.
+  utthita_parsvakonasana_block: {
+    root: { yaw: 33, roll: 21 },
+    hip_L: { flex: 85, abd: 23, rot: 46 },
+    knee_L: { flex: 94 },
+    ankle_L: { dorsi: 8 },
+    hip_R: { flex: -24, abd: 29, rot: 10 },
+    ankle_R: { dorsi: 7 },
+    lumbar: { side: 4, rot: -12 },
+    thorax: { side: 32, rot: -39 },
+    neck: { rot: -30 },
+    shoulder_L: { abd: 76, flex: 13, rot: -90 },
+    wrist_L: { ext: 49 },
+    shoulder_R: { abd: 171, rot: -90, flex: 3 },
+    scapula_R: { elev: 10 },
+  },
   trikonasana: {
     root: { roll: 42 },
     hip_L: { abd: 83, rot: 90 },
@@ -790,6 +807,8 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a block on its end inside the front (left) foot, under the lower hand
+  utthita_parsvakonasana_block: [{ type: 'block', stand: 'end', at: [0.4, 0.15], yaw: 90 }],
   // a round bolster across the mat under the knees
   supine_bolster: [{ type: 'bolster', at: [0, 0.33] }],
   // a block on its end in front of and inside the front (left) foot, under the lower hand
@@ -891,6 +910,23 @@ export const POSE_FIT = {
     // forearm resting along the front thigh: elbow just above the knee, wrist toward the hip
     at: [['elbow_L', 'hip_L', [0, -0.3, 0.09]], ['wrist_L', 'hip_L', [0, -0.08, 0.1]]],
     params: ['root.roll&hip_L.abd&-hip_R.abd', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'hip_R.abd', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.abd', 'shoulder_R.flex'],
+  },
+  utthita_parsvakonasana_block: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L'],
+    onProp: ['wrist_L'], // the hand on the block
+    balance: true,
+    flat: ['ankle_L', 'ankle_R', 'ankle_L', 'ankle_R'], // feet flat (weighted twice)
+    rel: [['ankle_L', 'ankle_R', [-1.0, 0]], ['ankle_L', 'wrist_L', [0.01, 0.18]]], // the Warrior II stance; hand inside the foot
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]],
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]],
+      ['thorax', [0, 0, 1], [0, 0, 1]], // chest open to the long side
+      ['shoulder_R', [0, -1, 0], [0.75, 0.66, 0]], // top arm on the line of the back leg
+      ['thorax', [0, 1, 0], [0.8, 0.6, 0]], // trunk long over the front thigh
+      ['lumbar', [0, 1, 0], [0.7, 0.72, 0]],
+    ],
+    // the legs stay as in the forearm form (front knee at 90° over the ankle)
+    params: ['ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.abd', 'shoulder_R.flex'],
   },
   trikonasana: {
     support: ['ankle_L', 'ankle_R'],

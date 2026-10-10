@@ -267,6 +267,18 @@ export const ASANAS = [
       { pose: 'utthita_parsvakonasana', anchor: FEET, move: 2.0 },
     ],
     loop: 'pingpong',
+    variants: [
+      {
+        // from Warrior II the lower arm comes down from shoulder height onto the block
+        label: 'Tay đặt gạch',
+        pose: 'utthita_parsvakonasana_block',
+        steps: [
+          { pose: 'tadasana' },
+          { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2 },
+          { pose: 'utthita_parsvakonasana_block', anchor: FEET, move: 2.0 },
+        ],
+      },
+    ],
     roles: {
       contract: [...side(QUADS, 'L'), 'gluteus_medius_L', 'piriformis_L', 'gluteus_maximus_L', 'vastus_lateralis_R', 'vastus_medialis_R', 'gluteus_medius_R', 'deltoid_R', 'serratus_anterior_R'],
       stretch: ['adductors_L', 'adductors_R', 'latissimus_dorsi_R', 'external_oblique_R', 'quadratus_lumborum_R'],
@@ -290,6 +302,7 @@ export const ASANAS = [
       'Đau gối: giảm độ gập gối trước, rút ngắn khoảng cách hai chân.',
       'Đau cổ: nhìn thẳng ra trước hoặc xuống sàn thay vì nhìn lên.',
       'Đau vai: chống tay trên vào hông thay vì vươn qua đầu.',
+      'Muốn thân dài hơn mà chưa với tới sàn: đặt tay dưới lên gạch phía trong bàn chân trước, không tì nặng tay.',
     ],
   },
   {
