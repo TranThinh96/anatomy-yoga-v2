@@ -198,6 +198,12 @@ viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal p
   foot crossed it, and the hand would not lie flat on a 23 cm block – the fitter only got the
   fingertips or the heel of the hand down. It needs a via pose that lifts the hand over the block.)
 - Keep the hands on the mat when lying: a hand hovering where a block goes lands on the block.
+- A body coming down onto a prop needs several angles to move together, where the one-angle-at-a-time
+  fitter stalls: `npm run fit-poses -- --restarts 40 <pose>` (deterministic random restarts).
+- `flat` means *every* contact of the segment down (sole and heel): never for a kneeling foot, whose
+  top rests on the mat (it bent the ankles of the supported child's pose 60° the wrong way).
+- With the hips flexed past ~100°, hip `rot` swings the knee sideways and `abd` barely does
+  (Euler order): open the knees wide with `rot` (Balasana with knees wide: rot 35).
 
 ## 5. Check
 

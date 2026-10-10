@@ -11,7 +11,7 @@ muscle activation). Vite + three.js, vanilla JS, no framework, no TypeScript. Se
 npm run dev                         # http://localhost:5173
 npm run check                       # data + physics + muscle model + picking + transition + EMG-data checks – must pass before a commit
 npm run build                       # production build into dist/ (not committed)
-npm run fit-poses -- [--dry] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
+npm run fit-poses -- [--dry] [--restarts N] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
 node tools/shot.mjs asana/<id> out.png [--hold] [--cm act] [--view left] [--click <selector>]   # screenshot, fails on page errors
 node tools/shot.mjs topic/<id> out.png --click '[data-topic-pose="1"]'     # a topic's condition pose
 node tools/review-poses.mjs <dir> [asana…] [--views front,left,top]        # every pose framed on the body, UI hidden
@@ -97,6 +97,8 @@ Data files:
   and the contact solver works in each contact's frame (a wall pushes horizontally). A point rests on a prop
   only if it is above it or within 4 cm of its top; a step shows the props of the poses it moves between,
   so put a prop in only after the body part is clear of where it goes (Setu Bandha: hips up, then the block).
+  While moving, only the segments that rest on a prop in the step's poses may rest on props (Env.segs);
+  the others meet the floor only.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
   tension. Keep these limitations visible in UI notes when a feature depends on them.
