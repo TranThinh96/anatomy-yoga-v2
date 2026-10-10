@@ -171,6 +171,34 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
 
+## 4b. Props (wall, block, bolster, blanket)
+
+Props are supports in the physics, so a supported variant shows its real load change. List them in
+`POSE_PROPS[pose]` in the pose's own frame (pelvis at x = z = 0, floor y = 0, facing +Z, left +X):
+
+```js
+supta_baddha_konasana_blocks: [
+  { type: 'block', stand: 'side', at: [0.3, 0.11], yaw: -37 }, // stand: flat 7.5 / side 15 / end 23 cm high
+  { type: 'block', stand: 'side', at: [-0.3, 0.11], yaw: 37 },
+],
+viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal points to the body
+```
+
+- Measure first where the body part is (`rig.worldPoint` of its contacts in the plain pose) and put the
+  prop under it at that height; fit with the part in `support` (or `wall: [...]` for a wall, `onProp:
+  [...]` when it must rest on the prop and not on the floor beside it).
+- Contacts exist only where the model has them (soles, heels, calf back – wall only, outer / back /
+  front of thigh, kneecap, shin, sit bones, sacrum, buttocks, back, head, hands, forearms). A part
+  without one cannot rest on a prop: add a contact in `tools/bp3d-build.mjs` and rebuild, never edit
+  `body-model.gen.js`.
+- A step shows the props of the poses it moves between. If a body part lies where the prop goes, give
+  the variant its own `steps` and move it out of the way first (supported bridge: hips up, then down onto
+  the block); a limb must arrive on a prop from above, not slide into its side, and a stepping foot
+  must not pass over it. (A block under Trikonasana's lower hand was tried and left out: the stepping
+  foot crossed it, and the hand would not lie flat on a 23 cm block – the fitter only got the
+  fingertips or the heel of the hand down. It needs a via pose that lifts the hand over the block.)
+- Keep the hands on the mat when lying: a hand hovering where a block goes lands on the block.
+
 ## 5. Check
 
 ```bash

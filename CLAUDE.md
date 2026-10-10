@@ -33,6 +33,7 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
   → realMuscles.js  real BodyParts3D muscle surfaces, linear-blend skinned to the rig; anatomy mode only
                  (display only – lengths, moment arms and forces always come from the tubes)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
+props.js         floor + props (wall, block, bolster, folded blanket) as an Env on the rig: clearance, contact normals
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses (a spline through `via` poses), anchors (feet/hands stay put),
                  floor correction, stepping feet lifted (_liftSteps); balances each pose once (cached)
@@ -42,7 +43,8 @@ tools/           build-model, fit-poses, check-* (run by npm run check), shot.mj
 ```
 
 Data files:
-- `poses.js` – `POSES` (joint angles in degrees) and `POSE_FIT` (floor contacts + fitter goals).
+- `poses.js` – `POSES` (joint angles in degrees), `POSE_PROPS` (props a pose rests on, pose frame) and
+  `POSE_FIT` (floor contacts + fitter goals).
 - `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants.
 - `topics.js` – workshop topics (e.g. anterior pelvic tilt): a reference and a condition pose compared on
   the model, muscles coloured by length relative to the reference; `shorter` / `longer` muscles are
@@ -90,6 +92,12 @@ Data files:
   stretch poses come from body-to-body contacts the physics lacks (thigh on calves in Balasana, foot
   on thigh in Vrksasana, hands on feet in Paschimottanasana) and from the rigid shoulder girdle.
   Passive tension needs per-muscle optimal fibre / tendon slack lengths from the literature first.
+- Props are real supports, not decoration: a pose lists them in `POSE_PROPS` (pose frame: pelvis at
+  x = z = 0), everything measures clearance to the floor *or a prop* (`rig.clearance`, never `p.y - c.r`),
+  and the contact solver works in each contact's frame (a wall pushes horizontally). A point rests on a prop
+  only if it is above it or within 4 cm of its top; a step shows the props of the poses it moves between,
+  so put a prop in only after the body part is clear of where it goes (Setu Bandha: hips up, then the block).
+  Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
   tension. Keep these limitations visible in UI notes when a feature depends on them.
 

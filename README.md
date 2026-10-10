@@ -45,6 +45,9 @@ Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh 
   Rê chuột lên một dòng để tô các cơ tương ứng; chế độ tô màu **"Theo tải"** tô cả cơ thể.
 - **Biến thể & so sánh**: Plank / Chaturanga hạ gối, Chó úp mặt chùng gối, Cái ghế nông, … với bảng
   so sánh tải giữa các biến thể.
+- **Đạo cụ là điểm tựa thật** trong phân tích: tường (Viparita Karani – gót tựa tường), gạch dưới đùi
+  (Supta Baddha Konasana – tải khớp háng ~15 → ~0 N·m), gạch dưới xương cùng (Cây cầu có điểm tựa – mô-men
+  thắt lưng 28 → 5 N·m). Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.
 - Nhập **cân nặng** và **tỷ lệ cơ thể nam/nữ**; bật/tắt **ma sát với thảm**.
 
 Phương pháp:
@@ -54,7 +57,8 @@ Phương pháp:
 3. Lực đỡ từ sàn (đứng + ma sát): trong mọi nghiệm cân bằng ΣF = 0, ΣM = 0, chọn nghiệm có tổng bình
    phương mô-men khớp (chuẩn hoá theo sức mạnh từng khớp) nhỏ nhất — người tập "thả" trọng lượng vào
    điểm tựa, nên tư thế nằm gần như không cần cơ. Điểm tựa chỉ được đẩy (tập hoạt động), lực ngang trong
-   nón ma sát μ = 0,8 — bình phương tối thiểu có ràng buộc, giải bằng hệ KKT.
+   nón ma sát μ = 0,8 — bình phương tối thiểu có ràng buộc, giải bằng hệ KKT. Mỗi điểm tiếp xúc có hệ trục
+   riêng (pháp tuyến bề mặt): sàn và mặt trên đạo cụ đỡ theo phương đứng, tường đỡ theo phương ngang.
 5. Mô-men khớp: tĩnh học ngược trên phần cơ thể phía xa khớp (trọng lực + lực sàn).
 
 ### Mức hoạt động cơ & kiểu co (mô hình · thử nghiệm)

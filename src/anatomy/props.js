@@ -96,6 +96,12 @@ export class Env {
     return out;
   }
 
+  /** Height of a contact sphere above the top of a prop under it (Infinity when no prop is under it). */
+  propClearance(p, r) {
+    const top = this.rest(p.x, p.z, r, Infinity, { y: -Infinity, n: UP });
+    return top.y > r + 1e-9 ? p.y - top.y : Infinity;
+  }
+
   /** Vertical clearance of a contact sphere (centre p, radius r) above whatever is under it. */
   clearance(p, r) {
     return p.y - this.rest(p.x, p.z, r, p.y).y;

@@ -91,6 +91,7 @@ const wdir = (seg, v) => new THREE.Vector3(...v).transformDirection(rig.joints[s
 // Optional geometric goals (all errors in cm or degrees-ish, squared):
 //   flat:  segments whose every contact point must touch (e.g. a whole foot)
 //   wall:  segments that lean on a wall of POSE_PROPS (their nearest point touches it)
+//   onProp: segments that rest on a prop (a block, not the floor beside it)
 //   rel:   [segA, segB, [dx, dz]] horizontal offset of joint B from joint A (m)
 //   dir:   [seg, localVector, worldVector] a segment axis should point this way
 //   above: [upper, lower] joint `upper` stacked vertically over joint `lower`
@@ -107,6 +108,12 @@ function goals(fit) {
   }
   for (const seg of fit.flat || []) {
     for (const c of rig.contacts) if (c.seg === seg) e += (rig.clearance(c, rig.worldPoint(c.seg, c.local)) * 100) ** 2 * 0.3;
+  }
+  // segments that must rest on a prop (not on the floor beside it)
+  for (const seg of fit.onProp || []) {
+    let gap = Infinity;
+    for (const c of rig.contacts) if (c.seg === seg) gap = Math.min(gap, Math.abs(rig.env.propClearance(rig.worldPoint(c.seg, c.local), c.r)));
+    e += Math.min(gap * 100, 30) ** 2;
   }
   // nothing goes through a wall
   for (const c of rig.env.empty ? [] : rig.wallContacts) {
