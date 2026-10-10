@@ -740,6 +740,7 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'supine_feet_together' }, { pose: 'supta_baddha_konasana', anchor: FEET, move: 3, hold: 3 }],
     loop: 'pingpong',
+    variants: [{ label: 'Kê gạch dưới đùi', pose: 'supta_baddha_konasana_blocks' }],
     roles: {
       contract: [],
       stretch: ['adductors'],

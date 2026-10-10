@@ -434,7 +434,7 @@ export class Physics {
       if (env.empty) {
         if (p.y - c.r < TOUCH) n = UP;
       } else {
-        const rest = env.rest(p.x, p.z, c.r);
+        const rest = env.rest(p.x, p.z, c.r, p.y);
         if (!c.only && p.y - rest.y < TOUCH) n = rest.n;
         // ... or a wall beside it (normal horizontal)
         const w = env.wallGap(p, c.r);

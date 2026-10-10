@@ -574,6 +574,8 @@ const contactsRaw = [
   ['knee', argmin(vertsOf(['medial head of left gastrocnemius', 'lateral head of left gastrocnemius']), (p) => p.z), 0.0, true, 'wall'],
   ['hip', argmin(atY(muscleVerts('long head of left biceps femoris'), midThigh, 0.03), (p) => p.z), 0.0, true], // back of thigh
   ['hip', argmax(atY(muscleVerts('left rectus femoris'), midThigh, 0.03), (p) => p.z), 0.0, true], // front of thigh
+  // outer thigh, lower third (most lateral vastus lateralis point): rests on a block with the hip open
+  ['hip', argmax(atY(muscleVerts('left vastus lateralis'), kneeY + (hipY - kneeY) / 3, 0.03), (p) => p.x), 0.0, true],
   ['wrist', argmin(P('distal phalanx of left middle finger'), (p) => p.y), 0.004, true], // finger tip
   ['wrist', argmax(P('left pisiform'), (p) => p.z), 0.014, true], // heel of hand (ulnar)
   ['wrist', argmax(P('left scaphoid'), (p) => p.z), 0.014, true], // heel of hand (radial)

@@ -19,6 +19,9 @@ export const PROP_SIZES = {
 export const PROP_NAMES = { block: 'gạch tập', blanket: 'chăn gấp', bolster: 'gối ôm', wall: 'tường' };
 
 const UP = new THREE.Vector3(0, 1, 0);
+// A point counts as over a prop (and may rest on it) unless it is more than this far below its top:
+// a hand beside a block is not lifted onto it.
+const SINK = 0.04;
 
 /** One prop resolved into world geometry (offset: the x/z shift of the pose frame). */
 function resolve(prop, offset = { x: 0, z: 0 }) {
@@ -51,8 +54,11 @@ export class Env {
     return !this.props.length;
   }
 
-  /** Height (y) at which a sphere of radius r centred above (x, z) rests, and the surface normal there. */
-  rest(x, z, r, out = { y: 0, n: UP }) {
+  /**
+   * Height (y) at which a sphere of radius r centred at (x, y, z) rests, and the surface normal
+   * there: the floor, or the highest prop under it that the sphere is not deep inside (SINK).
+   */
+  rest(x, z, r, y0 = Infinity, out = { y: 0, n: UP }) {
     out.y = r;
     out.n = UP;
     for (const p of this.props) {
@@ -63,7 +69,7 @@ export class Env {
         const b = dx * p.v.x + dz * p.v.z;
         if (Math.abs(a) <= p.size[0] / 2 && Math.abs(b) <= p.size[2] / 2) {
           const y = p.c.y + p.size[1] + r;
-          if (y > out.y) {
+          if (y > out.y && y0 > y - SINK) {
             out.y = y;
             out.n = UP;
           }
@@ -77,7 +83,7 @@ export class Env {
         if (Math.abs(a) <= p.length / 2 && Math.abs(d) < R) {
           const h = Math.sqrt(R * R - d * d);
           const y = p.c.y + h;
-          if (y > out.y) {
+          if (y > out.y && y0 > y - SINK) {
             out.y = y;
             // radial normal: across the axis and up
             const nx = (d / R) * -p.u.z;
@@ -92,7 +98,7 @@ export class Env {
 
   /** Vertical clearance of a contact sphere (centre p, radius r) above whatever is under it. */
   clearance(p, r) {
-    return p.y - this.rest(p.x, p.z, r).y;
+    return p.y - this.rest(p.x, p.z, r, p.y).y;
   }
 
   /** Smallest gap between a contact sphere and a wall (Infinity without walls), with the wall's normal. */

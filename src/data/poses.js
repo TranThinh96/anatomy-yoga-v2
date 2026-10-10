@@ -40,16 +40,19 @@ export const POSES = {
   },
   supine: {
     root: { pitch: -90 },
-    shoulder: { abd: 18 },
+    shoulder: { abd: 18, flex: -11, rot: 9 },
     ankle: { dorsi: -30 },
     hip: { rot: 15 },
+    elbow: { flex: -4 },
   },
   supine_knees: {
     root: { pitch: -90 },
     hip: { flex: 47 },
     knee: { flex: 103 },
     ankle: { dorsi: 9 },
-    shoulder: { abd: 14, rot: -80 },
+    // arms along the body, palms down, as they stay when the hips lift into Setu Bandha
+    shoulder: { flex: -8, abd: 6 },
+    wrist: { pron: 90 },
   },
   prone: {
     root: { pitch: 86 },
@@ -446,24 +449,33 @@ export const POSES = {
     hip: { flex: 51, abd: 0 },
     knee: { flex: 117 },
     ankle: { dorsi: -21 },
-    shoulder: { abd: 14, rot: -80 },
+    shoulder: { abd: 14, rot: -80, flex: -35 },
   },
   // Reclined bound angle: soles together close to the pelvis, knees falling open, feet on their
   // outer edges, arms resting beside the body.
   supta_baddha_konasana: {
     root: { pitch: -90 },
-    hip: { flex: 50, abd: 8, rot: 60 },
+    hip: { flex: 50, abd: 8, rot: 62 },
+    knee: { flex: 121 },
+    ankle: { dorsi: -25 },
+    shoulder: { abd: 18, rot: -80, flex: -35 },
+  },
+  // Supta Baddha Konasana with a block (on its long edge) under each outer thigh: the hips rest
+  // open without being held, the restorative form.
+  supta_baddha_konasana_blocks: {
+    root: { pitch: -90 },
+    hip: { flex: 50, abd: 8, rot: 61 },
     knee: { flex: 120 },
     ankle: { dorsi: -25 },
-    shoulder: { abd: 18, rot: -80 },
+    shoulder: { abd: 45, rot: -80, flex: -35 },
   },
   // Legs up the wall, knees bent and soles flat on the wall: the start (and the way out).
   viparita_karani_bent: {
     root: { pitch: -90 },
     hip: { flex: 124 },
     knee: { flex: 81 },
-    ankle: { dorsi: 7 },
-    shoulder: { abd: 30, rot: 80 },
+    ankle: { dorsi: 17 },
+    shoulder: { abd: 52, rot: 80, flex: -45 },
   },
   // Legs up the wall: heels and calves resting on the wall, buttocks a little away from it, knees
   // soft, arms out to the sides, palms up.
@@ -472,7 +484,7 @@ export const POSES = {
     hip: { flex: 90 },
     knee: { flex: 7 },
     ankle: { dorsi: -10 },
-    shoulder: { abd: 30, rot: 80 },
+    shoulder: { abd: 52, rot: 80, flex: -45 },
   },
   // ---------------- Seated ----------------
   // The steps into Ardha Matsyendrasana: right knee drawn up with the foot flat on its own side,
@@ -674,6 +686,11 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a block on its long edge under each outer thigh, along the thigh
+  supta_baddha_konasana_blocks: [
+    { type: 'block', stand: 'side', at: [0.3, 0.11], yaw: -37 },
+    { type: 'block', stand: 'side', at: [-0.3, 0.11], yaw: 37 },
+  ],
   // the wall a little beyond the buttocks (legs up the wall)
   viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
   viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
@@ -874,16 +891,18 @@ export const POSE_FIT = {
     // upper back and shoulders on the mat, arms alongside the body, palms down
     params: ['root.pitch', 'knee.flex', 'hip.flex', 'ankle.dorsi', 'shoulder.flex', 'neck.flex'],
   },
-  supine_knees: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'knee.flex', 'root.pitch&hip.flex', 'ankle.dorsi'] },
+  // hands resting on the mat beside the body
+  supine: { support: ['pelvis', 'thorax', 'wrist_L', 'wrist_R'], params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'] },
+  supine_knees: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['shoulder.flex'] },
   supine_feet_together: {
-    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'],
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
     flat: ['ankle_L', 'ankle_R'],
     // the feet side by side where they rest in Supta Baddha Konasana, so they do not slide as the knees open
     rel: [['ankle_R', 'ankle_L', [0.16, 0]], ['pelvis', 'ankle_L', [0.08, 0.4]]],
-    params: ['hip.flex', 'hip.abd', 'knee.flex', 'ankle.dorsi'],
+    params: ['hip.flex', 'hip.abd', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
   },
   supta_baddha_konasana: {
-    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'],
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
     // soles touching where they were with the knees up, heels toward the pelvis
     rel: [['ankle_R', 'ankle_L', [0.16, 0]]],
     dir: [
@@ -892,17 +911,22 @@ export const POSE_FIT = {
       ['ankle_L', [0, -1, 0], [-0.85, -0.5, 0]], // soles face each other, feet on their outer edges
       ['ankle_R', [0, -1, 0], [0.85, -0.5, 0]],
     ],
-    params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi'],
+    params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
+  supta_baddha_konasana_blocks: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'hip_L', 'hip_R', 'wrist_L', 'wrist_R'], // the thighs on the blocks
+    rel: [['ankle_R', 'ankle_L', [0.16, 0]]],
+    params: ['hip.abd', 'hip.rot', 'shoulder.flex'],
   },
   viparita_karani_bent: {
-    support: ['pelvis', 'thorax', 'head'],
+    support: ['pelvis', 'thorax', 'head', 'wrist_L', 'wrist_R'],
     wall: ['ankle_L', 'ankle_R'], // soles on the wall
-    params: ['hip.flex', 'knee.flex', 'ankle.dorsi'],
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
   },
   viparita_karani: {
-    support: ['pelvis', 'thorax', 'head'],
+    support: ['pelvis', 'thorax', 'head', 'wrist_L', 'wrist_R'],
     wall: ['ankle_L', 'ankle_R'], // heels on the wall (the calves come within a few cm)
-    params: ['hip.flex', 'knee.flex'],
+    params: ['hip.flex', 'knee.flex', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
   },
   ardha_matsyendrasana_knee_up: {
     support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],

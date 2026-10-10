@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Viewer } from './viewer.js';
 import { Body } from './anatomy/body.js';
 import { Animator, poseEnv } from './anatomy/animator.js';
-import { propMeshes } from './anatomy/props.js';
+import { propMeshes, PROP_NAMES } from './anatomy/props.js';
 import { ThumbnailMaker } from './ui/thumbnails.js';
 import { Physics } from './anatomy/physics.js';
 import { PhysicsOverlay } from './ui/physicsOverlay.js';
@@ -863,13 +863,14 @@ function physicsSectionHtml(a) {
       <label>Tỷ lệ cơ thể <select id="subj-sex"><option value="f"${physics.sex === 'f' ? ' selected' : ''}>Nữ</option><option value="m"${physics.sex === 'm' ? ' selected' : ''}>Nam</option></select></label>
     </div>
     ${variants}
+    ${propsNote()}
     <label class="check-row" style="margin:0 0 10px"><input type="checkbox" id="phys-friction"${physics.friction ? ' checked' : ''} />
       <span>Tính ma sát với thảm <small>(đẩy/kéo sàn theo chiều ngang)</small></span></label>
     <div class="phys-stats">
       <div><span>Trọng tâm</span><b id="ph-com">—</b></div>
       <div><span>Biên ổn định</span><b id="ph-margin">—</b></div>
     </div>
-    <div class="phys-sub">Phân bố trọng lượng lên sàn</div>
+    <div class="phys-sub">Phân bố trọng lượng lên sàn${anim.env.empty ? '' : ' &amp; đạo cụ'}</div>
     <div id="ph-support"></div>
     <div class="phys-sub">Tải khớp · mô-men cơ phải tạo ra</div>
     <div id="ph-loads"></div>
@@ -982,6 +983,15 @@ function renderActivationLive() {
     html += `<p class="warn-note">⚠ ${esc(MUSCLES[stretched.id]?.name || stretched.id)} đang bị kéo dài ${Math.round(lengthPct(stretched.id, stretched.both ? null : stretched.side))}%: ngoài thực tế sức căng thụ động của cơ và mô liên kết khi bị kéo giãn gánh một phần tải, nên mức co chủ động ở đây có thể thấp hơn con số mô hình.</p>`;
   }
   el.innerHTML = html;
+}
+
+/** The props of the current sequence ("2 gạch tập, tường"), with the model's limits. */
+function propsNote() {
+  if (anim.env.empty) return '';
+  const count = new Map();
+  for (const p of anim.env.props) count.set(p.type, (count.get(p.type) || 0) + 1);
+  const list = [...count].map(([t, n]) => (n > 1 ? `${n} ${PROP_NAMES[t]}` : PROP_NAMES[t])).join(', ');
+  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.</p>`;
 }
 
 /** Static analysis of each variant of the current asana, as an HTML table. */
