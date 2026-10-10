@@ -891,8 +891,10 @@ function renderPhysicsLive() {
   const moving = index > 0 && alpha < 1;
   // a base that is only a line or a point (sit bones in Navasana): balancing right on it is the pose
   const narrow = r.hull.length < 3 && cm > -0.5;
-  const ok = cm >= 0 || narrow;
-  const status = moving ? 'đang chuyển tư thế' : narrow ? 'thăng bằng trên chân đế hẹp' : cm >= 0 ? 'ổn định' : 'mất cân bằng';
+  // sitting back against a wall: the centre of mass may be outside the feet, the wall holds it
+  const leaning = r.leaning && cm < 0;
+  const ok = cm >= 0 || narrow || leaning;
+  const status = moving ? 'đang chuyển tư thế' : narrow ? 'thăng bằng trên chân đế hẹp' : cm >= 0 ? 'ổn định' : leaning ? 'tường giữ' : 'mất cân bằng';
   const cmTxt = narrow ? '0.0' : `${cm >= 0 ? '+' : ''}${cm.toFixed(1)}`;
   m.textContent = isFinite(cm) ? `${cmTxt} cm · ${status}` : '—';
   m.className = moving ? '' : ok ? 'ok' : 'bad';
@@ -988,7 +990,8 @@ function propsNote() {
   const count = new Map();
   for (const p of anim.env.props) count.set(p.type, (count.get(p.type) || 0) + 1);
   const list = [...count].map(([t, n]) => (n > 1 ? `${n} ${PROP_NAMES[t]}` : PROP_NAMES[t])).join(', ');
-  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.</p>`;
+  const wall = count.has('wall') ? ' Tường chỉ đẩy vuông góc với mặt tường (không tính ma sát giữa lưng / chân và tường).' : '';
+  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}</p>`;
 }
 
 /** Static analysis of each variant of the current asana, as an HTML table. */

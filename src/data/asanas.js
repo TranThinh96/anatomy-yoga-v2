@@ -140,7 +140,15 @@ export const ASANAS = [
     en: 'Chair Pose',
     category: 'Đứng',
     level: 'Cơ bản',
-    variants: [{ label: 'Ngồi nông', pose: 'utkatasana_shallow' }],
+    variants: [
+      { label: 'Ngồi nông', pose: 'utkatasana_shallow' },
+      {
+        // back against the wall from the start, sliding down it
+        label: 'Tựa lưng vào tường',
+        pose: 'utkatasana_wall',
+        steps: [{ pose: 'tadasana_wall' }, { pose: 'utkatasana_wall', anchor: FEET, move: 2 }],
+      },
+    ],
     steps: [{ pose: 'tadasana' }, { pose: 'utkatasana', anchor: FEET, move: 2 }],
     loop: 'pingpong',
     roles: {
@@ -160,7 +168,10 @@ export const ASANAS = [
       'Kéo dài cột sống từ xương cụt tới đỉnh đầu, tay theo đường thân.',
     ],
     benefits: ['Tăng sức mạnh cơ tứ đầu, cơ mông', 'Tăng sức bền, sinh nhiệt'],
-    cautions: ['Đau gối: giảm độ sâu, không để gối vượt quá mũi chân nhiều.'],
+    cautions: [
+      'Đau gối: giảm độ sâu, không để gối vượt quá mũi chân nhiều.',
+      'Tựa lưng vào tường đỡ cho lưng và háng, nhưng dồn việc sang cơ đùi trước: đau gối thì đừng xuống sâu khi tựa tường.',
+    ],
   },
   {
     id: 'vrksasana',

@@ -51,7 +51,10 @@ Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh 
   dưới mông (Paschimottanasana – tải gần như không đổi vì mô hình chưa có lực căng thụ động của gân kheo).
   Gạch dưới tay dưới (Tam giác – tay không được tính là tựa lên ống chân, nên ở bản chuẩn thắt lưng gánh
   89 N·m; khi tay đặt lên gạch, tay chịu một phần trọng lượng và tải khớp còn ≤ 15 N·m – mô hình chọn
-  cách tựa ít tốn sức nhất, nên người tập thật thường tì tay nhẹ hơn).
+  cách tựa ít tốn sức nhất, nên người tập thật thường tì tay nhẹ hơn). Gối ôm dưới gối (Savasana), gạch dưới
+  tay (Góc nghiêng mở rộng), tựa lưng vào tường (Cái ghế – thắt lưng 66 → 30 N·m nhưng gối tăng lên 54 N·m:
+  tường chuyển việc sang cơ đùi trước). Tường chỉ đẩy vuông góc (không tính ma sát – chưa có nguồn số liệu);
+  khi lưng tựa tường, trọng tâm có thể nằm ngoài bàn chân mà vẫn cân bằng.
   Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.
 - Nhập **cân nặng** và **tỷ lệ cơ thể nam/nữ**; bật/tắt **ma sát với thảm**.
 

@@ -249,7 +249,9 @@ export function solveContacts(points, com, W, rows, friction = true) {
   const dotAxis = (cf, pi, j) => cf[0] * axis(pi, j)[0] + cf[1] * axis(pi, j)[1] + cf[2] * axis(pi, j)[2];
   // a wall (or a bolster's side) pushes sideways: all three force and moment equations are needed
   const tilted = basis.some((b) => b !== FLOOR_BASIS);
-  const pen = points.map(() => 1);
+  // a wall pushes only along its normal: no friction is assumed against it (no source for skin or
+  // clothing on a wall), so its tangential forces are penalised away from the start
+  const pen = points.map((pt) => (pt.wall ? 1e9 : 1));
   const LAMBDA = 0.1 / (W * W);
   for (let iter = 0; iter < 3 * points.length + 12 && active.length; iter++) {
     const n = active.length * dof;
@@ -484,7 +486,9 @@ export class Physics {
     }
     // floor forces: equilibrium with the least joint effort; if the centre of mass is not
     // over the supports (between two poses) fall back to vertical forces near the COM
-    const F3 = margin > 0 ? solveContacts(contacts, com, W, rows, this.friction) : null;
+    // over the base of support – or held by a wall even when it is not (sitting back against it)
+    const leaning = contacts.some((c) => c.wall);
+    const F3 = margin > 0 || leaning ? solveContacts(contacts, com, W, rows, this.friction) : null;
     if (F3) {
       contacts.forEach((c, i) => {
         c.f = F3[i][1];
@@ -580,7 +584,7 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0, support, joints, moments, segPos };
+    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos };
   }
 
   /**

@@ -33,7 +33,7 @@ for (const pose of poses) {
   const sum = r.contacts.reduce((a, c) => a.add(c.F), new THREE.Vector3());
   if (Math.abs(sum.y - r.W) > 0.01 * r.W) fail(pose, `vertical force ${sum.y.toFixed(0)} N ≠ weight ${r.W.toFixed(0)} N`);
   if (Math.hypot(sum.x, sum.z) > 0.01 * r.W) fail(pose, `horizontal forces do not cancel (${Math.hypot(sum.x, sum.z).toFixed(1)} N)`);
-  if (r.margin < -0.005) fail(pose, `centre of mass ${(-r.margin * 100).toFixed(1)} cm outside the base of support`);
+  if (r.margin < -0.005 && !r.leaning) fail(pose, `centre of mass ${(-r.margin * 100).toFixed(1)} cm outside the base of support (and no wall holds it)`);
   for (const spec of POSE_FIT[pose]?.support || []) {
     const segs = spec.split('|');
     if (!r.contacts.some((c) => segs.includes(c.seg))) fail(pose, `${spec} should touch the floor`);

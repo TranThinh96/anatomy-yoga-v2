@@ -100,6 +100,8 @@ Data files:
   While moving, only the segments that rest on a prop in the step's poses may rest on props (Env.segs);
   the others meet the floor only.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
+  A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
+  and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
   tension. Keep these limitations visible in UI notes when a feature depends on them.
 

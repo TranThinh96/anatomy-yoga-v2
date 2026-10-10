@@ -146,6 +146,27 @@ export const POSES = {
     shoulder: { flex: 160, abd: 4 },
     scapula: { elev: 8 },
   },
+  // Standing with the back against a wall, feet a step in front of it: the start of utkatasana_wall.
+  tadasana_wall: {
+    root: { pitch: -5 },
+    hip: { flex: 23 },
+    ankle: { dorsi: -25 },
+    shoulder: { abd: 6 },
+    lumbar: { flex: -2 },
+    thorax: { flex: 22 },
+  },
+  // Utkatasana with the back against a wall: buttocks and back on the wall, feet forward, trunk
+  // upright, arms up.
+  utkatasana_wall: {
+    root: { pitch: -6 },
+    hip: { flex: 70 },
+    knee: { flex: 84 },
+    ankle: { dorsi: 11 },
+    shoulder: { flex: 160, abd: 4 },
+    scapula: { elev: 8 },
+    lumbar: { flex: 5 },
+    thorax: { flex: 10 },
+  },
   // Standing on the right leg with the left knee lifted in front: the step before opening the knee
   // into Vrksasana. Going there directly, the slerped hip rotation and knee bend drive the left
   // toes into the floor before the foot leaves it, and the body rocks onto the standing foot late.
@@ -807,6 +828,9 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a wall just behind the buttocks
+  utkatasana_wall: [{ type: 'wall', at: [0, -0.105], normal: [0, 1] }],
+  tadasana_wall: [{ type: 'wall', at: [0, -0.105], normal: [0, 1] }],
   // a block on its end inside the front (left) foot, under the lower hand
   utthita_parsvakonasana_block: [{ type: 'block', stand: 'end', at: [0.4, 0.15], yaw: 90 }],
   // a round bolster across the mat under the knees
@@ -839,6 +863,20 @@ export const POSE_PROPS = {
 // segments that must touch the floor ("a|b" = either), `params` the angles the fitter may adjust
 // ("joint.angle"; joints without a side move both sides together).
 export const POSE_FIT = {
+  tadasana_wall: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    wall: ['pelvis', 'thorax'], // leaning back on the wall
+    // feet where they are in utkatasana_wall, so they stay put as the body slides down
+    rel: [['pelvis', 'ankle_L', [0.08, 0.32]]],
+    params: ['root.pitch&-ankle.dorsi', 'root.pitch&-lumbar.flex', 'hip.flex', 'ankle.dorsi', 'thorax.flex'],
+  },
+  utkatasana_wall: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    wall: ['pelvis', 'thorax'], // buttocks / sacrum and the mid back against the wall
+    params: ['root.pitch', 'root.pitch&-lumbar.flex', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex'],
+  },
   ardha_uttanasana: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
