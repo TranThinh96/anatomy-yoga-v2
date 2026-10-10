@@ -442,10 +442,10 @@ export const POSES = {
 
   // Lying on the back, knees bent, the soles together on the mat: the start of Supta Baddha Konasana.
   supine_feet_together: {
-    root: { pitch: -88 },
-    hip: { flex: 57, abd: 0 },
-    knee: { flex: 123 },
-    ankle: { dorsi: -19 },
+    root: { pitch: -90 },
+    hip: { flex: 51, abd: 0 },
+    knee: { flex: 117 },
+    ankle: { dorsi: -21 },
     shoulder: { abd: 14, rot: -80 },
   },
   // Reclined bound angle: soles together close to the pelvis, knees falling open, feet on their
@@ -456,6 +456,25 @@ export const POSES = {
     knee: { flex: 120 },
     ankle: { dorsi: -25 },
     shoulder: { abd: 18, rot: -80 },
+  },
+  // Lying on the back with the knees drawn toward the chest: passed through on the way from
+  // supine_knees into Viparita Karani, so the legs fold in before they extend up.
+  supine_knees_chest: {
+    root: { pitch: -90 },
+    hip: { flex: 105 },
+    knee: { flex: 110 },
+    ankle: { dorsi: -10 },
+    shoulder: { abd: 14, rot: -80 },
+  },
+  // Legs up (the wall is not modelled): legs vertical over the hips, knees soft, arms resting
+  // out to the sides, palms up. With the legs stacked over the hip joints the hip moment is
+  // near zero, as with the wall holding them.
+  viparita_karani: {
+    root: { pitch: -90 },
+    hip: { flex: 90 },
+    knee: { flex: 5 },
+    ankle: { dorsi: -15 },
+    shoulder: { abd: 30, rot: 80 },
   },
   // ---------------- Seated ----------------
   paschimottanasana: {
@@ -769,7 +788,7 @@ export const POSE_FIT = {
     flat: ['ankle_L', 'ankle_R'],
     // the feet side by side where they rest in Supta Baddha Konasana, so they do not slide as the knees open
     rel: [['ankle_R', 'ankle_L', [0.16, 0]], ['pelvis', 'ankle_L', [0.08, 0.4]]],
-    params: ['hip.flex', 'hip.abd', 'knee.flex', 'ankle.dorsi', 'root.pitch&hip.flex'],
+    params: ['hip.flex', 'hip.abd', 'knee.flex', 'ankle.dorsi'],
   },
   supta_baddha_konasana: {
     support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'],
@@ -782,6 +801,12 @@ export const POSE_FIT = {
       ['ankle_R', [0, -1, 0], [0.85, -0.5, 0]],
     ],
     params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi'],
+  },
+  supine_knees_chest: { support: ['pelvis', 'thorax', 'head'], params: [] },
+  viparita_karani: {
+    support: ['pelvis', 'thorax', 'head'],
+    dir: [['hip_L', [0, -1, 0], [0, 1, 0]], ['hip_R', [0, -1, 0], [0, 1, 0]]], // legs vertical
+    params: ['hip.flex'],
   },
   paschimottanasana: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex'] },
   uttanasana_bent: {
