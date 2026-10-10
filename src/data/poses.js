@@ -178,6 +178,24 @@ export const POSES = {
     neck: { rot: 44 },
     shoulder: { abd: 90, rot: -90 },
   },
+  // Extended side angle, forearm on the front thigh: Warrior II legs, the trunk tipped over the
+  // front (left) thigh, top arm reaching over the ear on the line of the back leg, gaze up.
+  utthita_parsvakonasana: {
+    root: { yaw: 33, roll: 21 },
+    hip_L: { flex: 85, abd: 23, rot: 46 },
+    knee_L: { flex: 94 },
+    ankle_L: { dorsi: 8 },
+    hip_R: { flex: -24, abd: 29, rot: 10 },
+    ankle_R: { dorsi: 5 },
+    lumbar: { side: 8, rot: -12 },
+    thorax: { side: 22, rot: -29 },
+    neck: { rot: -30 },
+    shoulder_L: { abd: 15, flex: -29, rot: -92 },
+    elbow_L: { flex: 87 },
+    wrist_L: { pron: 90 },
+    shoulder_R: { abd: 167, rot: -90, flex: -7 },
+    scapula_R: { elev: 10 },
+  },
   trikonasana: {
     root: { roll: 42 },
     hip_L: { abd: 83, rot: 90 },
@@ -591,6 +609,23 @@ export const POSE_FIT = {
     ],
     above: [['knee_L', 'ankle_L']],
     params: ['root.yaw', 'hip_L.flex', 'hip_L.abd', 'hip_L.rot', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'hip_R.abd', 'hip_R.rot', 'ankle_R.dorsi', 'lumbar.rot', 'thorax.rot', 'root.roll'],
+  },
+  utthita_parsvakonasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    rel: [['ankle_L', 'ankle_R', [-1.0, 0]]], // the Warrior II stance
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]], // front foot points to the front of the mat
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]], // back foot turned in slightly
+      ['thorax', [0, 0, 1], [0, 0, 1]], // chest open to the long side
+      ['shoulder_R', [0, -1, 0], [0.75, 0.66, 0]], // top arm on the line of the back leg
+      ['thorax', [0, 1, 0], [0.75, 0.66, 0]], // trunk on the same line (not curled up over the thigh)
+      ['lumbar', [0, 1, 0], [0.7, 0.72, 0]], // the pelvis tilts with it: a long side, no banana curve
+    ],
+    above: [['knee_L', 'ankle_L']],
+    // forearm resting along the front thigh: elbow just above the knee, wrist toward the hip
+    at: [['elbow_L', 'hip_L', [0, -0.3, 0.09]], ['wrist_L', 'hip_L', [0, -0.08, 0.1]]],
+    params: ['root.roll&hip_L.abd&-hip_R.abd', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'hip_R.abd', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.abd', 'shoulder_R.flex'],
   },
   trikonasana: {
     support: ['ankle_L', 'ankle_R'],
