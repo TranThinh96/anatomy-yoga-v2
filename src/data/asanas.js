@@ -690,6 +690,38 @@ export const ASANAS = [
     cautions: ['Đau thắt lưng: giữ gối gập, tay đỡ sau đùi.', 'Thai kỳ: tránh.'],
   },
   {
+    id: 'supta_baddha_konasana',
+    sanskrit: 'Supta Baddha Konasana',
+    vi: 'Tư thế Góc cố định nằm ngửa',
+    en: 'Reclined Bound Angle',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [{ pose: 'supine_feet_together' }, { pose: 'supta_baddha_konasana', anchor: FEET, move: 3, hold: 3 }],
+    loop: 'pingpong',
+    roles: {
+      contract: [],
+      stretch: ['adductors'],
+      stabilize: [],
+    },
+    joints: [
+      ['hip', 'Háng gập + dang + xoay ngoài, gối đổ sang hai bên'],
+      ['knee', 'Gối gập sâu, không có lực xoắn khi đùi được đỡ'],
+      ['sacroiliac', 'Khung chậu nằm yên trên sàn'],
+    ],
+    cues: [
+      'Nằm ngửa, gập gối, áp hai lòng bàn chân vào nhau rồi để hai gối từ từ mở sang hai bên.',
+      'Kê gối ôm hoặc khối gạch dưới mỗi đùi để háng được đỡ hoàn toàn, không cố ép gối xuống.',
+      'Thả lỏng bụng và hàm; tay đặt dọc thân hoặc lên bụng, thở chậm.',
+      'Khi ra: dùng tay đẩy nhẹ hai gối khép lại rồi mới duỗi chân.',
+    ],
+    benefits: ['Kéo giãn nhẹ nhàng cơ khép háng', 'Tư thế phục hồi, hỗ trợ thư giãn và thở bụng'],
+    cautions: [
+      'Kéo căng háng trong hay đau gối: kê đỡ đùi cao hơn, đặt bàn chân xa chậu hơn.',
+      'Đau thắt lưng: kê chăn dưới cột sống hoặc dưới bàn chân.',
+      'Thai kỳ (sau 3 tháng đầu): nằm trên gối nghiêng, không nằm phẳng lâu.',
+    ],
+  },
+  {
     id: 'savasana',
     sanskrit: 'Savasana',
     vi: 'Tư thế Xác chết (thư giãn)',

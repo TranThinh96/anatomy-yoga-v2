@@ -440,6 +440,23 @@ export const POSES = {
     wrist: { pron: 90 },
   },
 
+  // Lying on the back, knees bent, the soles together on the mat: the start of Supta Baddha Konasana.
+  supine_feet_together: {
+    root: { pitch: -88 },
+    hip: { flex: 57, abd: 0 },
+    knee: { flex: 123 },
+    ankle: { dorsi: -19 },
+    shoulder: { abd: 14, rot: -80 },
+  },
+  // Reclined bound angle: soles together close to the pelvis, knees falling open, feet on their
+  // outer edges, arms resting beside the body.
+  supta_baddha_konasana: {
+    root: { pitch: -90 },
+    hip: { flex: 50, abd: 8, rot: 60 },
+    knee: { flex: 120 },
+    ankle: { dorsi: -25 },
+    shoulder: { abd: 18, rot: -80 },
+  },
   // ---------------- Seated ----------------
   paschimottanasana: {
     root: { pitch: 42 },
@@ -747,6 +764,25 @@ export const POSE_FIT = {
     params: ['root.pitch', 'knee.flex', 'hip.flex', 'ankle.dorsi', 'shoulder.flex', 'neck.flex'],
   },
   supine_knees: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'knee.flex', 'root.pitch&hip.flex', 'ankle.dorsi'] },
+  supine_feet_together: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    // the feet side by side where they rest in Supta Baddha Konasana, so they do not slide as the knees open
+    rel: [['ankle_R', 'ankle_L', [0.16, 0]], ['pelvis', 'ankle_L', [0.08, 0.4]]],
+    params: ['hip.flex', 'hip.abd', 'knee.flex', 'ankle.dorsi', 'root.pitch&hip.flex'],
+  },
+  supta_baddha_konasana: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'],
+    // soles touching where they were with the knees up, heels toward the pelvis
+    rel: [['ankle_R', 'ankle_L', [0.16, 0]]],
+    dir: [
+      ['hip_L', [0, -1, 0], [0.75, 0.35, 0.55]], // knees fall open
+      ['hip_R', [0, -1, 0], [-0.75, 0.35, 0.55]],
+      ['ankle_L', [0, -1, 0], [-0.85, -0.5, 0]], // soles face each other, feet on their outer edges
+      ['ankle_R', [0, -1, 0], [0.85, -0.5, 0]],
+    ],
+    params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi'],
+  },
   paschimottanasana: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex'] },
   uttanasana_bent: {
     support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
