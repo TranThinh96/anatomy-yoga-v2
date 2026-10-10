@@ -45,6 +45,15 @@ export const POSES = {
     hip: { rot: 15 },
     elbow: { flex: -4 },
   },
+  // Savasana with a bolster under the knees: hips and knees softly bent, the lower back can settle
+  supine_bolster: {
+    root: { pitch: -90 },
+    hip: { flex: 29, rot: 15 },
+    knee: { flex: 62 },
+    ankle: { dorsi: -28 },
+    shoulder: { abd: 18, flex: -11, rot: 9 },
+    elbow: { flex: -4 },
+  },
   supine_knees: {
     root: { pitch: -90 },
     hip: { flex: 47 },
@@ -781,6 +790,8 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a round bolster across the mat under the knees
+  supine_bolster: [{ type: 'bolster', at: [0, 0.33] }],
   // a block on its end in front of and inside the front (left) foot, under the lower hand
   trikonasana_block: [{ type: 'block', stand: 'end', at: [0.56, 0.12], yaw: 90 }],
   // a folded blanket under the sit bones, lengthwise
@@ -1027,6 +1038,11 @@ export const POSE_FIT = {
   },
   // hands resting on the mat beside the body
   supine: { support: ['pelvis', 'thorax', 'wrist_L', 'wrist_R'], params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'] },
+  supine_bolster: {
+    support: ['pelvis', 'thorax', 'wrist_L', 'wrist_R', 'hip_L', 'hip_R', 'ankle_L', 'ankle_R'],
+    onProp: ['hip_L', 'hip_R'], // the backs of the thighs on the bolster, heels on the mat
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
   supine_knees: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['shoulder.flex'] },
   supine_feet_together: {
     support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
