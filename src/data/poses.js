@@ -610,6 +610,26 @@ export const POSES = {
     shoulder: { flex: 168 },
     wrist: { ext: 10, pron: 90 },
   },
+  // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
+  // the pelvis can tip forward over the thighs.
+  dandasana_blanket: {
+    hip: { flex: 87 },
+    ankle: { dorsi: -1 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -4, abd: 10 },
+    wrist: { ext: 71 },
+    scapula: { elev: -1 },
+  },
+  paschimottanasana_blanket: {
+    root: { pitch: 46 },
+    hip: { flex: 133 },
+    ankle: { dorsi: 14 },
+    lumbar: { flex: 20 },
+    thorax: { flex: 18 },
+    neck: { flex: 14 },
+    shoulder: { flex: 168 },
+    wrist: { ext: 10, pron: 90 },
+  },
   navasana: {
     root: { pitch: -38 },
     hip: { flex: 95 },
@@ -713,6 +733,9 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a folded blanket under the sit bones, lengthwise
+  dandasana_blanket: [{ type: 'blanket', at: [0, -0.1], yaw: 90 }],
+  paschimottanasana_blanket: [{ type: 'blanket', at: [0, -0.1], yaw: 90 }],
   // a round bolster lengthwise between the knees, under the belly, chest and forehead, raised on a
   // flat block under each end
   balasana_bolster: [
@@ -1013,6 +1036,16 @@ export const POSE_FIT = {
       ['thorax', [0, 0, 1], [-0.6, 0, 0.8]], // chest turned about 35° to the right
     ],
     params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'lumbar.rot', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'elbow_R.flex', 'wrist_R.ext'],
+  },
+  dandasana_blanket: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    onProp: ['pelvis'], // sit bones on the blanket
+    params: ['hip.flex', 'shoulder.flex', 'ankle.dorsi', 'scapula.elev', 'wrist.ext'],
+  },
+  paschimottanasana_blanket: {
+    support: ['pelvis', 'ankle_L', 'ankle_R'],
+    onProp: ['pelvis'],
+    params: ['hip.flex', 'root.pitch&hip.flex', 'ankle.dorsi'],
   },
   paschimottanasana: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex'] },
   uttanasana_bent: {

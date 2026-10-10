@@ -667,6 +667,14 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'dandasana' }, { pose: 'paschimottanasana', anchor: HIPS, move: 2.4, hold: 2.5 }],
     loop: 'pingpong',
+    variants: [
+      {
+        // sitting on the blanket from the start
+        label: 'Ngồi trên chăn gấp',
+        pose: 'paschimottanasana_blanket',
+        steps: [{ pose: 'dandasana_blanket' }, { pose: 'paschimottanasana_blanket', anchor: HIPS, move: 2.4, hold: 2.5 }],
+      },
+    ],
     roles: {
       contract: ['iliopsoas', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'rectus_abdominis'],
       stretch: ['hamstrings', 'erector_spinae', 'gluteus_maximus', 'latissimus_dorsi', 'quadratus_lumborum'],
@@ -683,7 +691,11 @@ export const ASANAS = [
       'Mỗi hơi thở ra thả sâu thêm, không kéo giật.',
     ],
     benefits: ['Kéo giãn chuỗi cơ sau', 'Làm dịu hệ thần kinh'],
-    cautions: ['Thoát vị đĩa đệm: giữ lưng thẳng, chỉ gập nhẹ từ háng.', 'Chấn thương gân kheo: chùng gối.'],
+    cautions: [
+      'Thoát vị đĩa đệm: giữ lưng thẳng, chỉ gập nhẹ từ háng.',
+      'Chấn thương gân kheo: chùng gối.',
+      'Gân kheo ngắn, lưng tròn khi ngồi: ngồi trên chăn gấp để khung chậu dễ nghiêng ra trước. Mô hình chưa tính lực căng thụ động của cơ nên số liệu tải không cho thấy lợi ích này.',
+    ],
   },
   {
     id: 'ardha_matsyendrasana',

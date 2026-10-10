@@ -18,7 +18,7 @@ const args = process.argv.slice(2);
 const dry = args.includes('--dry');
 const ri = args.indexOf('--restarts');
 const restarts = ri >= 0 ? parseInt(args[ri + 1], 10) : 0;
-const only = args.filter((a, i) => !a.startsWith('--') && i !== ri + 1);
+const only = args.filter((a, i) => !a.startsWith('--') && !(ri >= 0 && i === ri + 1));
 if (args.includes('--help') || args.includes('-h') || (!only.length && !args.includes('--all'))) {
   console.log('Usage: npm run fit-poses -- [--dry] <pose ...>   (or --all to refit every pose in POSE_FIT)');
   process.exit(args.includes('--help') || args.includes('-h') ? 0 : 1);

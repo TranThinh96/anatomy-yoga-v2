@@ -47,7 +47,9 @@ Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh 
   so sánh tải giữa các biến thể.
 - **Đạo cụ là điểm tựa thật** trong phân tích: tường (Viparita Karani – gót tựa tường), gạch dưới đùi
   (Supta Baddha Konasana – tải khớp háng ~15 → ~0 N·m), gạch dưới xương cùng (Cây cầu có điểm tựa – mô-men
-  thắt lưng 28 → 5 N·m). Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.
+  thắt lưng 28 → 5 N·m), gối ôm kê trên hai gạch (Tư thế em bé tựa gối ôm – tải gối 37 → 4 N·m), chăn gấp
+  dưới mông (Paschimottanasana – tải gần như không đổi vì mô hình chưa có lực căng thụ động của gân kheo).
+  Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.
 - Nhập **cân nặng** và **tỷ lệ cơ thể nam/nữ**; bật/tắt **ma sát với thảm**.
 
 Phương pháp:
