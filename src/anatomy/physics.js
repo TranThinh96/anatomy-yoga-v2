@@ -431,17 +431,21 @@ export class Physics {
       const p = this.rig.worldPoint(c.seg, c.local, new THREE.Vector3());
       // the floor or a prop under the point (normal up, or radial on a bolster) ...
       let n = null;
+      let wall = false;
       if (env.empty) {
         if (p.y - c.r < TOUCH) n = UP;
       } else {
-        const rest = env.rest(p.x, p.z, c.r, p.y);
+        const rest = env.onProps(c.seg) ? env.rest(p.x, p.z, c.r, p.y) : { y: c.r, n: UP };
         if (!c.only && p.y - rest.y < TOUCH) n = rest.n;
         // ... or a wall beside it (normal horizontal)
         const w = env.wallGap(p, c.r);
-        if (!n && w.gap < TOUCH) n = w.n;
+        if (!n && w.gap < TOUCH) {
+          n = w.n;
+          wall = true;
+        }
       }
       if (n) {
-        out.push({ seg: c.seg, p, x: p.x, z: p.z, n });
+        out.push({ seg: c.seg, p, x: p.x, z: p.z, n, wall });
         count[c.seg] = (count[c.seg] || 0) + 1;
       }
     }
@@ -458,7 +462,7 @@ export class Physics {
     const segPos = this.segments.map((s) => rig.worldPoint(s.seg, s.local, new THREE.Vector3()));
     const contacts = this.touchingContacts();
     // base of support: what the body stands, sits or lies on (a wall beside it only leans)
-    const hull = convexHull(contacts.filter((c) => c.n.y > 0.5));
+    const hull = convexHull(contacts.filter((c) => !c.wall));
     const margin = signedMargin({ x: com.x, z: com.z }, hull);
 
     // gravity moment on each joint's distal subtree (independent of the floor forces)
@@ -499,7 +503,7 @@ export class Physics {
     for (const c of contacts) {
       const s = sideOf(c.seg);
       // a part leaning on a wall is listed apart, with the size of its (horizontal) push
-      const wall = c.n.y < 0.5;
+      const wall = c.wall;
       const label = (GROUP_OF_SEG[baseOf(c.seg)] || c.seg) + SIDE_VI[s] + (wall ? ' (tựa tường)' : '');
       if (!groups.has(label)) groups.set(label, { label, f: 0, F: new THREE.Vector3(), p: new THREE.Vector3(), n: 0 });
       const g = groups.get(label);

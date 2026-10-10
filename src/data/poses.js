@@ -406,6 +406,20 @@ export const POSES = {
     shoulder: { flex: 166 },
     wrist: { ext: 15, pron: 180 },
   },
+  // Supported child's pose: knees wide, a bolster lengthwise between the thighs, belly, chest and
+  // forehead resting on it, forearms on the mat on either side of it (restorative).
+  balasana_bolster: {
+    root: { pitch: 28 },
+    hip: { flex: 85, rot: 35 },
+    knee: { flex: 157 },
+    ankle: { dorsi: -37 },
+    lumbar: { flex: 28 },
+    thorax: { flex: 28 },
+    neck: { flex: 30 },
+    shoulder: { flex: 66, abd: -31, rot: 6 },
+    elbow: { flex: 70 },
+    wrist: { pron: 90 },
+  },
   ustrasana: {
     root: { pitch: -20 },
     hip: { flex: -20 },
@@ -699,6 +713,13 @@ export function expandPose(pose) {
 // Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
 // pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
 export const POSE_PROPS = {
+  // a round bolster lengthwise between the knees, under the belly, chest and forehead, raised on a
+  // flat block under each end
+  balasana_bolster: [
+    { type: 'block', stand: 'flat', at: [0, 0.16], yaw: 90 },
+    { type: 'block', stand: 'flat', at: [0, 0.64], yaw: 90 },
+    { type: 'bolster', at: [0, 0.4], yaw: 90, y: 0.075 },
+  ],
   // a block lying flat (its lowest height) under the sacrum
   setu_bandha_block: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
   // a block on its long edge under each outer thigh, along the thigh
@@ -895,6 +916,15 @@ export const POSE_FIT = {
     // sit bones resting on the heels (a rest pose), forehead and forearms down
     at: [['pelvis', 'knee_L', [-0.07, -0.3, -0.1], 0.5], ['pelvis', 'knee_R', [0.07, -0.3, -0.1], 0.5]],
     params: ['root.pitch', 'hip.flex', 'shoulder.flex', 'ankle.dorsi', 'knee.flex', 'neck.flex', 'lumbar.flex', 'thorax.flex'],
+  },
+  balasana_bolster: {
+    support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R', 'lumbar', 'head', 'wrist_L', 'wrist_R'],
+    onProp: ['lumbar', 'thorax', 'head'], // belly, chest (within ~2 cm) and forehead on the bolster
+    // sit bones toward the heels (weakly: with the knees wide they sink between the feet)
+    at: [['pelvis', 'knee_L', [-0.07, -0.3, -0.1], 0.2], ['pelvis', 'knee_R', [0.07, -0.3, -0.1], 0.2]],
+    // forearms on the mat on either side of the bolster, hands forward
+    rel: [['pelvis', 'wrist_L', [0.27, 0.5]], ['pelvis', 'wrist_R', [-0.27, 0.5]]],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'root.pitch', 'hip.flex', 'neck.flex', 'lumbar.flex&thorax.flex'],
   },
   ustrasana: { support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'], balance: true, params: ['ankle.dorsi', 'root.pitch&hip.flex', 'knee.flex'] },
   bhujangasana: { support: ['pelvis', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']], params: ['elbow.flex', 'shoulder.flex', 'ankle.dorsi', 'thorax.flex', 'lumbar.flex'] },

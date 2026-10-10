@@ -22,6 +22,8 @@ export function poseToQuats(poseId) {
 
 // A segment counts as resting on the floor when it is within this height (m) of it ...
 const ON_FLOOR = 0.015;
+// A segment rests on a prop in a pose when it is this close to the prop's top (see _setEnvs).
+const ON_PROP = 0.02;
 // ... and as staying put when it moves less than this (m) across the floor between two poses.
 const STAYS = 0.1;
 // Floor contacts weigh less than the anchor when they cannot all be kept down.
@@ -250,10 +252,27 @@ export class Animator {
    */
   _setEnvs(center) {
     const envs = new Map();
+    // segments resting on a prop in each pose that has props: only they may rest on props while
+    // moving (a hand passing beside a block, or a tabletop's hands next to a bolster, may not)
+    const restingOn = new Map();
+    for (const k of this.steps) {
+      if (!POSE_PROPS[k.pose]?.length || restingOn.has(k)) continue;
+      this.rig.env = new Env(POSE_PROPS[k.pose], k.offset);
+      this.rig.applyQuats(k.quats, k.offset);
+      this.rig.ground();
+      const segs = new Set();
+      for (const c of this.rig.contacts) {
+        const p = this.rig.worldPoint(c.seg, c.local, new THREE.Vector3());
+        if (this.rig.clearance(c, p) < ON_PROP && this.rig.env.propClearance(p, c.r) < ON_PROP) segs.add(c.seg);
+      }
+      restingOn.set(k, segs);
+    }
     this.steps.forEach((s, i) => {
       const from = s.chain ? s.chain.keys : [this.steps[Math.max(0, i - 1)], s];
       const props = [];
       const keys = new Set();
+      const segs = new Set();
+      for (const k of from) for (const seg of restingOn.get(k) || []) segs.add(seg);
       for (const k of from) {
         for (const p of POSE_PROPS[k.pose] || []) {
           const at = [p.at[0] + k.offset.x - center.x, p.at[1] + k.offset.z - center.z];
@@ -263,8 +282,8 @@ export class Animator {
           props.push({ ...p, at });
         }
       }
-      const id = [...keys].sort().join(';');
-      if (!envs.has(id)) envs.set(id, props.length ? new Env(props) : NO_PROPS);
+      const id = `${[...keys].sort().join(';')}|${[...segs].sort().join(',')}`;
+      if (!envs.has(id)) envs.set(id, props.length ? new Env(props, undefined, segs) : NO_PROPS);
       s.env = envs.get(id);
     });
   }

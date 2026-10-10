@@ -1,8 +1,11 @@
 // Adjusts selected joint angles of each pose so that the segments listed in
 // POSE_FIT[pose].support touch the floor, then writes the angles back into
 // src/data/poses.js.
-//   Usage: node tools/fit-poses.mjs [--dry] <pose ...>   |   node tools/fit-poses.mjs [--dry] --all
+//   Usage: node tools/fit-poses.mjs [--dry] [--restarts N] <pose ...>   |   node tools/fit-poses.mjs [--dry] --all
 // Name the poses you changed: refitting every pose rewrites angles that were already tuned.
+// --restarts N also starts the descent from N random perturbations of the authored angles (each
+// param ±30°, deterministic) and keeps the best: for poses where one-angle-at-a-time descent stalls
+// (a body coming down onto a prop needs several angles to move together).
 import { readFileSync, writeFileSync } from 'node:fs';
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
@@ -13,7 +16,9 @@ import { POSES, POSE_FIT } from '../src/data/poses.js';
 const FILE = new URL('../src/data/poses.js', import.meta.url);
 const args = process.argv.slice(2);
 const dry = args.includes('--dry');
-const only = args.filter((a) => !a.startsWith('--'));
+const ri = args.indexOf('--restarts');
+const restarts = ri >= 0 ? parseInt(args[ri + 1], 10) : 0;
+const only = args.filter((a, i) => !a.startsWith('--') && i !== ri + 1);
 if (args.includes('--help') || args.includes('-h') || (!only.length && !args.includes('--all'))) {
   console.log('Usage: npm run fit-poses -- [--dry] <pose ...>   (or --all to refit every pose in POSE_FIT)');
   process.exit(args.includes('--help') || args.includes('-h') ? 0 : 1);
@@ -179,26 +184,39 @@ for (const [name, fit] of Object.entries(POSE_FIT)) {
   const start = POSES[name];
   const params = fit.params.map(parseParam);
   const keys = [...new Map(params.flat().map((t) => [t.key.join('.'), t.key])).values()];
-  let pose = start;
-  let e = cost(pose, { ...fit, params }, start);
-  const before = supportHeights(pose, fit.support);
-  for (const step of [8, 4, 2, 1, 0.5]) {
-    let improved = true;
-    for (let guard = 0; improved && guard < 60; guard++) {
-      improved = false;
-      for (const p of params) {
-        for (const d of [step, -step]) {
-          const cand = shift(pose, p, d);
-          const ce = cost(cand, { ...fit, params }, start);
-          if (ce < e - 1e-9) {
-            pose = cand;
-            e = ce;
-            improved = true;
+  const before = supportHeights(start, fit.support);
+  const descend = (from) => {
+    let pose = from;
+    let e = cost(pose, { ...fit, params }, start);
+    for (const step of [8, 4, 2, 1, 0.5]) {
+      let improved = true;
+      for (let guard = 0; improved && guard < 60; guard++) {
+        improved = false;
+        for (const p of params) {
+          for (const d of [step, -step]) {
+            const cand = shift(pose, p, d);
+            const ce = cost(cand, { ...fit, params }, start);
+            if (ce < e - 1e-9) {
+              pose = cand;
+              e = ce;
+              improved = true;
+            }
           }
         }
       }
     }
+    return { pose, e };
+  };
+  let best = descend(start);
+  let seed = 1;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+  for (let r = 0; r < restarts; r++) {
+    let from = start;
+    for (const p of params) from = shift(from, p, Math.round((rand() * 2 - 1) * 30));
+    const res = descend(from);
+    if (res.e < best.e) best = res;
   }
+  const pose = best.pose;
   const after = supportHeights(pose, fit.support);
   const fmt = (hs) => hs.map((h) => (h * 100).toFixed(1)).join('/');
   const changed = keys.filter((p) => Math.round(get(pose, p)) !== Math.round(get(start, p)));

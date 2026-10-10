@@ -139,7 +139,7 @@ export class Rig {
 
   /** Vertical clearance of contact c above the floor or a prop (world position p of its centre). */
   clearance(c, p = this.worldPoint(c.seg, c.local, this._v)) {
-    return this.env.empty ? p.y - c.r : this.env.clearance(p, c.r);
+    return this.env.empty || !this.env.onProps(c.seg) ? p.y - c.r : this.env.clearance(p, c.r);
   }
 
   /** Converts a rest-pose world point into the local frame of a segment. */
@@ -177,7 +177,7 @@ export class Rig {
       let min = Infinity;
       for (const c of this.contacts) {
         const p = this.worldPoint(c.seg, c.local, this._v);
-        const y = this.env.empty ? p.y - c.r : it === 0 ? p.y - this.env.rest(p.x, p.z, c.r).y : this.clearance(c, p);
+        const y = this.env.empty || !this.env.onProps(c.seg) ? p.y - c.r : it === 0 ? p.y - this.env.rest(p.x, p.z, c.r).y : this.clearance(c, p);
         if (y < min) min = y;
       }
       this.pelvis.position.y -= min;

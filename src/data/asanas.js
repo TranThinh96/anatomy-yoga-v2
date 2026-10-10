@@ -548,6 +548,7 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'tabletop' }, { pose: 'balasana', anchor: KNEES, move: 2.4, hold: 2.5 }],
     loop: 'pingpong',
+    variants: [{ label: 'Tựa gối ôm', pose: 'balasana_bolster' }],
     roles: {
       contract: [],
       stretch: ['erector_spinae', 'latissimus_dorsi', 'gluteus_maximus', 'quadratus_lumborum', 'rhomboids', 'trapezius', 'vastus_lateralis', 'vastus_medialis', 'tibialis_anterior'],

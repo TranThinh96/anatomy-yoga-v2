@@ -39,7 +39,7 @@ for (const pose of poses) {
     if (!r.contacts.some((c) => segs.includes(c.seg))) fail(pose, `${spec} should touch the floor`);
   }
   for (const seg of POSE_FIT[pose]?.wall || []) {
-    if (!r.contacts.some((c) => c.seg === seg && c.n.y < 0.5)) fail(pose, `${seg} should lean on the wall`);
+    if (!r.contacts.some((c) => c.seg === seg && c.wall)) fail(pose, `${seg} should lean on the wall`);
   }
   if (!ASYMMETRIC.test(pose)) {
     const by = Object.fromEntries(r.joints.map((j) => [j.joint, j.total]));

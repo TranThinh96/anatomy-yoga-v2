@@ -46,8 +46,15 @@ function resolve(prop, offset = { x: 0, z: 0 }) {
  * surface; the walls only push horizontally and never carry the body's height (ground()).
  */
 export class Env {
-  constructor(props = [], offset) {
+  /** segs: the segments that may rest on the props (all when null); the others only meet the floor. */
+  constructor(props = [], offset, segs = null) {
     this.props = props.map((p) => resolve(p, offset));
+    this.segs = segs;
+  }
+
+  /** Whether a segment may rest on the props (a hand passing beside a block may not). */
+  onProps(seg) {
+    return !this.segs || this.segs.has(seg);
   }
 
   get empty() {
