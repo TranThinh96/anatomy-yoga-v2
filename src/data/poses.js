@@ -477,6 +477,92 @@ export const POSES = {
     shoulder: { abd: 30, rot: 80 },
   },
   // ---------------- Seated ----------------
+  // The steps into Ardha Matsyendrasana: right knee drawn up with the foot flat on its own side,
+  // the foot lifted over the left shin (via), then planted outside the left knee, trunk still facing
+  // forward, hands beside the hips. Going straight from Dandasana swept the foot through the left leg.
+  ardha_matsyendrasana_knee_up: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 129 },
+    knee_R: { flex: 79 },
+    ankle_R: { dorsi: -47 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -19, abd: 10 },
+    wrist: { ext: 74 },
+  },
+  ardha_matsyendrasana_lift: {
+    root: { pitch: -17 },
+    hip_L: { flex: 74 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 131, abd: -40, rot: -15 },
+    knee_R: { flex: 113 },
+    ankle_R: { dorsi: -10 },
+    lumbar: { flex: 4 },
+    shoulder: { flex: -16, abd: 10 },
+    wrist: { ext: 96 },
+  },
+  ardha_matsyendrasana_crossed: {
+    root: { pitch: -4 },
+    hip_L: { flex: 87 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 127, abd: -31, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -23 },
+    lumbar: { flex: 1 },
+    shoulder: { flex: -15, abd: 10 },
+    wrist: { ext: 80 },
+    shoulder_L: { abd: 9 },
+    shoulder_R: { abd: 9 },
+  },
+  // The left hand leaves the floor before it reaches for the right knee, as in Navasana: first the
+  // shoulder extends a little (hand lifted, arm straight), then the elbow bends. Swinging the arm
+  // straight from the floor to the knee swept the fingers through the floor and lifted the body.
+  ardha_matsyendrasana_hand_off: {
+    root: { pitch: -6 },
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -31, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -23 },
+    lumbar: { flex: 3 },
+    shoulder: { flex: -16, abd: 10 },
+    shoulder_L: { flex: -26 },
+    wrist: { ext: 80 },
+    wrist_L: { ext: 90 },
+  },
+  ardha_matsyendrasana_hand_up: {
+    root: { pitch: -6 },
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -31, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -23 },
+    lumbar: { flex: 3 },
+    shoulder: { flex: -16, abd: 10 },
+    shoulder_L: { flex: -30 },
+    elbow_L: { flex: 75 },
+    wrist: { ext: 80 },
+    wrist_L: { ext: 90 },
+  },
+  // Half lord of the fishes, beginner form (bottom leg straight): from Dandasana the right foot is
+  // planted outside the left knee, the trunk turns to the right, the left hand holds the outside of
+  // the right knee, the right hand rests on the floor behind the pelvis.
+  ardha_matsyendrasana: {
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -33, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -29 },
+    lumbar: { flex: 2, rot: -5 },
+    thorax: { rot: -28 },
+    neck: { rot: -25 },
+    shoulder_L: { flex: 24, abd: -17, rot: 1 },
+    elbow_L: { flex: 53 },
+    shoulder_R: { flex: -24, abd: 6 },
+    wrist_R: { ext: 87 },
+    elbow_R: { flex: 16 },
+    root: { pitch: -6 },
+  },
   paschimottanasana: {
     root: { pitch: 42 },
     hip: { flex: 134 },
@@ -807,6 +893,41 @@ export const POSE_FIT = {
     support: ['pelvis', 'thorax', 'head'],
     dir: [['hip_L', [0, -1, 0], [0, 1, 0]], ['hip_R', [0, -1, 0], [0, 1, 0]]], // legs vertical
     params: ['hip.flex'],
+  },
+  ardha_matsyendrasana_knee_up: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_L', 'wrist_R'],
+    // right foot beside the left shin, just below the knee; hands where they are in Dandasana
+    rel: [['knee_L', 'ankle_R', [-0.15, 0.2]], ['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]],
+    params: ['hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'wrist.ext'],
+  },
+  ardha_matsyendrasana_lift: {
+    support: ['pelvis', 'ankle_L', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]], // hands stay where they are in Dandasana
+    params: ['shoulder.flex', 'wrist.ext', 'root.pitch&hip_L.flex&hip_R.flex', 'hip_L.flex'],
+  },
+  ardha_matsyendrasana_crossed: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_L', 'wrist_R'],
+    params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'shoulder_L.abd', 'shoulder_R.abd', 'wrist.ext'],
+    rel: [['knee_L', 'ankle_R', [0.1, -0.04]], ['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]],
+  },
+  ardha_matsyendrasana_hand_off: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'], params: [] },
+  ardha_matsyendrasana_hand_up: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'], params: [] },
+  ardha_matsyendrasana: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_R'],
+    rel: [
+      ['knee_L', 'ankle_R', [0.12, -0.02]], // right foot planted just outside the left knee
+      ['pelvis', 'wrist_R', [-0.12, -0.22]], // right hand on the floor behind the right hip
+    ],
+    at: [['wrist_L', 'knee_R', [-0.07, 0.02, 0]]], // left hand on the outside of the right knee
+    dir: [
+      ['thorax', [0, 1, 0], [0, 1, 0]], // spine tall
+      ['thorax', [0, 0, 1], [-0.6, 0, 0.8]], // chest turned about 35° to the right
+    ],
+    params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'lumbar.rot', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'elbow_R.flex', 'wrist_R.ext'],
   },
   paschimottanasana: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex'] },
   uttanasana_bent: {
