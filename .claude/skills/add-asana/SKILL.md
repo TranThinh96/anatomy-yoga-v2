@@ -208,6 +208,12 @@ viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal p
   top rests on the mat (it bent the ankles of the supported child's pose 60° the wrong way).
 - With the hips flexed past ~100°, hip `rot` swings the knee sideways and `abd` barely does
   (Euler order): open the knees wide with `rot` (Balasana with knees wide: rot 35).
+- Hip (and shoulder) Euler order is ZYX: `abd` is the outermost angle. So `root.pitch&hip.flex` keeps
+  the legs still only when `abd` and `rot` are 0; folding over abducted or rotated legs (Prasarita,
+  Parsvottanasana, Janu Sirsasana) needs the hip angles recomputed for the new pelvis pitch
+  (pelvis⁻¹ · old world thigh rotation, decomposed as ZYX) – otherwise the legs cross or lift.
+- For an awkward limb (Janu Sirsasana's bent leg) build the hip angles from the thigh direction and
+  the kneecap direction (a rotation basis decomposed as ZYX), then let the fitter refine them.
 
 ## 5. Check
 
