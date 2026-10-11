@@ -138,6 +138,34 @@ export const POSES = {
     shoulder: { flex: 32, abd: -11 },
     elbow: { flex: 0 },
   },
+  // Chair with the palms together in front of the chest: the step before Revolved chair.
+  utkatasana_prayer: {
+    root: { pitch: 38 },
+    hip: { flex: 95 },
+    knee: { flex: 85 },
+    ankle: { dorsi: 28 },
+    lumbar: { flex: -6 },
+    thorax: { flex: -4 },
+    shoulder: { flex: 23, abd: 21, rot: -39 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
+  // Revolved chair (Parivrtta Utkatasana), turning to the right, palms together at the chest: the
+  // knees stay level and the pelvis square, the turn comes from the chest (thoracic rotation). The
+  // classic form hooks the left elbow outside the right knee – an arm-on-leg contact the physics
+  // lacks, so the elbow hovers beside the knee here.
+  parivrtta_utkatasana: {
+    root: { pitch: 45 },
+    hip: { flex: 100 },
+    knee: { flex: 85 },
+    ankle: { dorsi: 33 },
+    lumbar: { flex: 0, rot: -8 },
+    thorax: { flex: 5, rot: -40 },
+    neck: { rot: -20 },
+    shoulder: { flex: 21, abd: 19, rot: -38 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
   utkatasana: {
     root: { pitch: 38 },
     hip: { flex: 95 },
@@ -2671,6 +2699,19 @@ export const POSE_FIT = {
     at: [['wrist_L', 'knee_L', [0.0, 0.06, 0.08]], ['wrist_R', 'knee_R', [0.0, 0.06, 0.08]]],
     dir: [['thorax', [0, 1, 0], [0, 1, 0]]], // trunk upright
     params: ['ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
+  },
+  utkatasana_prayer: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
+  },
+  parivrtta_utkatasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    balance: true,
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'root.pitch&hip.flex', 'ankle.dorsi'],
   },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
   ardha_purvottanasana: {

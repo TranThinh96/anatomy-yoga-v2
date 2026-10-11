@@ -322,6 +322,43 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'parivrtta_utkatasana',
+    sanskrit: 'Parivrtta Utkatasana',
+    vi: 'Tư thế Cái ghế vặn xoắn',
+    en: 'Revolved Chair',
+    category: 'Đứng',
+    level: 'Trung bình',
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'utkatasana_prayer', anchor: FEET, move: 2, hold: 0.6 },
+      { pose: 'parivrtta_utkatasana', anchor: FEET, move: 2, hold: 2.5 },
+    ],
+    loop: 'pingpong',
+    roles: {
+      contract: [...QUADS, 'gluteus_maximus', 'external_oblique_L', 'erector_spinae', 'tibialis_anterior'],
+      stretch: ['external_oblique_R', 'soleus'],
+      stabilize: ['adductors', 'gluteus_medius', 'rectus_abdominis', 'rhomboids'],
+    },
+    joints: [
+      ['knee', 'Gập gối ~85°, hai gối ngang nhau'],
+      ['hip', 'Gập háng, chậu vuông về phía trước'],
+      ['thoracic_spine_joint', 'Xoay sang phải – phần lớn chuyển động xoay'],
+      ['lumbar_spine_joint', 'Xoay ít'],
+    ],
+    cues: [
+      'Từ Cái ghế, chắp tay trước ngực.',
+      'Thở ra, xoay ngực sang phải, đưa khuỷu trái về phía ngoài gối phải (chạm hoặc móc nếu thoải mái).',
+      'Giữ hai gối ngang nhau, gối trái không trượt ra trước; ép đều hai bàn chân xuống.',
+      'Kéo dài cột sống mỗi lần hít vào, xoay thêm mỗi lần thở ra. Đổi bên.',
+    ],
+    benefits: ['Tăng sức mạnh đùi, mông như Cái ghế', 'Xoay cột sống ngực, tăng sức cơ chéo bụng'],
+    cautions: [
+      'Đau gối: ngồi nông hơn.',
+      'Đau thắt lưng, thoát vị đĩa đệm: xoay nhẹ, giữ chậu vuông; hỏi ý kiến bác sĩ.',
+      'Mô hình: khuỷu chưa móc vào gối (chưa có tiếp xúc tay – chân), nên không có lực tay hỗ trợ xoay.',
+    ],
+  },
+  {
     id: 'vrksasana',
     sanskrit: 'Vrksasana',
     vi: 'Tư thế Cái cây',
