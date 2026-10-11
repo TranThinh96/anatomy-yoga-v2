@@ -102,6 +102,11 @@ for (const a of ASANAS) {
     if (!POSES[v.pose]) fail(`${where}: variant pose "${v.pose}" not in POSES`);
     if (!v.label) fail(`${where}: variant without label`);
     usedPoses.add(v.pose);
+    for (const st of v.steps || []) {
+      if (!POSES[st.pose]) fail(`${where}: variant step pose "${st.pose}" not in POSES`);
+      usedPoses.add(st.pose);
+    }
+    if (v.steps && v.steps[v.steps.length - 1].pose !== v.pose) fail(`${where}: variant "${v.label}" steps do not end in its pose`);
   }
   const roles = a.roles || {};
   for (const r of ['contract', 'stretch', 'stabilize']) {

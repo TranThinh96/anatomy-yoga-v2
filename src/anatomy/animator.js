@@ -1,8 +1,15 @@
 import * as THREE from 'three';
 import { semanticToQuat } from './rig.js';
-import { POSES, expandPose } from '../data/poses.js';
+import { POSES, POSE_PROPS, expandPose } from '../data/poses.js';
+import { Env, NO_PROPS } from './props.js';
 
 const JOINT_ALIAS = { pelvis: 'pelvis' };
+
+/** The props of a pose (POSE_PROPS) as an Env, in the pose's frame shifted by `offset` (x/z). */
+export function poseEnv(poseId, offset) {
+  const props = POSE_PROPS[poseId];
+  return props?.length ? new Env(props, offset) : NO_PROPS;
+}
 
 export function poseToQuats(poseId) {
   const pose = typeof poseId === 'string' ? POSES[poseId] : poseId;
@@ -15,6 +22,8 @@ export function poseToQuats(poseId) {
 
 // A segment counts as resting on the floor when it is within this height (m) of it ...
 const ON_FLOOR = 0.015;
+// A segment rests on a prop in a pose when it is this close to the prop's top (see _setEnvs).
+const ON_PROP = 0.02;
 // ... and as staying put when it moves less than this (m) across the floor between two poses.
 const STAYS = 0.1;
 // Floor contacts weigh less than the anchor when they cannot all be kept down.
@@ -164,7 +173,11 @@ export class Animator {
   quatsFor(pose) {
     if (!this._cache.has(pose)) {
       const q = poseToQuats(pose);
+      // balanced (prepare) on its own props, in its own frame
+      const env = this.rig.env;
+      this.rig.env = poseEnv(pose);
       this._cache.set(pose, this.prepare ? this.prepare(q) : q);
+      this.rig.env = env;
     }
     return this._cache.get(pose);
   }
@@ -186,6 +199,8 @@ export class Animator {
   _computeOffsets() {
     let off = { x: 0, z: 0 };
     this.steps[0].offset = off;
+    // grounding only moves the body up or down, so the x/z offsets do not depend on the props
+    this.rig.env = NO_PROPS;
     for (let i = 1; i < this.steps.length; i++) {
       const s = this.steps[i];
       const prev = this.steps[i - 1];
@@ -198,6 +213,12 @@ export class Animator {
         off = { ...prev.offset };
       }
       s.offset = off;
+    }
+    this._setEnvs({ x: 0, z: 0 });
+    for (let i = 1; i < this.steps.length; i++) {
+      const s = this.steps[i];
+      const prev = this.steps[i - 1];
+      this.rig.env = s.env;
       s.keep = s.anchor ? this._floorTargets(prev, s) : null;
       s.width = s.anchor ? this._anchorWidth(prev, s) : null;
       s.stepPaths = s.keep?.steps ? this._stepPaths(prev, s, s.keep.steps) : null;
@@ -210,6 +231,7 @@ export class Animator {
       if (!c || c.keep !== undefined) continue;
       const [first, last] = [c.keys[0], c.keys[c.keys.length - 1]];
       const anchored = c.keys.slice(1).every((m) => m.anchor && m.anchor.join() === last.anchor.join());
+      this.rig.env = last.env;
       c.keep = anchored ? this._floorTargets(first, last) : null;
       c.stepPaths = c.keep?.steps ? this._stepPaths(first, last, c.keep.steps) : null;
       c.width = anchored ? this._anchorWidth(first, last) : null;
@@ -217,6 +239,53 @@ export class Animator {
     // Centre the whole sequence around the origin (use the most "important" step).
     const key = this.steps[Math.min(1, this.steps.length - 1)];
     this.center = { x: key.offset.x, z: key.offset.z };
+    this._setEnvs(this.center);
+    this.env = this.steps[0].env;
+  }
+
+  /**
+   * Props of each step: those of the pose it moves from and the pose it moves into (all poses of
+   * a chain of via poses), placed where those poses are (their offset, minus the centre once it is
+   * known). A block is there while the hips come down onto it and while they rise off it, and not
+   * before (the pelvis lies where it goes in Setu Bandha). The same prop at the same place is
+   * one prop, and steps with the same props share one Env.
+   */
+  _setEnvs(center) {
+    const envs = new Map();
+    // segments resting on a prop in each pose that has props: only they may rest on props while
+    // moving (a hand passing beside a block, or a tabletop's hands next to a bolster, may not)
+    const restingOn = new Map();
+    for (const k of this.steps) {
+      if (!POSE_PROPS[k.pose]?.length || restingOn.has(k)) continue;
+      this.rig.env = new Env(POSE_PROPS[k.pose], k.offset);
+      this.rig.applyQuats(k.quats, k.offset);
+      this.rig.ground();
+      const segs = new Set();
+      for (const c of this.rig.contacts) {
+        const p = this.rig.worldPoint(c.seg, c.local, new THREE.Vector3());
+        if (this.rig.clearance(c, p) < ON_PROP && this.rig.env.propClearance(p, c.r) < ON_PROP) segs.add(c.seg);
+      }
+      restingOn.set(k, segs);
+    }
+    this.steps.forEach((s, i) => {
+      const from = s.chain ? s.chain.keys : [this.steps[Math.max(0, i - 1)], s];
+      const props = [];
+      const keys = new Set();
+      const segs = new Set();
+      for (const k of from) for (const seg of restingOn.get(k) || []) segs.add(seg);
+      for (const k of from) {
+        for (const p of POSE_PROPS[k.pose] || []) {
+          const at = [p.at[0] + k.offset.x - center.x, p.at[1] + k.offset.z - center.z];
+          const key = `${p.type}|${p.stand || ''}|${p.yaw || 0}|${p.y || 0}|${at.map((v) => Math.round(v * 50)).join(',')}`;
+          if (keys.has(key)) continue;
+          keys.add(key);
+          props.push({ ...p, at });
+        }
+      }
+      const id = `${[...keys].sort().join(';')}|${[...segs].sort().join(',')}`;
+      if (!envs.has(id)) envs.set(id, props.length ? new Env(props, undefined, segs) : NO_PROPS);
+      s.env = envs.get(id);
+    });
   }
 
   /** Lowest contact height of each segment in the current rig state. */
@@ -224,7 +293,7 @@ export class Animator {
     const h = {};
     const p = new THREE.Vector3();
     for (const c of this.rig.contacts) {
-      const y = this.rig.worldPoint(c.seg, c.local, p).y - c.r;
+      const y = this.rig.clearance(c, this.rig.worldPoint(c.seg, c.local, p));
       if (!(c.seg in h) || y < h[c.seg]) h[c.seg] = y;
     }
     return h;
@@ -285,7 +354,7 @@ export class Animator {
     const low = {};
     const p = new THREE.Vector3();
     for (const c of this.rig.contacts) {
-      const y = this.rig.worldPoint(c.seg, c.local, p).y - c.r;
+      const y = this.rig.clearance(c, this.rig.worldPoint(c.seg, c.local, p));
       if (!low[c.seg] || y < low[c.seg].y) low[c.seg] = { y, pos: p.clone() };
     }
     return low;
@@ -439,7 +508,7 @@ export class Animator {
     const rig = this.rig;
     if (tau <= 1e-6) return rig.ground();
     const p = new THREE.Vector3();
-    const hs = rig.contacts.map((c) => rig.worldPoint(c.seg, c.local, p).y - c.r);
+    const hs = rig.contacts.map((c) => rig.clearance(c, rig.worldPoint(c.seg, c.local, p)));
     const min = Math.min(...hs);
     const soft = min - tau * Math.log(hs.reduce((a, h) => a + Math.exp(-(h - min) / tau), 0));
     rig.pelvis.position.y -= soft;
@@ -554,6 +623,9 @@ export class Animator {
   }
 
   render() {
+    // props of the step being played (the rig may be shared with thumbnails / static analyses)
+    this.env = this.steps[this.locate(this.time).index].env || NO_PROPS;
+    this.rig.env = this.env;
     const { quats, s, prev, k, chain, w } = this.poseAt(this.time);
     const cx = this.center.x;
     const cz = this.center.z;

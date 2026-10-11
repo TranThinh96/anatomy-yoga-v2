@@ -40,16 +40,28 @@ export const POSES = {
   },
   supine: {
     root: { pitch: -90 },
-    shoulder: { abd: 18 },
+    shoulder: { abd: 18, flex: -11, rot: 9 },
     ankle: { dorsi: -30 },
     hip: { rot: 15 },
+    elbow: { flex: -4 },
+  },
+  // Savasana with a bolster under the knees: hips and knees softly bent, the lower back can settle
+  supine_bolster: {
+    root: { pitch: -90 },
+    hip: { flex: 29, rot: 15 },
+    knee: { flex: 62 },
+    ankle: { dorsi: -28 },
+    shoulder: { abd: 18, flex: -11, rot: 9 },
+    elbow: { flex: -4 },
   },
   supine_knees: {
     root: { pitch: -90 },
     hip: { flex: 47 },
     knee: { flex: 103 },
     ankle: { dorsi: 9 },
-    shoulder: { abd: 14, rot: -80 },
+    // arms along the body, palms down, as they stay when the hips lift into Setu Bandha
+    shoulder: { flex: -8, abd: 6 },
+    wrist: { pron: 90 },
   },
   prone: {
     root: { pitch: 86 },
@@ -134,6 +146,27 @@ export const POSES = {
     shoulder: { flex: 160, abd: 4 },
     scapula: { elev: 8 },
   },
+  // Standing with the back against a wall, feet a step in front of it: the start of utkatasana_wall.
+  tadasana_wall: {
+    root: { pitch: -5 },
+    hip: { flex: 23 },
+    ankle: { dorsi: -25 },
+    shoulder: { abd: 6 },
+    lumbar: { flex: -2 },
+    thorax: { flex: 22 },
+  },
+  // Utkatasana with the back against a wall: buttocks and back on the wall, feet forward, trunk
+  // upright, arms up.
+  utkatasana_wall: {
+    root: { pitch: -6 },
+    hip: { flex: 70 },
+    knee: { flex: 84 },
+    ankle: { dorsi: 11 },
+    shoulder: { flex: 160, abd: 4 },
+    scapula: { elev: 8 },
+    lumbar: { flex: 5 },
+    thorax: { flex: 10 },
+  },
   // Standing on the right leg with the left knee lifted in front: the step before opening the knee
   // into Vrksasana. Going there directly, the slerped hip rotation and knee bend drive the left
   // toes into the floor before the foot leaves it, and the body rocks onto the standing foot late.
@@ -178,6 +211,41 @@ export const POSES = {
     neck: { rot: 44 },
     shoulder: { abd: 90, rot: -90 },
   },
+  // Extended side angle, forearm on the front thigh: Warrior II legs, the trunk tipped over the
+  // front (left) thigh, top arm reaching over the ear on the line of the back leg, gaze up.
+  utthita_parsvakonasana: {
+    root: { yaw: 33, roll: 21 },
+    hip_L: { flex: 85, abd: 23, rot: 46 },
+    knee_L: { flex: 94 },
+    ankle_L: { dorsi: 8 },
+    hip_R: { flex: -24, abd: 29, rot: 10 },
+    ankle_R: { dorsi: 5 },
+    lumbar: { side: 8, rot: -12 },
+    thorax: { side: 22, rot: -29 },
+    neck: { rot: -30 },
+    shoulder_L: { abd: 15, flex: -29, rot: -92 },
+    elbow_L: { flex: 87 },
+    wrist_L: { pron: 90 },
+    shoulder_R: { abd: 167, rot: -90, flex: -7 },
+    scapula_R: { elev: 10 },
+  },
+  // Extended side angle with the lower hand on a block (on its end) inside the front foot: the
+  // trunk long over the front thigh, the lower arm straight down to the block.
+  utthita_parsvakonasana_block: {
+    root: { yaw: 33, roll: 21 },
+    hip_L: { flex: 85, abd: 23, rot: 46 },
+    knee_L: { flex: 94 },
+    ankle_L: { dorsi: 8 },
+    hip_R: { flex: -24, abd: 29, rot: 10 },
+    ankle_R: { dorsi: 7 },
+    lumbar: { side: 4, rot: -12 },
+    thorax: { side: 32, rot: -39 },
+    neck: { rot: -30 },
+    shoulder_L: { abd: 76, flex: 13, rot: -90 },
+    wrist_L: { ext: 49 },
+    shoulder_R: { abd: 171, rot: -90, flex: 3 },
+    scapula_R: { elev: 10 },
+  },
   trikonasana: {
     root: { roll: 42 },
     hip_L: { abd: 83, rot: 90 },
@@ -188,6 +256,54 @@ export const POSES = {
     thorax: { side: 31, rot: -10 },
     neck: { rot: -35 },
     shoulder: { abd: 90, rot: -90 },
+  },
+
+  // Trikonasana with the lower hand on a block (standing on its end) in front of and inside the front
+  // foot: the heel of the hand on the block, the fingers reaching past it.
+  trikonasana_block: {
+    root: { roll: 42 },
+    hip_L: { abd: 83, rot: 90 },
+    hip_R: { abd: -19, rot: -17 },
+    ankle_L: { dorsi: -37 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { side: 11 },
+    thorax: { side: 30, rot: -10 },
+    neck: { rot: -35 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { flex: -12 },
+    wrist_L: { ext: 74 },
+  },
+  // trikonasana_block with the trunk a little higher (less side bend): the hand just above the block,
+  // so the last part of the move lowers it straight down onto the block.
+  trikonasana_block_above: {
+    root: { roll: 42 },
+    hip_L: { abd: 83, rot: 90 },
+    hip_R: { abd: -19, rot: -17 },
+    ankle_L: { dorsi: -37 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { side: 4 },
+    thorax: { side: 24, rot: -10 },
+    neck: { rot: -35 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { flex: -12 },
+    wrist_L: { ext: 74 },
+  },
+  // The lower hand lifted off the shin (elbow bent, arm turned out) to above and in front of the
+  // block: passed through between Trikonasana and trikonasana_block, so the hand comes down onto the
+  // block from above (swinging the straight arm forward slid the hand into the block's side).
+  trikonasana_block_reach: {
+    root: { roll: 42 },
+    hip_L: { abd: 83, rot: 90 },
+    hip_R: { abd: -19, rot: -18 },
+    ankle_L: { dorsi: -38 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { side: 12 },
+    thorax: { side: 31, rot: -10 },
+    neck: { rot: -35 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { rot: 20 },
+    elbow_L: { flex: 60 },
+    wrist_L: { ext: 40 },
   },
 
   // ---------------- Kneeling / hands & knees ----------------
@@ -385,6 +501,20 @@ export const POSES = {
     shoulder: { flex: 166 },
     wrist: { ext: 15, pron: 180 },
   },
+  // Supported child's pose: knees wide, a bolster lengthwise between the thighs, belly, chest and
+  // forehead resting on it, forearms on the mat on either side of it (restorative).
+  balasana_bolster: {
+    root: { pitch: 28 },
+    hip: { flex: 85, rot: 35 },
+    knee: { flex: 157 },
+    ankle: { dorsi: -37 },
+    lumbar: { flex: 28 },
+    thorax: { flex: 28 },
+    neck: { flex: 30 },
+    shoulder: { flex: 66, abd: -31, rot: 6 },
+    elbow: { flex: 70 },
+    wrist: { pron: 90 },
+  },
   ustrasana: {
     root: { pitch: -20 },
     hip: { flex: -20 },
@@ -422,11 +552,173 @@ export const POSES = {
     wrist: { pron: 90 },
   },
 
+  // Lying on the back, knees bent, the soles together on the mat: the start of Supta Baddha Konasana.
+  supine_feet_together: {
+    root: { pitch: -90 },
+    hip: { flex: 51, abd: 0 },
+    knee: { flex: 117 },
+    ankle: { dorsi: -21 },
+    shoulder: { abd: 14, rot: -80, flex: -35 },
+  },
+  // Reclined bound angle: soles together close to the pelvis, knees falling open, feet on their
+  // outer edges, arms resting beside the body.
+  supta_baddha_konasana: {
+    root: { pitch: -90 },
+    hip: { flex: 50, abd: 8, rot: 62 },
+    knee: { flex: 121 },
+    ankle: { dorsi: -25 },
+    shoulder: { abd: 18, rot: -80, flex: -35 },
+  },
+  // Supta Baddha Konasana with a block (on its long edge) under each outer thigh: the hips rest
+  // open without being held, the restorative form.
+  supta_baddha_konasana_blocks: {
+    root: { pitch: -90 },
+    hip: { flex: 50, abd: 8, rot: 61 },
+    knee: { flex: 120 },
+    ankle: { dorsi: -25 },
+    shoulder: { abd: 45, rot: -80, flex: -35 },
+  },
+  // Legs up the wall, knees bent and soles flat on the wall: the start (and the way out).
+  viparita_karani_bent: {
+    root: { pitch: -90 },
+    hip: { flex: 124 },
+    knee: { flex: 81 },
+    ankle: { dorsi: 17 },
+    shoulder: { abd: 52, rot: 80, flex: -45 },
+  },
+  // Legs up the wall: heels and calves resting on the wall, buttocks a little away from it, knees
+  // soft, arms out to the sides, palms up.
+  viparita_karani: {
+    root: { pitch: -90 },
+    hip: { flex: 90 },
+    knee: { flex: 7 },
+    ankle: { dorsi: -10 },
+    shoulder: { abd: 52, rot: 80, flex: -45 },
+  },
+  // Supported bridge: the sacrum rests on a block lying flat, hips lower than in Setu
+  // Bandha, the legs and back let go (restorative).
+  setu_bandha_block: {
+    root: { pitch: -93 },
+    hip: { flex: 39 },
+    knee: { flex: 130 },
+    ankle: { dorsi: 1 },
+    lumbar: { flex: -11 },
+    thorax: { flex: 4 },
+    neck: { flex: 35 },
+    shoulder: { flex: -17, abd: 6 },
+    wrist: { pron: 90 },
+  },
   // ---------------- Seated ----------------
+  // The steps into Ardha Matsyendrasana: right knee drawn up with the foot flat on its own side,
+  // the foot lifted over the left shin (via), then planted outside the left knee, trunk still facing
+  // forward, hands beside the hips. Going straight from Dandasana swept the foot through the left leg.
+  ardha_matsyendrasana_knee_up: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 129 },
+    knee_R: { flex: 79 },
+    ankle_R: { dorsi: -47 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -19, abd: 10 },
+    wrist: { ext: 74 },
+  },
+  ardha_matsyendrasana_lift: {
+    root: { pitch: -17 },
+    hip_L: { flex: 74 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 131, abd: -40, rot: -15 },
+    knee_R: { flex: 113 },
+    ankle_R: { dorsi: -10 },
+    lumbar: { flex: 4 },
+    shoulder: { flex: -16, abd: 10 },
+    wrist: { ext: 96 },
+  },
+  ardha_matsyendrasana_crossed: {
+    root: { pitch: -4 },
+    hip_L: { flex: 87 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 127, abd: -31, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -23 },
+    lumbar: { flex: 1 },
+    shoulder: { flex: -15, abd: 10 },
+    wrist: { ext: 80 },
+    shoulder_L: { abd: 9 },
+    shoulder_R: { abd: 9 },
+  },
+  // The left hand leaves the floor before it reaches for the right knee, as in Navasana: first the
+  // shoulder extends a little (hand lifted, arm straight), then the elbow bends. Swinging the arm
+  // straight from the floor to the knee swept the fingers through the floor and lifted the body.
+  ardha_matsyendrasana_hand_off: {
+    root: { pitch: -6 },
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -31, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -23 },
+    lumbar: { flex: 3 },
+    shoulder: { flex: -16, abd: 10 },
+    shoulder_L: { flex: -26 },
+    wrist: { ext: 80 },
+    wrist_L: { ext: 90 },
+  },
+  ardha_matsyendrasana_hand_up: {
+    root: { pitch: -6 },
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -31, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -23 },
+    lumbar: { flex: 3 },
+    shoulder: { flex: -16, abd: 10 },
+    shoulder_L: { flex: -30 },
+    elbow_L: { flex: 75 },
+    wrist: { ext: 80 },
+    wrist_L: { ext: 90 },
+  },
+  // Half lord of the fishes, beginner form (bottom leg straight): from Dandasana the right foot is
+  // planted outside the left knee, the trunk turns to the right, the left hand holds the outside of
+  // the right knee, the right hand rests on the floor behind the pelvis.
+  ardha_matsyendrasana: {
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -33, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -29 },
+    lumbar: { flex: 2, rot: -5 },
+    thorax: { rot: -28 },
+    neck: { rot: -25 },
+    shoulder_L: { flex: 24, abd: -17, rot: 1 },
+    elbow_L: { flex: 53 },
+    shoulder_R: { flex: -24, abd: 6 },
+    wrist_R: { ext: 87 },
+    elbow_R: { flex: 16 },
+    root: { pitch: -6 },
+  },
   paschimottanasana: {
     root: { pitch: 42 },
     hip: { flex: 134 },
     ankle: { dorsi: 12 },
+    lumbar: { flex: 20 },
+    thorax: { flex: 18 },
+    neck: { flex: 14 },
+    shoulder: { flex: 168 },
+    wrist: { ext: 10, pron: 90 },
+  },
+  // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
+  // the pelvis can tip forward over the thighs.
+  dandasana_blanket: {
+    hip: { flex: 87 },
+    ankle: { dorsi: -1 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -4, abd: 10 },
+    wrist: { ext: 71 },
+    scapula: { elev: -1 },
+  },
+  paschimottanasana_blanket: {
+    root: { pitch: 46 },
+    hip: { flex: 133 },
+    ankle: { dorsi: 14 },
     lumbar: { flex: 20 },
     thorax: { flex: 18 },
     neck: { flex: 14 },
@@ -533,10 +825,58 @@ export function expandPose(pose) {
   return out;
 }
 
+// Props a pose rests on (blocks, bolster, folded blanket, wall – see src/anatomy/props.js), in the
+// pose's own frame: pelvis at x = z = 0, floor at y = 0, body facing +Z, the model's left +X.
+export const POSE_PROPS = {
+  // a wall just behind the buttocks
+  utkatasana_wall: [{ type: 'wall', at: [0, -0.105], normal: [0, 1] }],
+  tadasana_wall: [{ type: 'wall', at: [0, -0.105], normal: [0, 1] }],
+  // a block on its end inside the front (left) foot, under the lower hand
+  utthita_parsvakonasana_block: [{ type: 'block', stand: 'end', at: [0.4, 0.15], yaw: 90 }],
+  // a round bolster across the mat under the knees
+  supine_bolster: [{ type: 'bolster', at: [0, 0.33] }],
+  // a block on its end in front of and inside the front (left) foot, under the lower hand
+  trikonasana_block: [{ type: 'block', stand: 'end', at: [0.56, 0.12], yaw: 90 }],
+  // a folded blanket under the sit bones, lengthwise
+  dandasana_blanket: [{ type: 'blanket', at: [0, -0.1], yaw: 90 }],
+  paschimottanasana_blanket: [{ type: 'blanket', at: [0, -0.1], yaw: 90 }],
+  // a round bolster lengthwise between the knees, under the belly, chest and forehead, raised on a
+  // flat block under each end
+  balasana_bolster: [
+    { type: 'block', stand: 'flat', at: [0, 0.16], yaw: 90 },
+    { type: 'block', stand: 'flat', at: [0, 0.64], yaw: 90 },
+    { type: 'bolster', at: [0, 0.4], yaw: 90, y: 0.075 },
+  ],
+  // a block lying flat (its lowest height) under the sacrum
+  setu_bandha_block: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
+  // a block on its long edge under each outer thigh, along the thigh
+  supta_baddha_konasana_blocks: [
+    { type: 'block', stand: 'side', at: [0.3, 0.11], yaw: -37 },
+    { type: 'block', stand: 'side', at: [-0.3, 0.11], yaw: 37 },
+  ],
+  // the wall a little beyond the buttocks (legs up the wall)
+  viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
+  viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
+};
+
 // Floor-contact constraints used by tools/fit-poses.mjs: `support` lists the
 // segments that must touch the floor ("a|b" = either), `params` the angles the fitter may adjust
 // ("joint.angle"; joints without a side move both sides together).
 export const POSE_FIT = {
+  tadasana_wall: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    wall: ['pelvis', 'thorax'], // leaning back on the wall
+    // feet where they are in utkatasana_wall, so they stay put as the body slides down
+    rel: [['pelvis', 'ankle_L', [0.08, 0.32]]],
+    params: ['root.pitch&-ankle.dorsi', 'root.pitch&-lumbar.flex', 'hip.flex', 'ankle.dorsi', 'thorax.flex'],
+  },
+  utkatasana_wall: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    wall: ['pelvis', 'thorax'], // buttocks / sacrum and the mid back against the wall
+    params: ['root.pitch', 'root.pitch&-lumbar.flex', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex'],
+  },
   ardha_uttanasana: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
@@ -592,6 +932,40 @@ export const POSE_FIT = {
     above: [['knee_L', 'ankle_L']],
     params: ['root.yaw', 'hip_L.flex', 'hip_L.abd', 'hip_L.rot', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'hip_R.abd', 'hip_R.rot', 'ankle_R.dorsi', 'lumbar.rot', 'thorax.rot', 'root.roll'],
   },
+  utthita_parsvakonasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    rel: [['ankle_L', 'ankle_R', [-1.0, 0]]], // the Warrior II stance
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]], // front foot points to the front of the mat
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]], // back foot turned in slightly
+      ['thorax', [0, 0, 1], [0, 0, 1]], // chest open to the long side
+      ['shoulder_R', [0, -1, 0], [0.75, 0.66, 0]], // top arm on the line of the back leg
+      ['thorax', [0, 1, 0], [0.75, 0.66, 0]], // trunk on the same line (not curled up over the thigh)
+      ['lumbar', [0, 1, 0], [0.7, 0.72, 0]], // the pelvis tilts with it: a long side, no banana curve
+    ],
+    above: [['knee_L', 'ankle_L']],
+    // forearm resting along the front thigh: elbow just above the knee, wrist toward the hip
+    at: [['elbow_L', 'hip_L', [0, -0.3, 0.09]], ['wrist_L', 'hip_L', [0, -0.08, 0.1]]],
+    params: ['root.roll&hip_L.abd&-hip_R.abd', 'hip_L.flex', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex', 'hip_R.abd', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.abd', 'shoulder_R.flex'],
+  },
+  utthita_parsvakonasana_block: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L'],
+    onProp: ['wrist_L'], // the hand on the block
+    balance: true,
+    flat: ['ankle_L', 'ankle_R', 'ankle_L', 'ankle_R'], // feet flat (weighted twice)
+    rel: [['ankle_L', 'ankle_R', [-1.0, 0]], ['ankle_L', 'wrist_L', [0.01, 0.18]]], // the Warrior II stance; hand inside the foot
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]],
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]],
+      ['thorax', [0, 0, 1], [0, 0, 1]], // chest open to the long side
+      ['shoulder_R', [0, -1, 0], [0.75, 0.66, 0]], // top arm on the line of the back leg
+      ['thorax', [0, 1, 0], [0.8, 0.6, 0]], // trunk long over the front thigh
+      ['lumbar', [0, 1, 0], [0.7, 0.72, 0]],
+    ],
+    // the legs stay as in the forearm form (front knee at 90° over the ankle)
+    params: ['ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.abd', 'shoulder_R.flex'],
+  },
   trikonasana: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
@@ -607,6 +981,22 @@ export const POSE_FIT = {
     at: [['wrist_L', 'knee_L', [0.02, -0.2, 0.05]]], // lower hand on the front shin
     params: ['root.roll', 'hip_L.abd', 'hip_R.abd', 'hip_R.rot', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'shoulder_L.abd', 'shoulder_R.abd'],
   },
+  trikonasana_block: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L'],
+    onProp: ['wrist_L'], // the hand on the block, not on the floor beside it
+    flat: ['ankle_L', 'ankle_R', 'ankle_L', 'ankle_R'], // feet flat (weighted twice)
+    rel: [['ankle_L', 'ankle_R', [-0.9, 0]], ['ankle_L', 'wrist_L', [0.07, 0.12]]],
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]],
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]],
+      ['thorax', [0, 0, 1], [0, 0, 1]],
+      ['shoulder_R', [0, -1, 0], [0, 1, 0]],
+      ['shoulder_L', [0, -1, 0], [0, -1, 0]], // lower arm hangs straight down to the block
+    ],
+    params: ['root.roll', 'hip_L.abd', 'hip_R.abd', 'hip_R.rot', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'shoulder_L.abd', 'shoulder_L.flex', 'shoulder_R.abd', 'wrist_L.ext'],
+  },
+  trikonasana_block_above: { support: ['ankle_L', 'ankle_R'], flat: ['ankle_L', 'ankle_R'], params: ['ankle_L.dorsi', 'ankle_R.dorsi'] },
+  trikonasana_block_reach: { support: ['ankle_L', 'ankle_R'], flat: ['ankle_L', 'ankle_R'], params: ['ankle_L.dorsi', 'ankle_R.dorsi'] },
   marjaryasana: {
     support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'],
     flat: ['wrist_L', 'wrist_R'], // palms flat
@@ -701,6 +1091,15 @@ export const POSE_FIT = {
     at: [['pelvis', 'knee_L', [-0.07, -0.3, -0.1], 0.5], ['pelvis', 'knee_R', [0.07, -0.3, -0.1], 0.5]],
     params: ['root.pitch', 'hip.flex', 'shoulder.flex', 'ankle.dorsi', 'knee.flex', 'neck.flex', 'lumbar.flex', 'thorax.flex'],
   },
+  balasana_bolster: {
+    support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R', 'lumbar', 'head', 'wrist_L', 'wrist_R'],
+    onProp: ['lumbar', 'thorax', 'head'], // belly, chest (within ~2 cm) and forehead on the bolster
+    // sit bones toward the heels (weakly: with the knees wide they sink between the feet)
+    at: [['pelvis', 'knee_L', [-0.07, -0.3, -0.1], 0.2], ['pelvis', 'knee_R', [0.07, -0.3, -0.1], 0.2]],
+    // forearms on the mat on either side of the bolster, hands forward
+    rel: [['pelvis', 'wrist_L', [0.27, 0.5]], ['pelvis', 'wrist_R', [-0.27, 0.5]]],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'root.pitch', 'hip.flex', 'neck.flex', 'lumbar.flex&thorax.flex'],
+  },
   ustrasana: { support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'], balance: true, params: ['ankle.dorsi', 'root.pitch&hip.flex', 'knee.flex'] },
   bhujangasana: { support: ['pelvis', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']], params: ['elbow.flex', 'shoulder.flex', 'ankle.dorsi', 'thorax.flex', 'lumbar.flex'] },
   prone_hands: { support: ['lumbar', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['shoulder.flex', 'elbow.flex', 'ankle.dorsi', 'root.pitch&hip.flex', 'lumbar.flex'] },
@@ -711,7 +1110,99 @@ export const POSE_FIT = {
     // upper back and shoulders on the mat, arms alongside the body, palms down
     params: ['root.pitch', 'knee.flex', 'hip.flex', 'ankle.dorsi', 'shoulder.flex', 'neck.flex'],
   },
-  supine_knees: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'knee.flex', 'root.pitch&hip.flex', 'ankle.dorsi'] },
+  // hands resting on the mat beside the body
+  supine: { support: ['pelvis', 'thorax', 'wrist_L', 'wrist_R'], params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'] },
+  supine_bolster: {
+    support: ['pelvis', 'thorax', 'wrist_L', 'wrist_R', 'hip_L', 'hip_R', 'ankle_L', 'ankle_R'],
+    onProp: ['hip_L', 'hip_R'], // the backs of the thighs on the bolster, heels on the mat
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
+  supine_knees: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['shoulder.flex'] },
+  supine_feet_together: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    // the feet side by side where they rest in Supta Baddha Konasana, so they do not slide as the knees open
+    rel: [['ankle_R', 'ankle_L', [0.16, 0]], ['pelvis', 'ankle_L', [0.08, 0.4]]],
+    params: ['hip.flex', 'hip.abd', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
+  supta_baddha_konasana: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    // soles touching where they were with the knees up, heels toward the pelvis
+    rel: [['ankle_R', 'ankle_L', [0.16, 0]]],
+    dir: [
+      ['hip_L', [0, -1, 0], [0.75, 0.35, 0.55]], // knees fall open
+      ['hip_R', [0, -1, 0], [-0.75, 0.35, 0.55]],
+      ['ankle_L', [0, -1, 0], [-0.85, -0.5, 0]], // soles face each other, feet on their outer edges
+      ['ankle_R', [0, -1, 0], [0.85, -0.5, 0]],
+    ],
+    params: ['hip.abd', 'hip.rot', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
+  setu_bandha_block: {
+    support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], // sacrum on the block
+    flat: ['ankle_L', 'ankle_R'],
+    above: [['knee_L', 'ankle_L'], ['knee_R', 'ankle_R']],
+    params: ['root.pitch&hip.flex', 'root.pitch', 'knee.flex', 'hip.flex', 'ankle.dorsi', 'shoulder.flex', 'neck.flex'],
+  },
+  supta_baddha_konasana_blocks: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'hip_L', 'hip_R', 'wrist_L', 'wrist_R'], // the thighs on the blocks
+    rel: [['ankle_R', 'ankle_L', [0.16, 0]]],
+    params: ['hip.abd', 'hip.rot', 'shoulder.flex'],
+  },
+  viparita_karani_bent: {
+    support: ['pelvis', 'thorax', 'head', 'wrist_L', 'wrist_R'],
+    wall: ['ankle_L', 'ankle_R'], // soles on the wall
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
+  viparita_karani: {
+    support: ['pelvis', 'thorax', 'head', 'wrist_L', 'wrist_R'],
+    wall: ['ankle_L', 'ankle_R'], // heels on the wall (the calves come within a few cm)
+    params: ['hip.flex', 'knee.flex', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
+  ardha_matsyendrasana_knee_up: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_L', 'wrist_R'],
+    // right foot beside the left shin, just below the knee; hands where they are in Dandasana
+    rel: [['knee_L', 'ankle_R', [-0.15, 0.2]], ['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]],
+    params: ['hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'wrist.ext'],
+  },
+  ardha_matsyendrasana_lift: {
+    support: ['pelvis', 'ankle_L', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]], // hands stay where they are in Dandasana
+    params: ['shoulder.flex', 'wrist.ext', 'root.pitch&hip_L.flex&hip_R.flex', 'hip_L.flex'],
+  },
+  ardha_matsyendrasana_crossed: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_L', 'wrist_R'],
+    params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'shoulder_L.abd', 'shoulder_R.abd', 'wrist.ext'],
+    rel: [['knee_L', 'ankle_R', [0.1, -0.04]], ['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]],
+  },
+  ardha_matsyendrasana_hand_off: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'], params: [] },
+  ardha_matsyendrasana_hand_up: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'], params: [] },
+  ardha_matsyendrasana: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_R'],
+    rel: [
+      ['knee_L', 'ankle_R', [0.12, -0.02]], // right foot planted just outside the left knee
+      ['pelvis', 'wrist_R', [-0.12, -0.22]], // right hand on the floor behind the right hip
+    ],
+    at: [['wrist_L', 'knee_R', [-0.07, 0.02, 0]]], // left hand on the outside of the right knee
+    dir: [
+      ['thorax', [0, 1, 0], [0, 1, 0]], // spine tall
+      ['thorax', [0, 0, 1], [-0.6, 0, 0.8]], // chest turned about 35° to the right
+    ],
+    params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'lumbar.rot', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'elbow_R.flex', 'wrist_R.ext'],
+  },
+  dandasana_blanket: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    onProp: ['pelvis'], // sit bones on the blanket
+    params: ['hip.flex', 'shoulder.flex', 'ankle.dorsi', 'scapula.elev', 'wrist.ext'],
+  },
+  paschimottanasana_blanket: {
+    support: ['pelvis', 'ankle_L', 'ankle_R'],
+    onProp: ['pelvis'],
+    params: ['hip.flex', 'root.pitch&hip.flex', 'ankle.dorsi'],
+  },
   paschimottanasana: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex'] },
   uttanasana_bent: {
     support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],

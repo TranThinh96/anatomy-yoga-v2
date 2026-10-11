@@ -70,7 +70,8 @@ const GROUP_OF_SEG = {
 };
 const SIDE_VI = { 1: ' trái', '-1': ' phải', 0: '' };
 
-const TOUCH = 0.02; // a contact closer than 2 cm to the floor counts as support
+const TOUCH = 0.02; // a contact closer than 2 cm to the floor (or a prop) counts as support
+const UP = new THREE.Vector3(0, 1, 0);
 // relative willingness of each body part to carry weight (see solveSupport / solveContacts)
 const SUPPORT_WEIGHT = {
   pelvis: 4, thorax: 3, lumbar: 3, scapula: 3, hip: 2, ankle: 2, knee: 2,
@@ -211,6 +212,20 @@ function solveDense(M, rhs) {
   return x;
 }
 
+// Contact frames as [tangent 1, normal, tangent 2] (world vectors). The floor's frame is the world
+// frame, so floor contacts give exactly the floor-only solution.
+const FLOOR_BASIS = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+function contactBasis(n) {
+  if (!n || n.y > 0.9999) return FLOOR_BASIS;
+  const N = n.clone().normalize();
+  // first tangent horizontal (along a wall, or along a bolster's axis), second one completes the frame
+  const t1 = new THREE.Vector3(0, 1, 0).cross(N);
+  if (t1.lengthSq() < 1e-9) t1.set(1, 0, 0);
+  t1.normalize();
+  const t2 = t1.clone().cross(N).normalize();
+  return [t1.toArray(), N.toArray(), t2.toArray()];
+}
+
 /**
  * Floor reaction forces. Static equilibrium (ΣF = 0, ΣM = 0 about the centre of mass) leaves
  * the forces undetermined as soon as the body touches the floor in more than one place, so
@@ -226,8 +241,17 @@ function solveDense(M, rhs) {
 export function solveContacts(points, com, W, rows, friction = true) {
   let active = points.map((_, i) => i);
   const dof = friction ? 3 : 1;
+  // force components in each contact's own frame: 0, 2 = along the surface, 1 = along its normal
   const comp = friction ? [0, 1, 2] : [1];
-  const pen = points.map(() => 1);
+  const basis = points.map((pt) => contactBasis(pt.n));
+  // world component k of the unit force along local axis comp[j] at point pi, and cf · that axis
+  const axis = (pi, j) => basis[pi][comp[j]];
+  const dotAxis = (cf, pi, j) => cf[0] * axis(pi, j)[0] + cf[1] * axis(pi, j)[1] + cf[2] * axis(pi, j)[2];
+  // a wall (or a bolster's side) pushes sideways: all three force and moment equations are needed
+  const tilted = basis.some((b) => b !== FLOOR_BASIS);
+  // a wall pushes only along its normal: no friction is assumed against it (no source for skin or
+  // clothing on a wall), so its tangential forces are penalised away from the start
+  const pen = points.map((pt) => (pt.wall ? 1e9 : 1));
   const LAMBDA = 0.1 / (W * W);
   for (let iter = 0; iter < 3 * points.length + 12 && active.length; iter++) {
     const n = active.length * dof;
@@ -243,7 +267,7 @@ export function solveContacts(points, com, W, rows, friction = true) {
           const r = points[pi].p.clone().sub(row.J);
           // (r × F)_k as coefficients of (Fx, Fy, Fz)
           const cf = k === 0 ? [0, -r.z, r.y] : k === 1 ? [r.z, 0, -r.x] : [-r.y, r.x, 0];
-          comp.forEach((c, j) => (a[col * dof + j] = cf[c] / row.c));
+          comp.forEach((_, j) => (a[col * dof + j] = dotAxis(cf, pi, j) / row.c));
           any = true;
         });
         if (!any) continue;
@@ -265,20 +289,20 @@ export function solveContacts(points, com, W, rows, friction = true) {
     // equilibrium: ΣF = (0, W, 0), Σ (p − com) × F = 0
     const C = [];
     const d = [];
-    const eqF = friction ? [0, 1, 2] : [1];
+    const eqF = friction || tilted ? [0, 1, 2] : [1];
     for (const k of eqF) {
       const rowC = new Array(n).fill(0);
-      active.forEach((_, col) => comp.forEach((c, j) => c === k && (rowC[col * dof + j] = 1)));
+      active.forEach((pi, col) => comp.forEach((_, j) => (rowC[col * dof + j] = axis(pi, j)[k])));
       C.push(rowC);
       d.push(k === 1 ? W : 0);
     }
-    const eqM = friction ? [0, 1, 2] : [0, 2];
+    const eqM = friction || tilted ? [0, 1, 2] : [0, 2];
     for (const k of eqM) {
       const rowC = new Array(n).fill(0);
       active.forEach((pi, col) => {
         const r = points[pi].p.clone().sub(com);
         const cf = k === 0 ? [0, -r.z, r.y] : k === 1 ? [r.z, 0, -r.x] : [-r.y, r.x, 0];
-        comp.forEach((c, j) => (rowC[col * dof + j] = cf[c]));
+        comp.forEach((_, j) => (rowC[col * dof + j] = dotAxis(cf, pi, j)));
       });
       C.push(rowC);
       d.push(0);
@@ -330,21 +354,26 @@ export function solveContacts(points, com, W, rows, friction = true) {
       });
     }
     if (slide && iter < 3 * points.length + 10) continue;
-    const out = points.map(() => [0, 0, 0]);
-    active.forEach((pi, col) => (out[pi] = friction ? [x[col * 3], x[col * 3 + 1], x[col * 3 + 2]] : [0, x[col], 0]));
+    // forces in each contact's frame (along the surface, normal, along the surface)
+    const loc = points.map(() => [0, 0, 0]);
+    active.forEach((pi, col) => (loc[pi] = friction ? [x[col * 3], x[col * 3 + 1], x[col * 3 + 2]] : [0, x[col], 0]));
     if (friction) {
-      // final safety: scale all horizontal forces together into the friction cones
+      // final safety: scale all tangential forces together into the friction cones
       let k = 1;
-      out.forEach(([fx, fyv, fz]) => {
+      loc.forEach(([fx, fyv, fz]) => {
         const h = Math.hypot(fx, fz);
         if (h > FRICTION * fyv) k = Math.min(k, (FRICTION * fyv) / h);
       });
-      for (const f of out) {
+      for (const f of loc) {
         f[0] *= k;
         f[2] *= k;
       }
     }
-    return out;
+    // back to the world frame
+    return loc.map((f, pi) => {
+      const b = basis[pi];
+      return [0, 1, 2].map((c) => f[0] * b[0][c] + f[1] * b[1][c] + f[2] * b[2][c]);
+    });
   }
   return null;
 }
@@ -399,10 +428,26 @@ export class Physics {
   touchingContacts() {
     const out = [];
     const count = {};
-    for (const c of this.rig.contacts) {
+    const env = this.rig.env;
+    for (const c of env.empty ? this.rig.contacts : this.rig.wallContacts) {
       const p = this.rig.worldPoint(c.seg, c.local, new THREE.Vector3());
-      if (p.y - c.r < TOUCH) {
-        out.push({ seg: c.seg, p, x: p.x, z: p.z });
+      // the floor or a prop under the point (normal up, or radial on a bolster) ...
+      let n = null;
+      let wall = false;
+      if (env.empty) {
+        if (p.y - c.r < TOUCH) n = UP;
+      } else {
+        const rest = env.onProps(c.seg) ? env.rest(p.x, p.z, c.r, p.y) : { y: c.r, n: UP };
+        if (!c.only && p.y - rest.y < TOUCH) n = rest.n;
+        // ... or a wall beside it (normal horizontal)
+        const w = env.wallGap(p, c.r);
+        if (!n && w.gap < TOUCH) {
+          n = w.n;
+          wall = true;
+        }
+      }
+      if (n) {
+        out.push({ seg: c.seg, p, x: p.x, z: p.z, n, wall });
         count[c.seg] = (count[c.seg] || 0) + 1;
       }
     }
@@ -418,7 +463,8 @@ export class Physics {
     const com = this.centerOfMass();
     const segPos = this.segments.map((s) => rig.worldPoint(s.seg, s.local, new THREE.Vector3()));
     const contacts = this.touchingContacts();
-    const hull = convexHull(contacts);
+    // base of support: what the body stands, sits or lies on (a wall beside it only leans)
+    const hull = convexHull(contacts.filter((c) => !c.wall));
     const margin = signedMargin({ x: com.x, z: com.z }, hull);
 
     // gravity moment on each joint's distal subtree (independent of the floor forces)
@@ -440,7 +486,9 @@ export class Physics {
     }
     // floor forces: equilibrium with the least joint effort; if the centre of mass is not
     // over the supports (between two poses) fall back to vertical forces near the COM
-    const F3 = margin > 0 ? solveContacts(contacts, com, W, rows, this.friction) : null;
+    // over the base of support – or held by a wall even when it is not (sitting back against it)
+    const leaning = contacts.some((c) => c.wall);
+    const F3 = margin > 0 || leaning ? solveContacts(contacts, com, W, rows, this.friction) : null;
     if (F3) {
       contacts.forEach((c, i) => {
         c.f = F3[i][1];
@@ -458,10 +506,12 @@ export class Physics {
     const groups = new Map();
     for (const c of contacts) {
       const s = sideOf(c.seg);
-      const label = (GROUP_OF_SEG[baseOf(c.seg)] || c.seg) + SIDE_VI[s];
+      // a part leaning on a wall is listed apart, with the size of its (horizontal) push
+      const wall = c.wall;
+      const label = (GROUP_OF_SEG[baseOf(c.seg)] || c.seg) + SIDE_VI[s] + (wall ? ' (tựa tường)' : '');
       if (!groups.has(label)) groups.set(label, { label, f: 0, F: new THREE.Vector3(), p: new THREE.Vector3(), n: 0 });
       const g = groups.get(label);
-      g.f += c.f;
+      g.f += wall ? c.F.length() : c.f;
       g.F.add(c.F);
       g.p.add(c.p);
       g.n++;
@@ -534,7 +584,7 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0, support, joints, moments, segPos };
+    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos };
   }
 
   /**

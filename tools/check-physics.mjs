@@ -2,12 +2,12 @@
 //   node tools/check-physics.mjs      (npm run check)
 // - vertical floor forces add up to body weight, horizontal ones cancel
 // - the centre of mass lies over the base of support
-// - the segments listed in POSE_FIT[pose].support touch the floor
+// - the segments listed in POSE_FIT[pose].support touch the floor (or a prop), those in .wall a wall
 // - symmetric poses give (nearly) symmetric joint loads
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
 import { Physics } from '../src/anatomy/physics.js';
-import { poseToQuats } from '../src/anatomy/animator.js';
+import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { POSE_FIT } from '../src/data/poses.js';
 import { ASANAS } from '../src/data/asanas.js';
 
@@ -16,9 +16,9 @@ const physics = new Physics(rig, { mass: 60, sex: 'f' });
 const poses = new Set();
 for (const a of ASANAS) {
   for (const s of a.steps) poses.add(s.pose);
-  for (const v of a.variants || []) poses.add(v.pose);
+  for (const v of a.variants || []) for (const st of v.steps || [{ pose: v.pose }]) poses.add(st.pose);
 }
-const ASYMMETRIC = /vrksasana|virabhadrasana|trikonasana|ashwa_sanchalanasana|surya_step/;
+const ASYMMETRIC = /vrksasana|matsyendrasana|virabhadrasana|trikonasana|parsvakonasana|ashwa_sanchalanasana|surya_step/;
 let failures = 0;
 const fail = (pose, msg) => {
   failures++;
@@ -26,16 +26,20 @@ const fail = (pose, msg) => {
 };
 
 for (const pose of poses) {
+  rig.env = poseEnv(pose);
   rig.applyQuats(physics.balance(poseToQuats(pose)));
   rig.ground();
   const r = physics.compute();
   const sum = r.contacts.reduce((a, c) => a.add(c.F), new THREE.Vector3());
   if (Math.abs(sum.y - r.W) > 0.01 * r.W) fail(pose, `vertical force ${sum.y.toFixed(0)} N ≠ weight ${r.W.toFixed(0)} N`);
   if (Math.hypot(sum.x, sum.z) > 0.01 * r.W) fail(pose, `horizontal forces do not cancel (${Math.hypot(sum.x, sum.z).toFixed(1)} N)`);
-  if (r.margin < -0.005) fail(pose, `centre of mass ${(-r.margin * 100).toFixed(1)} cm outside the base of support`);
+  if (r.margin < -0.005 && !r.leaning) fail(pose, `centre of mass ${(-r.margin * 100).toFixed(1)} cm outside the base of support (and no wall holds it)`);
   for (const spec of POSE_FIT[pose]?.support || []) {
     const segs = spec.split('|');
     if (!r.contacts.some((c) => segs.includes(c.seg))) fail(pose, `${spec} should touch the floor`);
+  }
+  for (const seg of POSE_FIT[pose]?.wall || []) {
+    if (!r.contacts.some((c) => c.seg === seg && c.wall)) fail(pose, `${seg} should lean on the wall`);
   }
   if (!ASYMMETRIC.test(pose)) {
     const by = Object.fromEntries(r.joints.map((j) => [j.joint, j.total]));

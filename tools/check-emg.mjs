@@ -7,7 +7,7 @@ import { Rig } from '../src/anatomy/rig.js';
 import { MuscleSystem } from '../src/anatomy/muscles.js';
 import { Physics } from '../src/anatomy/physics.js';
 import { MuscleForces } from '../src/anatomy/muscleForces.js';
-import { poseToQuats } from '../src/anatomy/animator.js';
+import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { modelActivation, spearman } from '../src/anatomy/emgCompare.js';
 import { EMG, EMG_STUDIES } from '../src/data/emg.js';
 import { POSES } from '../src/data/poses.js';
@@ -41,6 +41,7 @@ if (failures) process.exit(1);
 const poses = [...new Set(EMG.map((e) => e.pose))];
 const states = {};
 for (const pose of poses) {
+  rig.env = poseEnv(pose);
   rig.applyQuats(physics.balance(poseToQuats(pose)));
   rig.ground();
   const quats = Object.fromEntries(Object.entries(rig.joints).map(([n, j]) => [n, j.quaternion.clone()]));

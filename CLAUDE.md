@@ -11,7 +11,7 @@ muscle activation). Vite + three.js, vanilla JS, no framework, no TypeScript. Se
 npm run dev                         # http://localhost:5173
 npm run check                       # data + physics + muscle model + picking + transition + EMG-data checks – must pass before a commit
 npm run build                       # production build into dist/ (not committed)
-npm run fit-poses -- [--dry] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
+npm run fit-poses -- [--dry] [--restarts N] <pose…> # fit the named poses to their floor contacts (rewrites src/data/poses.js)
 node tools/shot.mjs asana/<id> out.png [--hold] [--cm act] [--view left] [--click <selector>]   # screenshot, fails on page errors
 node tools/shot.mjs topic/<id> out.png --click '[data-topic-pose="1"]'     # a topic's condition pose
 node tools/review-poses.mjs <dir> [asana…] [--views front,left,top]        # every pose framed on the body, UI hidden
@@ -33,6 +33,7 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
   → realMuscles.js  real BodyParts3D muscle surfaces, linear-blend skinned to the rig; anatomy mode only
                  (display only – lengths, moment arms and forces always come from the tubes)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
+props.js         floor + props (wall, block, bolster, folded blanket) as an Env on the rig: clearance, contact normals
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses (a spline through `via` poses), anchors (feet/hands stay put),
                  floor correction, stepping feet lifted (_liftSteps); balances each pose once (cached)
@@ -42,7 +43,8 @@ tools/           build-model, fit-poses, check-* (run by npm run check), shot.mj
 ```
 
 Data files:
-- `poses.js` – `POSES` (joint angles in degrees) and `POSE_FIT` (floor contacts + fitter goals).
+- `poses.js` – `POSES` (joint angles in degrees), `POSE_PROPS` (props a pose rests on, pose frame) and
+  `POSE_FIT` (floor contacts + fitter goals).
 - `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants.
 - `topics.js` – workshop topics (e.g. anterior pelvic tilt): a reference and a condition pose compared on
   the model, muscles coloured by length relative to the reference; `shorter` / `longer` muscles are
@@ -90,6 +92,16 @@ Data files:
   stretch poses come from body-to-body contacts the physics lacks (thigh on calves in Balasana, foot
   on thigh in Vrksasana, hands on feet in Paschimottanasana) and from the rigid shoulder girdle.
   Passive tension needs per-muscle optimal fibre / tendon slack lengths from the literature first.
+- Props are real supports, not decoration: a pose lists them in `POSE_PROPS` (pose frame: pelvis at
+  x = z = 0), everything measures clearance to the floor *or a prop* (`rig.clearance`, never `p.y - c.r`),
+  and the contact solver works in each contact's frame (a wall pushes horizontally). A point rests on a prop
+  only if it is above it or within 4 cm of its top; a step shows the props of the poses it moves between,
+  so put a prop in only after the body part is clear of where it goes (Setu Bandha: hips up, then the block).
+  While moving, only the segments that rest on a prop in the step's poses may rest on props (Env.segs);
+  the others meet the floor only.
+  Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
+  A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
+  and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
   tension. Keep these limitations visible in UI notes when a feature depends on them.
 

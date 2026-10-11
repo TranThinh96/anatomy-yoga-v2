@@ -171,6 +171,44 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
 
+## 4b. Props (wall, block, bolster, blanket)
+
+Props are supports in the physics, so a supported variant shows its real load change. List them in
+`POSE_PROPS[pose]` in the pose's own frame (pelvis at x = z = 0, floor y = 0, facing +Z, left +X):
+
+```js
+supta_baddha_konasana_blocks: [
+  { type: 'block', stand: 'side', at: [0.3, 0.11], yaw: -37 }, // stand: flat 7.5 / side 15 / end 23 cm high
+  { type: 'block', stand: 'side', at: [-0.3, 0.11], yaw: 37 },
+],
+viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal points to the body
+```
+
+- Measure first where the body part is (`rig.worldPoint` of its contacts in the plain pose) and put the
+  prop under it at that height; fit with the part in `support` (or `wall: [...]` for a wall, `onProp:
+  [...]` when it must rest on the prop and not on the floor beside it).
+- Contacts exist only where the model has them (soles, heels, calf back – wall only, outer / back /
+  front of thigh, kneecap, shin, sit bones, sacrum, buttocks, back, head, hands, forearms). A part
+  without one cannot rest on a prop: add a contact in `tools/bp3d-build.mjs` and rebuild, never edit
+  `body-model.gen.js`.
+- A step shows the props of the poses it moves between. If a body part lies where the prop goes, give
+  the variant its own `steps` and move it out of the way first (supported bridge: hips up, then down onto
+  the block); a limb must arrive on a prop from above, not slide into its side, and a stepping foot
+  must not pass over it. Trikonasana's block variant shows the pattern: step into the pose as usual,
+  then two via poses – the hand lifted (elbow bent, arm turned out: `shoulder_L.rot`, not `abd`, which
+  swings the hanging hand sideways at shin height straight into the block), then the trunk a little
+  higher with the hand over the block – and down onto it. Give the move with the largest joint
+  travel the most time (a 0.5 s via move made the shoulder turn at 1000 °/s on the way back).
+- A hand on a 23 cm block cannot lie fully flat (the block's top is smaller than the hand): fit the
+  heel of the hand onto it with `onProp` and leave the fingers reaching past.
+- Keep the hands on the mat when lying: a hand hovering where a block goes lands on the block.
+- A body coming down onto a prop needs several angles to move together, where the one-angle-at-a-time
+  fitter stalls: `npm run fit-poses -- --restarts 40 <pose>` (deterministic random restarts).
+- `flat` means *every* contact of the segment down (sole and heel): never for a kneeling foot, whose
+  top rests on the mat (it bent the ankles of the supported child's pose 60° the wrong way).
+- With the hips flexed past ~100°, hip `rot` swings the knee sideways and `abd` barely does
+  (Euler order): open the knees wide with `rot` (Balasana with knees wide: rot 35).
+
 ## 5. Check
 
 ```bash

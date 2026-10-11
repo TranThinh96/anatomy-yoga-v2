@@ -539,7 +539,7 @@ for (const def of MUSCLES) {
   log(`  ${def.id.padEnd(20)} fibres ${m.fibers}  r ${(m.r * 1000).toFixed(0)} mm  ${m.stations[0].map((s) => s[0]).join('/')} → ${m.stations[m.stations.length - 1].map((s) => s[0]).join('/')}${m.tendon ? '  (tendon gap bridged)' : ''}`);
 }
 
-// ------------------------------------------------------------------ contacts (floor)
+// ------------------------------------------------------------------ contacts (floor, props, wall)
 const P = (name) => part(name).verts;
 const low = (pts, dy = 0.004) => {
   const m = minOf(pts.map((p) => p.y));
@@ -556,7 +556,7 @@ const hipY = J.hip.y;
 const midThigh = (hipY + kneeY) / 2;
 const midShin = (kneeY + J.ankle.y) / 2;
 const contactsRaw = [
-  // [seg, point (scan space), radius (soft tissue), mirrored]
+  // [seg, point (scan space), radius (soft tissue), mirrored, only ('wall': touches walls, not the floor)]
   ['ankle', argmin(calc, (p) => p.z * 3 + p.y), 0.012, true], // heel
   ['ankle', argmin(calcLow, (p) => p.x), 0.012, true], // heel medial
   ['ankle', argmax(calcLow, (p) => p.x), 0.012, true], // heel lateral
@@ -569,8 +569,13 @@ const contactsRaw = [
   ['knee', tuberosity, 0.012, true], // kneeling point
   ['hip', argmax(P('left patella'), (p) => p.z), 0.008, true], // knee cap
   ['knee', argmax(atY(tibia, midShin), (p) => p.z), 0.006, true], // shin
+  // back of the calf (most posterior point of the gastrocnemius): leans on a wall. Wall only: lying
+  // or sitting with straight legs, the soft calf gives way and the heel rests on the floor too
+  ['knee', argmin(vertsOf(['medial head of left gastrocnemius', 'lateral head of left gastrocnemius']), (p) => p.z), 0.0, true, 'wall'],
   ['hip', argmin(atY(muscleVerts('long head of left biceps femoris'), midThigh, 0.03), (p) => p.z), 0.0, true], // back of thigh
   ['hip', argmax(atY(muscleVerts('left rectus femoris'), midThigh, 0.03), (p) => p.z), 0.0, true], // front of thigh
+  // outer thigh, lower third (most lateral vastus lateralis point): rests on a block with the hip open
+  ['hip', argmax(atY(muscleVerts('left vastus lateralis'), kneeY + (hipY - kneeY) / 3, 0.03), (p) => p.x), 0.0, true],
   ['wrist', argmin(P('distal phalanx of left middle finger'), (p) => p.y), 0.004, true], // finger tip
   ['wrist', argmax(P('left pisiform'), (p) => p.z), 0.014, true], // heel of hand (ulnar)
   ['wrist', argmax(P('left scaphoid'), (p) => p.z), 0.014, true], // heel of hand (radial)
@@ -590,10 +595,10 @@ const contactsRaw = [
   ['head', argmax(P('frontal bone'), (p) => p.z * 2 + p.y), 0.006, false], // forehead
   ['head', argmax(P('left parietal bone'), (p) => p.y), 0.006, false], // crown
 ];
-const contacts = contactsRaw.map(([seg, p, r, mirror]) => {
+const contacts = contactsRaw.map(([seg, p, r, mirror, only]) => {
   const q = X(p, seg);
   if (!mirror) q.x = 0;
-  return { seg, p: q.toArray().map((v) => +v.toFixed(4)), r, mirror };
+  return { seg, p: q.toArray().map((v) => +v.toFixed(4)), r, mirror, ...(only ? { only } : {}) };
 });
 
 // ------------------------------------------------------------------ landmarks (de Leva endpoints)

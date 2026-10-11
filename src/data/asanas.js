@@ -11,6 +11,18 @@ const HIPS = ['hip_L', 'hip_R'];
 const QUADS = ['rectus_femoris', 'vastus_lateralis', 'vastus_medialis'];
 const side = (list, s) => list.map((m) => `${m}_${s}`);
 
+/**
+ * Steps played for an asana or one of its variants (1 = the first variant): a variant replaces
+ * the pose of the last step, or gives its own `steps` (a prop placed in the middle of the move).
+ */
+export function asanaSteps(a, variant = 0) {
+  const v = variant > 0 && a.variants ? a.variants[variant - 1] : null;
+  if (!v) return a.steps;
+  if (v.steps) return v.steps;
+  const target = a.steps[a.steps.length - 1].pose;
+  return a.steps.map((s) => (s.pose === target ? { ...s, pose: v.pose } : s));
+}
+
 export const CATEGORIES = ['Tất cả', 'Đứng', 'Gập người', 'Ngửa sau', 'Chống tay', 'Ngồi & nằm', 'Chuỗi động tác'];
 
 export const ASANAS = [
@@ -128,7 +140,15 @@ export const ASANAS = [
     en: 'Chair Pose',
     category: 'Đứng',
     level: 'Cơ bản',
-    variants: [{ label: 'Ngồi nông', pose: 'utkatasana_shallow' }],
+    variants: [
+      { label: 'Ngồi nông', pose: 'utkatasana_shallow' },
+      {
+        // back against the wall from the start, sliding down it
+        label: 'Tựa lưng vào tường',
+        pose: 'utkatasana_wall',
+        steps: [{ pose: 'tadasana_wall' }, { pose: 'utkatasana_wall', anchor: FEET, move: 2 }],
+      },
+    ],
     steps: [{ pose: 'tadasana' }, { pose: 'utkatasana', anchor: FEET, move: 2 }],
     loop: 'pingpong',
     roles: {
@@ -148,7 +168,10 @@ export const ASANAS = [
       'Kéo dài cột sống từ xương cụt tới đỉnh đầu, tay theo đường thân.',
     ],
     benefits: ['Tăng sức mạnh cơ tứ đầu, cơ mông', 'Tăng sức bền, sinh nhiệt'],
-    cautions: ['Đau gối: giảm độ sâu, không để gối vượt quá mũi chân nhiều.'],
+    cautions: [
+      'Đau gối: giảm độ sâu, không để gối vượt quá mũi chân nhiều.',
+      'Tựa lưng vào tường đỡ cho lưng và háng, nhưng dồn việc sang cơ đùi trước: đau gối thì đừng xuống sâu khi tựa tường.',
+    ],
   },
   {
     id: 'vrksasana',
@@ -243,6 +266,57 @@ export const ASANAS = [
     cautions: ['Đau gối: giảm độ gập gối trước.', 'Đau cổ: nhìn thẳng thay vì xoay đầu.'],
   },
   {
+    id: 'utthita_parsvakonasana',
+    sanskrit: 'Utthita Parsvakonasana',
+    vi: 'Tư thế Góc nghiêng mở rộng',
+    en: 'Extended Side Angle',
+    category: 'Đứng',
+    level: 'Cơ bản',
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2 },
+      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 2.0 },
+    ],
+    loop: 'pingpong',
+    variants: [
+      {
+        // from Warrior II the lower arm comes down from shoulder height onto the block
+        label: 'Tay đặt gạch',
+        pose: 'utthita_parsvakonasana_block',
+        steps: [
+          { pose: 'tadasana' },
+          { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2 },
+          { pose: 'utthita_parsvakonasana_block', anchor: FEET, move: 2.0 },
+        ],
+      },
+    ],
+    roles: {
+      contract: [...side(QUADS, 'L'), 'gluteus_medius_L', 'piriformis_L', 'gluteus_maximus_L', 'vastus_lateralis_R', 'vastus_medialis_R', 'gluteus_medius_R', 'deltoid_R', 'serratus_anterior_R'],
+      stretch: ['adductors_L', 'adductors_R', 'latissimus_dorsi_R', 'external_oblique_R', 'quadratus_lumborum_R'],
+      stabilize: ['rectus_abdominis', 'external_oblique', 'erector_spinae', 'tibialis_anterior', 'trapezius_R'],
+    },
+    joints: [
+      ['knee_L', 'Gối trước gập ~90°, thẳng trên cổ chân'],
+      ['hip_L', 'Háng trước: gập + xoay ngoài, khung chậu nghiêng về chân trước'],
+      ['hip_R', 'Háng sau: dang + duỗi nhẹ'],
+      ['thoracic_spine_joint', 'Nghiêng bên và xoay mở ngực lên trần'],
+      ['glenohumeral', 'Tay trên dang qua đầu, nối một đường với chân sau'],
+    ],
+    cues: [
+      'Từ Chiến binh II, nghiêng thân về chân trước, đặt cẳng tay lên đùi trước – đặt nhẹ, không dồn sức nặng.',
+      'Gối trước thẳng trên cổ chân, hướng về ngón út; ấn mép ngoài bàn chân sau xuống sàn.',
+      'Vươn tay trên qua tai: một đường dài từ gót chân sau tới đầu ngón tay.',
+      'Xoay lồng ngực mở lên trần; hai bên sườn dài, không sụp vai dưới.',
+    ],
+    benefits: ['Tăng sức mạnh chân, mở háng và cơ khép', 'Kéo dài bên thân và cơ lưng rộng'],
+    cautions: [
+      'Đau gối: giảm độ gập gối trước, rút ngắn khoảng cách hai chân.',
+      'Đau cổ: nhìn thẳng ra trước hoặc xuống sàn thay vì nhìn lên.',
+      'Đau vai: chống tay trên vào hông thay vì vươn qua đầu.',
+      'Muốn thân dài hơn mà chưa với tới sàn: đặt tay dưới lên gạch phía trong bàn chân trước, không tì nặng tay.',
+    ],
+  },
+  {
     id: 'trikonasana',
     sanskrit: 'Utthita Trikonasana',
     vi: 'Tư thế Tam giác',
@@ -251,6 +325,21 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'tadasana' }, { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4 }],
     loop: 'pingpong',
+    variants: [
+      {
+        // into the pose as usual (a block already beside the front foot would be in the stepping
+        // foot's way), then the lower hand lifts, goes over the block and comes down onto it
+        label: 'Tay đặt gạch',
+        pose: 'trikonasana_block',
+        steps: [
+          { pose: 'tadasana' },
+          { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4, hold: 0.6 },
+          { pose: 'trikonasana_block_reach', anchor: FEET, move: 0.9, via: true },
+          { pose: 'trikonasana_block_above', anchor: FEET, move: 1.0, via: true },
+          { pose: 'trikonasana_block', anchor: FEET, move: 0.6 },
+        ],
+      },
+    ],
     roles: {
       contract: [...QUADS, 'quadratus_lumborum_L', 'external_oblique_L', 'gluteus_medius_R', 'deltoid', 'trapezius', 'sternocleidomastoid_R'],
       stretch: ['hamstrings_L', 'adductors_L', 'quadratus_lumborum_R', 'external_oblique_R', 'latissimus_dorsi_R', 'pectoralis_major'],
@@ -498,6 +587,7 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'tabletop' }, { pose: 'balasana', anchor: KNEES, move: 2.4, hold: 2.5 }],
     loop: 'pingpong',
+    variants: [{ label: 'Tựa gối ôm', pose: 'balasana_bolster' }],
     roles: {
       contract: [],
       stretch: ['erector_spinae', 'latissimus_dorsi', 'gluteus_maximus', 'quadratus_lumborum', 'rhomboids', 'trapezius', 'vastus_lateralis', 'vastus_medialis', 'tibialis_anterior'],
@@ -552,6 +642,18 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'supine_knees' }, { pose: 'setu_bandha', anchor: FEET, move: 2.2, hold: 2 }],
     loop: 'pingpong',
+    variants: [
+      {
+        // hips up, the block slid under the sacrum, hips lowered onto it (and back up to take it out)
+        label: 'Kê gạch dưới xương cùng',
+        pose: 'setu_bandha_block',
+        steps: [
+          { pose: 'supine_knees' },
+          { pose: 'setu_bandha', anchor: FEET, move: 2.2, hold: 1 },
+          { pose: 'setu_bandha_block', anchor: FEET, move: 1.8, hold: 3 },
+        ],
+      },
+    ],
     roles: {
       contract: ['gluteus_maximus', 'hamstrings', 'erector_spinae', 'adductors', 'rhomboids', 'triceps_brachii'],
       stretch: ['rectus_femoris', 'pectoralis_major'],
@@ -604,6 +706,14 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'dandasana' }, { pose: 'paschimottanasana', anchor: HIPS, move: 2.4, hold: 2.5 }],
     loop: 'pingpong',
+    variants: [
+      {
+        // sitting on the blanket from the start
+        label: 'Ngồi trên chăn gấp',
+        pose: 'paschimottanasana_blanket',
+        steps: [{ pose: 'dandasana_blanket' }, { pose: 'paschimottanasana_blanket', anchor: HIPS, move: 2.4, hold: 2.5 }],
+      },
+    ],
     roles: {
       contract: ['iliopsoas', 'rectus_femoris', 'vastus_lateralis', 'vastus_medialis', 'rectus_abdominis'],
       stretch: ['hamstrings', 'erector_spinae', 'gluteus_maximus', 'latissimus_dorsi', 'quadratus_lumborum'],
@@ -620,7 +730,53 @@ export const ASANAS = [
       'Mỗi hơi thở ra thả sâu thêm, không kéo giật.',
     ],
     benefits: ['Kéo giãn chuỗi cơ sau', 'Làm dịu hệ thần kinh'],
-    cautions: ['Thoát vị đĩa đệm: giữ lưng thẳng, chỉ gập nhẹ từ háng.', 'Chấn thương gân kheo: chùng gối.'],
+    cautions: [
+      'Thoát vị đĩa đệm: giữ lưng thẳng, chỉ gập nhẹ từ háng.',
+      'Chấn thương gân kheo: chùng gối.',
+      'Gân kheo ngắn, lưng tròn khi ngồi: ngồi trên chăn gấp để khung chậu dễ nghiêng ra trước. Mô hình chưa tính lực căng thụ động của cơ nên số liệu tải không cho thấy lợi ích này.',
+    ],
+  },
+  {
+    id: 'ardha_matsyendrasana',
+    sanskrit: 'Ardha Matsyendrasana',
+    vi: 'Tư thế Vặn mình ngồi (Nửa vua cá)',
+    en: 'Half Lord of the Fishes (seated twist)',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [
+      { pose: 'dandasana' },
+      { pose: 'ardha_matsyendrasana_knee_up', anchor: ['hip_L', 'ankle_L', ...HANDS], move: 1.4 },
+      { pose: 'ardha_matsyendrasana_lift', anchor: ['hip_L', 'ankle_L', ...HANDS], move: 1.0, via: true },
+      { pose: 'ardha_matsyendrasana_crossed', anchor: ['hip_L', 'ankle_L', ...HANDS], move: 1.0 },
+      { pose: 'ardha_matsyendrasana_hand_off', anchor: [...HIPS, ...FEET], move: 0.4, via: true },
+      { pose: 'ardha_matsyendrasana_hand_up', anchor: [...HIPS, ...FEET], move: 0.6, via: true },
+      { pose: 'ardha_matsyendrasana', anchor: [...HIPS, ...FEET], move: 1.6, hold: 2.5 },
+    ],
+    thumbStep: 6,
+    loop: 'pingpong',
+    roles: {
+      contract: ['external_oblique_L', 'erector_spinae', 'rhomboids_R', 'deltoid_R'],
+      stretch: ['external_oblique_R', 'gluteus_maximus_R', 'piriformis_R'],
+      stabilize: ['quadratus_lumborum', 'rectus_abdominis', 'triceps_brachii_R'],
+    },
+    joints: [
+      ['thoracic_spine_joint', 'Xoay chủ yếu ở cột sống ngực'],
+      ['lumbar_spine_joint', 'Thắt lưng xoay rất ít (~5°/toàn đoạn) – không ép vặn ở đây'],
+      ['hip_R', 'Háng phải gập sâu + khép'],
+      ['cervical_spine_joint', 'Cổ xoay theo, nhẹ nhàng'],
+    ],
+    cues: [
+      'Từ tư thế ngồi duỗi chân, gập gối phải, bước bàn chân phải qua đặt ngoài gối trái.',
+      'Hít vào kéo dài cột sống, ngồi đều trên hai ụ ngồi; thở ra xoay từ lồng ngực sang phải.',
+      'Tay phải chống sàn sau lưng để giữ lưng thẳng, tay trái ôm mặt ngoài gối phải.',
+      'Không dùng tay kéo để vặn sâu hơn; cổ xoay theo sau cùng.',
+    ],
+    benefits: ['Tăng tầm xoay cột sống ngực', 'Kéo giãn mông và cơ hình lê bên chân gập'],
+    cautions: [
+      'Thoát vị đĩa đệm, đau thắt lưng cấp: chỉ xoay nhẹ, hỏi ý kiến chuyên môn.',
+      'Lưng tròn khi ngồi: kê chăn gấp dưới mông.',
+      'Thai kỳ: xoay nhẹ theo hướng mở (không ép bụng vào đùi).',
+    ],
   },
   {
     id: 'navasana',
@@ -652,6 +808,72 @@ export const ASANAS = [
     cautions: ['Đau thắt lưng: giữ gối gập, tay đỡ sau đùi.', 'Thai kỳ: tránh.'],
   },
   {
+    id: 'supta_baddha_konasana',
+    sanskrit: 'Supta Baddha Konasana',
+    vi: 'Tư thế Góc cố định nằm ngửa',
+    en: 'Reclined Bound Angle',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [{ pose: 'supine_feet_together' }, { pose: 'supta_baddha_konasana', anchor: FEET, move: 3, hold: 3 }],
+    loop: 'pingpong',
+    variants: [{ label: 'Kê gạch dưới đùi', pose: 'supta_baddha_konasana_blocks' }],
+    roles: {
+      contract: [],
+      stretch: ['adductors'],
+      stabilize: [],
+    },
+    joints: [
+      ['hip', 'Háng gập + dang + xoay ngoài, gối đổ sang hai bên'],
+      ['knee', 'Gối gập sâu, không có lực xoắn khi đùi được đỡ'],
+      ['sacroiliac', 'Khung chậu nằm yên trên sàn'],
+    ],
+    cues: [
+      'Nằm ngửa, gập gối, áp hai lòng bàn chân vào nhau rồi để hai gối từ từ mở sang hai bên.',
+      'Kê gối ôm hoặc khối gạch dưới mỗi đùi để háng được đỡ hoàn toàn, không cố ép gối xuống.',
+      'Thả lỏng bụng và hàm; tay đặt dọc thân hoặc lên bụng, thở chậm.',
+      'Khi ra: dùng tay đẩy nhẹ hai gối khép lại rồi mới duỗi chân.',
+    ],
+    benefits: ['Kéo giãn nhẹ nhàng cơ khép háng', 'Tư thế phục hồi, hỗ trợ thư giãn và thở bụng'],
+    cautions: [
+      'Kéo căng háng trong hay đau gối: kê đỡ đùi cao hơn, đặt bàn chân xa chậu hơn.',
+      'Đau thắt lưng: kê chăn dưới cột sống hoặc dưới bàn chân.',
+      'Thai kỳ (sau 3 tháng đầu): nằm trên gối nghiêng, không nằm phẳng lâu.',
+    ],
+  },
+  {
+    id: 'viparita_karani',
+    sanskrit: 'Viparita Karani',
+    vi: 'Tư thế Gác chân lên tường',
+    en: 'Legs Up the Wall',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [{ pose: 'viparita_karani_bent' }, { pose: 'viparita_karani', move: 2.2, hold: 3 }],
+    loop: 'pingpong',
+    roles: {
+      contract: [],
+      stretch: ['hamstrings'],
+      stabilize: [],
+    },
+    joints: [
+      ['hip', 'Gập háng ~90°, chân thẳng đứng trên khớp háng'],
+      ['knee', 'Gối thả lỏng, hơi chùng'],
+      ['lumbar_spine_joint', 'Thắt lưng nằm tự nhiên trên sàn'],
+    ],
+    cues: [
+      'Ngồi nghiêng sát tường, xoay người nằm xuống và đưa hai chân lên tường; mông cách tường một khoảng vừa đủ để gân kheo không bị kéo căng.',
+      'Bắt đầu với gối gập, lòng bàn chân áp tường; rồi duỗi dần hai chân lên cho gót tựa vào tường.',
+      'Có thể kê chăn gấp hoặc gối ôm mỏng dưới xương cùng.',
+      'Tay thả sang hai bên, lòng bàn tay ngửa; thả lỏng bụng, thở chậm 5–10 phút.',
+      'Khi ra: gập gối, lăn nghiêng sang một bên, nghỉ vài hơi thở rồi mới ngồi dậy.',
+    ],
+    benefits: ['Tư thế phục hồi, dễ thư giãn', 'Kéo giãn nhẹ gân kheo'],
+    cautions: [
+      'Gân kheo căng: lùi mông xa tường hơn hoặc gập gối.',
+      'Tăng nhãn áp, bệnh tim mạch, trào ngược dạ dày, tê chân: hỏi ý kiến bác sĩ; ra khỏi tư thế nếu chân tê hoặc khó thở.',
+      'Thai kỳ (sau 3 tháng đầu): tránh nằm ngửa lâu.',
+    ],
+  },
+  {
     id: 'savasana',
     sanskrit: 'Savasana',
     vi: 'Tư thế Xác chết (thư giãn)',
@@ -660,9 +882,15 @@ export const ASANAS = [
     level: 'Cơ bản',
     steps: [{ pose: 'supine', hold: 3 }],
     loop: 'static',
+    variants: [{ label: 'Kê gối ôm dưới gối', pose: 'supine_bolster', steps: [{ pose: 'supine_bolster', hold: 3 }] }],
     roles: { contract: [], stretch: [], stabilize: [] },
     joints: [['hip', 'Chân thả lỏng, bàn chân đổ ra ngoài']],
-    cues: ['Chân rộng hơn hông, tay cách thân, lòng bàn tay ngửa.', 'Thả toàn bộ trọng lượng xuống sàn.', 'Quan sát hơi thở tự nhiên 5–10 phút.'],
+    cues: [
+      'Chân rộng hơn hông, tay cách thân, lòng bàn tay ngửa.',
+      'Thả toàn bộ trọng lượng xuống sàn.',
+      'Quan sát hơi thở tự nhiên 5–10 phút.',
+      'Lưng dưới khó chịu khi nằm duỗi chân: kê gối ôm dưới gối để háng và gối hơi gập, lưng dưới dễ thả xuống sàn hơn.',
+    ],
     benefits: ['Kích hoạt hệ phó giao cảm', 'Tích hợp lợi ích buổi tập'],
     cautions: ['Thai kỳ (sau 3 tháng đầu), đau lưng: nằm nghiêng hoặc kê gối dưới gối.'],
   },

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { MODEL } from '../data/body-model.gen.js';
+import { NO_PROPS } from './props.js';
 
 // Rest pose (anatomical position, palms forward) derived from the BodyParts3D bones by
 // tools/bp3d-build.mjs. World-space metres; the body faces +Z, its LEFT side is +X,
@@ -98,11 +99,12 @@ export function semanticToQuat(name, a = {}, out = new THREE.Quaternion()) {
 const SIDED_SEGS = new Set(['scapula', 'shoulder', 'elbow', 'wrist', 'hip', 'knee', 'ankle']);
 // Points used to keep the body on the floor: [segment, rest position, soft-tissue radius].
 // Generated from bone / muscle surfaces (heel, balls of the feet, sit bones, buttocks …).
-const CONTACTS = MODEL.contacts.flatMap(({ seg, p, r, mirror }) => {
+// `only: 'wall'` points (back of the calf) lean on walls but do not rest on the floor or a prop.
+const CONTACTS = MODEL.contacts.flatMap(({ seg, p, r, mirror, only }) => {
   const [x, y, z] = p;
-  if (SIDED_SEGS.has(seg)) return [[`${seg}_L`, [x, y, z], r], [`${seg}_R`, [-x, y, z], r]];
-  if (mirror) return [[seg, [x, y, z], r], [seg, [-x, y, z], r]];
-  return [[seg, [x, y, z], r]];
+  if (SIDED_SEGS.has(seg)) return [[`${seg}_L`, [x, y, z], r, only], [`${seg}_R`, [-x, y, z], r, only]];
+  if (mirror) return [[seg, [x, y, z], r, only], [seg, [-x, y, z], r, only]];
+  return [[seg, [x, y, z], r, only]];
 });
 
 export class Rig {
@@ -126,12 +128,18 @@ export class Rig {
       this.joints[def.name] = g;
     }
     this.pelvis = this.joints.pelvis;
-    this.contacts = CONTACTS.map(([seg, p, r]) => ({
-      seg,
-      local: new THREE.Vector3(...p).sub(this.rest[seg]),
-      r,
-    }));
+    // points that rest on the floor and props; wallContacts also lean on walls
+    const all = CONTACTS.map(([seg, p, r, only]) => ({ seg, local: new THREE.Vector3(...p).sub(this.rest[seg]), r, only }));
+    this.contacts = all.filter((c) => !c.only);
+    this.wallContacts = all;
     this._v = new THREE.Vector3();
+    // floor and props (blocks, bolster, wall – see props.js); world frame
+    this.env = NO_PROPS;
+  }
+
+  /** Vertical clearance of contact c above the floor or a prop (world position p of its centre). */
+  clearance(c, p = this.worldPoint(c.seg, c.local, this._v)) {
+    return this.env.empty || !this.env.onProps(c.seg) ? p.y - c.r : this.env.clearance(p, c.r);
   }
 
   /** Converts a rest-pose world point into the local frame of a segment. */
@@ -161,14 +169,20 @@ export class Rig {
     this.root.updateMatrixWorld(true);
   }
 
-  /** Moves the body vertically so that its lowest contact point rests on the floor. */
+  /** Moves the body vertically so that its lowest contact point rests on the floor (or a prop). */
   ground() {
-    let min = Infinity;
-    for (const c of this.contacts) {
-      const y = this.worldPoint(c.seg, c.local, this._v).y - c.r;
-      if (y < min) min = y;
+    // with props the supports depend on the height (a point resting on a block, not one beside
+    // it): settle in a few steps, starting with every prop solid
+    for (let it = 0; it < (this.env.empty ? 1 : 4); it++) {
+      let min = Infinity;
+      for (const c of this.contacts) {
+        const p = this.worldPoint(c.seg, c.local, this._v);
+        const y = this.env.empty || !this.env.onProps(c.seg) ? p.y - c.r : it === 0 ? p.y - this.env.rest(p.x, p.z, c.r).y : this.clearance(c, p);
+        if (y < min) min = y;
+      }
+      this.pelvis.position.y -= min;
+      this.root.updateMatrixWorld(true);
+      if (Math.abs(min) < 1e-5 && it > 0) break;
     }
-    this.pelvis.position.y -= min;
-    this.root.updateMatrixWorld(true);
   }
 }
