@@ -14,17 +14,17 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
-| Đứng | 19 | 7 | 26 |
+| Đứng | 21 | 5 | 26 |
 | Gập người | 5 | 3 | 8 |
 | Ngửa sau | 12 | 5 | 17 |
-| Chống tay & thăng bằng tay | 10 | 9 | 19 |
+| Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
 | Ngồi (gồm Balasana) | 6 | 15 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
 | Chuỗi động tác | 5 | 2 | 7 |
-| **Tổng** | **69** | **49** | **118** |
+| **Tổng** | **72** | **46** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 7 mục Đợt 4a. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 10 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -87,11 +87,11 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `malasana` | Malasana | Ngồi xổm (Vòng hoa) | Garland / Yogi Squat | Cơ bản | P1 | `tadasana` | 🤝 khuỷu đẩy gối → biến thể ngồi trên gạch / chăn dưới gót 🧱 |
 | ✅ | `utkata_konasana` | Utkata Konasana | Nữ thần | Goddess Pose | Cơ bản | P1 | `tadasana` | đối xứng, dang chân rộng |
 | ✅ | `parsva_tadasana` | Parsva Urdhva Hastasana | Nghiêng người đứng | Standing Side Bend | Cơ bản | P1 | `urdhva_hastasana` | 🔁 |
-| ⬜ | `ardha_chandrasana` | Ardha Chandrasana | Nửa vầng trăng | Half Moon | Trung bình | P2 | `trikonasana` | 🔁 ⚖ · biến thể tay trên gạch / lưng tựa tường 🧱 |
+| ✅ | `ardha_chandrasana` | Ardha Chandrasana | Nửa vầng trăng | Half Moon | Trung bình | P2 | `trikonasana` | 🔁 ⚖ · biến thể tay trên gạch / lưng tựa tường 🧱 |
 | ⬜ | `parivrtta_trikonasana` | Parivrtta Trikonasana | Tam giác vặn xoắn | Revolved Triangle | Trung bình | P2 | `parsvottanasana` | 🔁 · biến thể gạch 🧱 |
 | ⬜ | `parivrtta_parsvakonasana` | Parivrtta Parsvakonasana | Góc nghiêng vặn xoắn | Revolved Side Angle | Trung bình | P2 | `crescent_lunge` | 🔁 🤝 khuỷu móc đùi → biến thể tay chống gạch / hạ gối |
 | ⬜ | `parivrtta_utkatasana` | Parivrtta Utkatasana | Cái ghế vặn xoắn | Revolved Chair | Trung bình | P2 | `utkatasana` | 🔁 🤝 khuỷu móc đùi → biến thể tay chắp, không móc |
-| ⬜ | `skandasana` | Skandasana | Lunge ngang | Side Lunge | Trung bình | P2 | `utkata_konasana` | 🔁 |
+| ✅ | `skandasana` | Skandasana | Lunge ngang | Side Lunge | Trung bình | P2 | `utkata_konasana` | 🔁 |
 | ✅ | `utthita_hasta_padangusthasana` | Utthita Hasta Padangusthasana | Tay nắm ngón chân cái | Extended Hand-to-Big-Toe | Trung bình | P2 | `tadasana` | 🔁 ⚖ 🤝 → biến thể 🪢 dây / chân gác ghế hoặc tường 🧱 |
 | ⬜ | `garudasana` | Garudasana | Đại bàng | Eagle Pose | Trung bình | P3 | `utkatasana` | 🔁 ⚖ 🤝 tay quấn tay, chân quấn chân |
 | ✅ | `natarajasana` | Natarajasana | Vũ công | Dancer Pose | Trung bình | P3 | `tadasana` | 🔁 ⚖ 🤝 tay nắm bàn chân → biến thể 🪢 dây |
@@ -133,8 +133,8 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `forearm_plank` | Makara Adho Mukha Svanasana / Forearm plank | Tấm ván cẳng tay | Forearm Plank | Cơ bản | P1 | `phalakasana` | biến thể hạ gối |
 | ✅ | `vasisthasana` | Vasisthasana | Tấm ván nghiêng | Side Plank | Trung bình | P1 | `phalakasana` | 🔁 ⚖ · biến thể hạ gối dưới / cẳng tay |
 | ✅ | `parighasana` | Parighasana | Cánh cổng (nghiêng quỳ) | Gate Pose | Cơ bản | P1 | `kneeling` | 🔁 · có thể xếp nhóm Ngồi |
-| ⬜ | `parsva_balasana` | Parsva Balasana | Luồn kim | Thread the Needle | Cơ bản | P2 | `tabletop` | 🔁 vai & thái dương trên sàn |
-| ⬜ | `ardha_pincha_mayurasana` | Ardha Pincha Mayurasana | Cá heo | Dolphin | Trung bình | P2 | `forearm_plank` | |
+| ⛔ | `parsva_balasana` | Parsva Balasana | Luồn kim | Thread the Needle | Cơ bản | P2 | `tabletop` | 🔁 vai & thái dương trên sàn |
+| ✅ | `ardha_pincha_mayurasana` | Ardha Pincha Mayurasana | Cá heo | Dolphin | Trung bình | P2 | `forearm_plank` | |
 | ⬜ | `bakasana` | Bakasana | Con quạ | Crow | Nâng cao | P3 | `malasana` | ⚖ 🤝 gối tựa cánh tay trên |
 | ⬜ | `parsva_bakasana` | Parsva Bakasana | Con quạ nghiêng | Side Crow | Nâng cao | P3 | `parivrtta_utkatasana` | 🔁 ⚖ 🤝 |
 | ⬜ | `tolasana` | Tolasana | Cái cân | Scale | Nâng cao | P3 | `padmasana` | 🤝 chân kiết già |
@@ -262,6 +262,11 @@ Ký hiệu trong **Ghi chú**:
 - Vặn bụng: cột sống mô hình xoay ~45° nên giữ hai bả vai trên sàn thì chân dừng ở nửa đường, lơ lửng – đúng dạng chủ động (cơ chéo bụng giữ chân). Dạng thả chân xuống sàn là Vặn mình nằm ngửa.
 - Ôm một gối: tay ôm cẳng chân là tiếp xúc tay – chân, chưa tính lực; chân được giữ bởi cơ gập háng trong mô hình.
 - Bàn ngửa / Tấm ván ngửa: bắt đầu từ tư thế ngồi đã đặt tay sau mông (khoảng cách tay – chân bằng lúc nâng hông) nên tay và chân không trượt.
+- Đợt 4b: Cá heo, Lunge ngang, Nửa vầng trăng.
+- Cá heo: thân dốc nên cổ hơi ngửa để đầu không chạm sàn (cổ trung tính thì đỉnh đầu chạm thảm và gánh ~25 % trọng lượng – thành tư thế chuẩn bị trồng chuối đầu).
+- Lunge ngang: với khoảng cách chân như Gập người dang chân (1,1 m), giữ chân phải thẳng thì hông chỉ hạ được ~50 cm; tay chắp trước ngực.
+- Nửa vầng trăng: tay trái trên gạch dựng đứng (23 cm). Tạm để dạng tĩnh: lối vào từ Chiến binh III (neo tay trên gạch, xoay chậu) làm tay và chân trụ thay nhau đỡ thân giữa chừng – giật 5–7 cm. Lối vào qua lunge sâu từ Chiến binh II thì gối trước gần chạm sàn.
+- ⛔ Luồn kim (`parsva_balasana`): cần điểm tiếp xúc ở vai sau / cánh tay trên và thái dương – mô hình chưa có (chỉ có trán, gáy, đỉnh đầu); phải thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
 

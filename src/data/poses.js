@@ -325,6 +325,25 @@ export const POSES = {
     ankle: { dorsi: 0 },
   },
   // Wide stance with the toes turned out ~45°, legs straight: the start of the Goddess pose.
+  // Side lunge (Skandasana), on the left leg: wide stance (as Prasarita), the left knee bent over
+  // the toes (foot turned out ~30°), hips lowered toward the left heel; the right leg straight to the
+  // side, heel down, toes and kneecap turned up; palms together in front of the chest. Hip angles
+  // built from where the knees and feet should be (the stance is too narrow for the full-depth squat:
+  // with the right leg straight the hips stay ~50 cm high).
+  skandasana: {
+    root: { pitch: 25 },
+    hip_L: { flex: 87, abd: 8, rot: 44 },
+    knee_L: { flex: 85 },
+    ankle_L: { dorsi: 10 },
+    hip_R: { flex: 39, abd: 32, rot: 49 },
+    knee_R: { flex: 4 },
+    ankle_R: { dorsi: 5 },
+    lumbar: { flex: -5 },
+    thorax: { flex: -5 },
+    shoulder: { flex: 20, abd: 18, rot: -38 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
   utkata_konasana_stance: {
     ...ARMS_DOWN,
     hip: { abd: 33, rot: 40 },
@@ -414,6 +433,22 @@ export const POSES = {
     wrist_L: { ext: 49 },
     shoulder_R: { abd: 171, rot: -90, flex: 3 },
     scapula_R: { elev: 10 },
+  },
+  // Half moon (Ardha Chandrasana) on the left leg: standing leg straight, the trunk and the right
+  // leg one level line over it, pelvis and chest open to the long side (+Z), the left hand on a
+  // block under the shoulder, the right arm up, gaze forward. Static in the app: opening out of
+  // Warrior III with the hand anchored on the block made the hand and the standing foot take turns
+  // holding the body up mid-turn (a 5–7 cm jolt).
+  ardha_chandrasana: {
+    root: { roll: 79 },
+    hip_L: { abd: 73, rot: 97 },
+    hip_R: { abd: 14 },
+    ankle_L: { dorsi: 9 },
+    ankle_R: { dorsi: 0 },
+    shoulder_L: { abd: 80, rot: -90 },
+    shoulder_R: { abd: 101, rot: -90 },
+    neck: { rot: 0 },
+    wrist_L: { ext: 45 },
   },
   trikonasana: {
     root: { roll: 42 },
@@ -767,6 +802,41 @@ export const POSES = {
     elbow: { flex: 88 },
     wrist: { pron: 180 },
     neck: { flex: -12 },
+  },
+  // All fours on the forearms: knees on the mat, elbows under the shoulders, forearms parallel,
+  // toes tucked under – the start of Dolphin.
+  tabletop_forearms_toes: {
+    root: { pitch: 107 },
+    hip: { flex: 109 },
+    knee: { flex: 116 },
+    ankle: { dorsi: 40 },
+    shoulder: { flex: 113 },
+    elbow: { flex: 83 },
+    wrist: { pron: 180 },
+    neck: { flex: -10 },
+  },
+  // halfway up: hips rising, knees just off the mat (passed through; keeps the forearms flat)
+  ardha_pincha_mayurasana_mid: {
+    root: { pitch: 129 },
+    hip: { flex: 109 },
+    knee: { flex: 60 },
+    ankle: { dorsi: 25 },
+    shoulder: { flex: 137 },
+    elbow: { flex: 82 },
+    wrist: { pron: 180 },
+    neck: { flex: -20 },
+    head: { flex: -8 },
+  },
+  ardha_pincha_mayurasana: {
+    root: { pitch: 151 },
+    hip: { flex: 109 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -23 },
+    shoulder: { flex: 160 },
+    elbow: { flex: 82 },
+    wrist: { pron: 180 },
+    neck: { flex: -30 },
+    head: { flex: -15 },
   },
   // Side plank (Vasisthasana) on the right hand: the Plank body turned onto its right side, chest
   // facing the model's left, right hand under the shoulder, feet staggered (left foot in front of
@@ -1638,6 +1708,8 @@ export const POSE_PROPS = {
   utthita_parsvakonasana_block: [{ type: 'block', stand: 'end', at: [0.4, 0.15], yaw: 90 }],
   // a round bolster across the mat under the knees
   supine_bolster: [{ type: 'bolster', at: [0, 0.33] }],
+  // a block on its end under the lower (left) hand, in front of the standing foot (half moon)
+  ardha_chandrasana: [{ type: 'block', stand: 'end', at: [0.5, 0.0] }],
   // a block on its end in front of and inside the front (left) foot, under the lower hand
   trikonasana_block: [{ type: 'block', stand: 'end', at: [0.56, 0.12], yaw: 90 }],
   // a folded blanket under the sit bones, lengthwise
@@ -1819,6 +1891,20 @@ export const POSE_FIT = {
     ],
     // the legs stay as in the forearm form (front knee at 90° over the ankle)
     params: ['ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.side', 'thorax.side', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.abd', 'shoulder_R.flex'],
+  },
+  ardha_chandrasana: {
+    support: ['ankle_L', 'wrist_L'],
+    onProp: ['wrist_L'],
+    flat: ['ankle_L'],
+    balance: true,
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]], // standing foot points to the front of the mat
+      ['shoulder_L', [0, -1, 0], [0, -1, 0]], // lower arm straight down to the block
+      ['shoulder_R', [0, -1, 0], [0, 1, 0]], // top arm straight up
+      ['hip_R', [0, -1, 0], [-1, 0.05, 0]], // top leg level, reaching back
+      ['hip_L', [0, -1, 0], [0, -1, 0]], // standing leg vertical, hip over the foot
+    ],
+    params: ['root.roll&-hip_L.abd', 'hip_L.abd', 'hip_L.rot', 'hip_R.abd', 'ankle_L.dorsi', 'shoulder_L.abd', 'shoulder_R.abd', 'wrist_L.ext'],
   },
   trikonasana: {
     support: ['ankle_L', 'ankle_R'],
@@ -2146,6 +2232,22 @@ export const POSE_FIT = {
     ],
     params: ['root.roll', 'shoulder_L.flex', 'shoulder_L.abd', 'hip_R.flex', 'hip_R.abd', 'shoulder_R.flex', 'hip_L.flex', 'wrist_L.ext'],
   },
+  tabletop_forearms_toes: {
+    support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'],
+    params: ['root.pitch&hip.flex&shoulder.flex', 'ankle.dorsi', 'knee.flex'],
+  },
+  ardha_pincha_mayurasana_mid: {
+    support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    flat: ['elbow_L', 'elbow_R'],
+    params: ['root.pitch&shoulder.flex', 'shoulder.flex', 'elbow.flex', 'ankle.dorsi'],
+  },
+  ardha_pincha_mayurasana: {
+    support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
+    flat: ['elbow_L', 'elbow_R'], // the whole forearm down
+    // upper arms near vertical (elbows under the shoulders), so the head hangs clear of the mat
+    dir: [['shoulder_L', [0, -1, 0], [0, -1, 0.15]], ['shoulder_R', [0, -1, 0], [0, -1, 0.15]]],
+    params: ['root.pitch&shoulder.flex', 'shoulder.flex', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'elbow.flex'],
+  },
   forearm_plank: {
     support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
     above: [['shoulder_L', 'elbow_L'], ['shoulder_R', 'elbow_R']], // elbows under the shoulders
@@ -2217,6 +2319,14 @@ export const POSE_FIT = {
     // base of support with some depth)
     rel: [['ankle_L', 'ankle_R', [-1.1, 0]], ['wrist_R', 'wrist_L', [0.33, 0]], ['ankle_L', 'wrist_L', [-0.385, 0.12]]],
     params: ['shoulder.flex', 'shoulder.abd', 'elbow.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex'],
+  },
+  skandasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L'],
+    balance: true,
+    rel: [['ankle_L', 'ankle_R', [-1.1, 0]]], // the Prasarita stance
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    params: ['ankle_L.dorsi', 'ankle_R.dorsi', 'hip_L.flex', 'knee_L.flex', 'hip_R.abd', 'hip_R.flex', 'hip_R.rot', 'root.roll', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
   },
   utkata_konasana_stance: {
     support: ['ankle_L', 'ankle_R'],
