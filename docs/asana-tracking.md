@@ -24,7 +24,7 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Chuỗi động tác | 2 | 5 | 7 |
 | **Tổng** | **29** | **89** | **118** |
 
-(`Đã có` = 29 mục trong `ASANAS`, gồm 2 chuỗi. `Cần làm` có 4 mục là biến thể của asana sẵn có: `ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair` và các biến thể ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục trong `ASANAS`, gồm 2 chuỗi. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
