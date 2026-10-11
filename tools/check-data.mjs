@@ -2,7 +2,7 @@
 // every id an asana, pose or fit refers to must exist, angles must be ones semanticToQuat
 // understands, and every modelled muscle / bone needs its Vietnamese content and strength.
 //   node tools/check-data.mjs
-import { ASANAS, CATEGORIES } from '../src/data/asanas.js';
+import { ASANAS, CATEGORIES, LEVELS } from '../src/data/asanas.js';
 import { TOPICS } from '../src/data/topics.js';
 import { POSES, POSE_FIT } from '../src/data/poses.js';
 import { MUSCLES } from '../src/data/muscles.js';
@@ -90,6 +90,7 @@ for (const a of ASANAS) {
   ids.add(a.id);
   for (const f of ['sanskrit', 'vi', 'en', 'category', 'level']) if (!a[f]) fail(`${where}: missing ${f}`);
   if (!CATEGORIES.includes(a.category) || a.category === 'Tất cả') fail(`${where}: category "${a.category}" not in CATEGORIES`);
+  if (!a.flow && !LEVELS.includes(a.level)) fail(`${where}: level "${a.level}" not in LEVELS`);
   if (a.loop && !['static', 'pingpong', 'cycle'].includes(a.loop)) fail(`${where}: loop "${a.loop}" (static | pingpong | cycle)`);
   if (!Array.isArray(a.steps) || !a.steps.length) fail(`${where}: no steps`);
   for (const s of a.steps || []) {

@@ -959,6 +959,33 @@ export const POSES = {
     neck: { rot: 30 },
     shoulder: { abd: 28, flex: 38, rot: -100 },
   },
+  // Lying on the back, left knee drawn toward the chest, the strap around the ball of the left foot
+  // held in both hands, right leg long: the step before the leg straightens up.
+  supta_padangusthasana_bent: {
+    root: { pitch: -90 },
+    hip_L: { flex: 105 },
+    knee_L: { flex: 95 },
+    ankle_L: { dorsi: 5 },
+    hip_R: { rot: 10 },
+    ankle_R: { dorsi: -29 },
+    shoulder: { flex: 55, abd: 8 },
+    elbow: { flex: 40 },
+    wrist: { pron: 90 },
+  },
+  // Reclined hand-to-big-toe with a strap (Supta Padangusthasana): lying on the back, left leg
+  // straight up toward vertical, the strap around the ball of the left foot held in both hands with
+  // the arms long, shoulders on the mat, right leg long on the mat with the foot flexed.
+  supta_padangusthasana: {
+    root: { pitch: -90 },
+    hip_L: { flex: 73 },
+    knee_L: { flex: 0 },
+    ankle_L: { dorsi: 12 },
+    hip_R: { rot: 10 },
+    ankle_R: { dorsi: -29 },
+    shoulder: { flex: 50, abd: 8 },
+    elbow: { flex: 10 },
+    wrist: { pron: 90 },
+  },
   // Lying on the back, knees bent, the soles together on the mat: the start of Supta Baddha Konasana.
   supine_feet_together: {
     root: { pitch: -90 },
@@ -1387,6 +1414,9 @@ export const POSE_PROPS = {
   // the block under the sacrum as in setu_bandha_block (legs up on the way to and in viparita_karani_block)
   setu_bandha_block_knees: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
   viparita_karani_block: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
+  // a strap around the ball of the left foot, held in both hands
+  supta_padangusthasana_bent: [{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }],
+  supta_padangusthasana: [{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }],
   // a block lying flat (its lowest height) under the sacrum
   setu_bandha_block: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
   // a block on its long edge under each outer thigh, along the thigh
@@ -2055,5 +2085,14 @@ export const POSE_FIT = {
     flat: ['ankle_L'],
     balance: true,
     params: ['knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'hip_L.abd', 'hip_L.rot', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex'],
+  },
+  supta_padangusthasana_bent: {
+    support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R'],
+    params: ['shoulder.flex', 'elbow.flex', 'ankle_R.dorsi'],
+  },
+  supta_padangusthasana: {
+    support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R'],
+    dir: [['hip_L', [0, -1, 0], [0, 0.95, 0.3]]], // the raised leg near vertical
+    params: ['hip_L.flex', 'ankle_R.dorsi'],
   },
 };

@@ -165,6 +165,7 @@ button { cursor: pointer; }
 .asana-card .ac-sub { font-size: 12px; color: var(--muted); }
 .badge { display: inline-block; font-size: 10.5px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); margin-left: 4px; vertical-align: 1px; }
 .badge.flow { color: var(--accent); border-color: #245f58; }
+.badge.adv { color: var(--stabilize); border-color: #6b5420; }
 
 /* ---------- Stage ---------- */
 .stage { grid-area: stage; position: relative; min-width: 0; min-height: 0; background: radial-gradient(ellipse at 50% 30%, #243040 0%, #151b23 60%, #10141a 100%); }

@@ -20,11 +20,11 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Chống tay & thăng bằng tay | 10 | 9 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
 | Ngồi (gồm Balasana) | 6 | 15 | 21 |
-| Nằm (ngửa / sấp) | 6 | 8 | 14 |
+| Nằm (ngửa / sấp) | 7 | 7 | 14 |
 | Chuỗi động tác | 3 | 4 | 7 |
-| **Tổng** | **57** | **61** | **118** |
+| **Tổng** | **58** | **60** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + Supta Padangusthasana. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -184,7 +184,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `makarasana` | Makarasana | Cá sấu (nằm sấp nghỉ) | Crocodile | Cơ bản | P1 | `prone` | |
 | ✅ | `supta_matsyendrasana` | Supta Matsyendrasana | Vặn mình nằm ngửa | Supine Twist | Cơ bản | P1 | `supine_knees` | 🔁 · biến thể gối ôm dưới gối 🧱 |
 | ⬜ | `apanasana` | Apanasana | Ôm gối trước ngực | Knees-to-Chest | Cơ bản | P1 | `supine_knees` | 🤝 tay ôm gối → biến thể tay đặt hờ |
-| ⬜ | `supta_padangusthasana` | Supta Padangusthasana | Nằm ngửa kéo chân | Reclined Hand-to-Big-Toe | Cơ bản | P1 | `supine` | 🔁 🪢 dây (dạng phục hồi phổ biến nhất) |
+| ✅ | `supta_padangusthasana` | Supta Padangusthasana | Nằm ngửa kéo chân | Reclined Hand-to-Big-Toe | Cơ bản | P1 | `supine` | 🔁 🪢 dây (dạng phục hồi phổ biến nhất) |
 | ⬜ | `supta_kapotasana` | Supta Kapotasana | Bồ câu nằm ngửa (số 4) | Reclined Pigeon / Figure-4 | Cơ bản | P1 | `supine_knees` | 🔁 🤝 mắt cá đặt trên đùi |
 | ⬜ | `jathara_parivartanasana` | Jathara Parivartanasana | Vặn bụng | Revolved Abdomen | Trung bình | P2 | `supine` | 🔁 |
 | ⬜ | `ananda_balasana` | Ananda Balasana | Em bé hạnh phúc | Happy Baby | Cơ bản | P2 | `apanasana` | 🤝 tay nắm bàn chân → 🪢 dây |
@@ -209,10 +209,10 @@ Ký hiệu trong **Ghi chú**:
 | ✓ | Việc | Mở khoá | Ghi chú |
 |---|---|---|---|
 | ⬜ | Tiếp xúc thân – thân trong vật lý (tay–chân, gối–cánh tay, chân–đùi) | mọi tư thế 🤝 (≈ 30) | CLAUDE.md: thiếu tiếp xúc này cũng là nguồn sai số chính ở Balasana, Vrksasana, Paschimottanasana. Trước khi có: làm biến thể không bám hoặc đặt sát nhưng không truyền lực, ghi rõ giới hạn trong UI |
-| ⬜ | Đạo cụ **dây** (strap) | Supta Padangusthasana, Dhanurasana, Natarajasana, Gomukhasana… | thêm loại prop mới; lực kéo dây cần mô hình riêng |
+| ✅ | Đạo cụ **dây** (strap) | Supta Padangusthasana, Dhanurasana, Natarajasana, Gomukhasana… | thêm loại prop mới; lực kéo dây cần mô hình riêng |
 | ⬜ | Đạo cụ **ghế** | chân gác ghế, Halasana có ghế, tư thế ngồi ghế | |
-| ⬜ | Nhóm mới trong `CATEGORIES`: `Đảo ngược`, `Thăng bằng tay`, `Vặn xoắn`? | lọc danh sách gọn hơn | quyết định trước khi thêm nhiều tư thế |
-| ⬜ | Mức `Nâng cao` trong `level` | P3 | kiểm tra UI hiển thị nhãn mới |
+| ✅ | Nhóm mới trong `CATEGORIES`: `Thăng bằng tay`, `Đảo ngược` | lọc danh sách gọn hơn | Tấm ván nghiêng → Thăng bằng tay, Gác chân lên tường → Đảo ngược |
+| ✅ | Mức `Nâng cao` trong `level` (`LEVELS`) | P3 | nhãn màu vàng trong danh sách; check-data kiểm tra mức hợp lệ |
 | ⬜ | Kiểm tra contact vai / lưng trên / đỉnh đầu đủ cho đảo ngược | 2.5 | thiếu contact → thêm trong `tools/bp3d-build.mjs` rồi rebuild, không sửa `body-model.gen.js` |
 
 ## 4. Gợi ý thứ tự làm (theo đợt)
@@ -245,6 +245,11 @@ Ký hiệu trong **Ghi chú**:
 - Cá có hỗ trợ: gạch nằm ngang dưới bả vai, đầu chạm sàn – cổ ngửa khá nhiều; cue nhắc kê đầu cao hơn.
 - Upavistha Konasana: tay đặt trên đùi rồi mới vươn ra trước (tay quét qua sàn nếu đi thẳng từ cạnh hông).
 - Ghi chú kỹ thuật: góc háng `abd` là góc ngoài cùng (Euler ZYX), nên tham số `root.pitch&hip.flex` của fitter không giữ nguyên chân đang dạng / xoay. Các tư thế gập với chân dạng (Kim tự tháp, Gập người dang chân, Janu Sirsasana, Upavistha) tính góc háng để giữ hướng chân trong không gian.
+
+### Ghi chú Đợt 3 (tính năng)
+
+- Dây tập: lực kéo giữa lòng bàn tay và ức bàn chân, chỉ kéo, không giãn; giải cùng lực sàn (ít tốn sức khớp nhất). Hiện là dải xanh trong cảnh và dòng "Dây tập" trong bảng lực. Dùng cho: Supta Padangusthasana. Tiếp theo: Em bé hạnh phúc, Cánh cung, Vũ công, Tay nắm ngón chân cái (biến thể dây).
+- Với Supta Padangusthasana chân gần thẳng đứng, mô-men chân nhỏ nên dây chỉ gánh vài N (háng 12 → 9 N·m). Dây sẽ có tác dụng rõ hơn khi chân hạ thấp hoặc ở tư thế đứng.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
 

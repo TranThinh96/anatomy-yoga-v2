@@ -114,7 +114,7 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   vi: 'Tư thế Kéo giãn một bên',
   en: 'Intense Side Stretch',
   category: 'Gập người',          // one of CATEGORIES (not 'Tất cả')
-  level: 'Cơ bản',                // 'Cơ bản' | 'Trung bình'
+  level: 'Cơ bản',                // one of LEVELS: 'Cơ bản' | 'Trung bình' | 'Nâng cao'
   steps: [{ pose: 'tadasana' }, { pose: 'my_pose', anchor: ['ankle_R'], move: 2.2 }],
   loop: 'pingpong',               // 'static' (one pose), 'pingpong' (in and out), 'cycle' (sequence)
   variants: [{ label: 'Tay chạm khối', pose: 'my_pose_blocks' }], // optional, replaces the last step's pose
@@ -171,7 +171,7 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
 
-## 4b. Props (wall, block, bolster, blanket)
+## 4b. Props (wall, block, bolster, blanket, strap)
 
 Props are supports in the physics, so a supported variant shows its real load change. List them in
 `POSE_PROPS[pose]` in the pose's own frame (pelvis at x = z = 0, floor y = 0, facing +Z, left +X):
@@ -184,6 +184,9 @@ supta_baddha_konasana_blocks: [
 viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal points to the body
 ```
 
+- A strap: `{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }` (no `at`: it is held
+  by the body). It pulls the palm(s) toward the ball of the foot and back, never pushes; the physics card
+  shows its tension. It only changes joint moments, so the pose still needs its floor supports.
 - Measure first where the body part is (`rig.worldPoint` of its contacts in the plain pose) and put the
   prop under it at that height; fit with the part in `support` (or `wall: [...]` for a wall, `onProp:
   [...]` when it must rest on the prop and not on the floor beside it).

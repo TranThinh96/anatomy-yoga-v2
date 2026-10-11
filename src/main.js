@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Viewer } from './viewer.js';
 import { Body } from './anatomy/body.js';
 import { Animator, poseEnv } from './anatomy/animator.js';
-import { propMeshes, PROP_NAMES } from './anatomy/props.js';
+import { propMeshes, updateStraps, PROP_NAMES } from './anatomy/props.js';
 import { ThumbnailMaker } from './ui/thumbnails.js';
 import { Physics } from './anatomy/physics.js';
 import { PhysicsOverlay } from './ui/physicsOverlay.js';
@@ -44,6 +44,7 @@ const anim = new Animator(
   function () {
     body.update();
     syncProps(this.env);
+    updateStraps(propGroup, body.rig);
   },
   { prepare: balance },
 );
@@ -666,7 +667,7 @@ function renderAsanaList() {
         (a) => `<button class="asana-card${a.id === state.asanaId ? ' active' : ''}" data-asana="${a.id}">
       <span class="ac-icon">${thumbs[a.id] ? `<img src="${thumbs[a.id]}" alt="" width="44" height="44" />` : ''}</span>
       <span><div class="ac-title">${esc(a.sanskrit)}</div>
-      <div class="ac-sub">${esc(a.vi)} <span class="badge${a.flow ? ' flow' : ''}">${a.flow ? 'Chuỗi' : esc(a.level)}</span></div></span>
+      <div class="ac-sub">${esc(a.vi)} <span class="badge${a.flow ? ' flow' : a.level === 'Nâng cao' ? ' adv' : ''}">${a.flow ? 'Chuỗi' : esc(a.level)}</span></div></span>
     </button>`,
       )
       .join('') || '<p class="empty-note" style="padding:8px">Không tìm thấy asana.</p>';
@@ -898,12 +899,13 @@ function renderPhysicsLive() {
   const cmTxt = narrow ? '0.0' : `${cm >= 0 ? '+' : ''}${cm.toFixed(1)}`;
   m.textContent = isFinite(cm) ? `${cmTxt} cm · ${status}` : '—';
   m.className = moving ? '' : ok ? 'ok' : 'bad';
-  $('#ph-support').innerHTML = r.support
-    .map(
-      (g) =>
-        `<div class="bar-row"><span>${esc(g.label)}${g.shear >= 3 ? ` <small class="shear" title="Lực ngang (ma sát) tính theo % trọng lượng">↔ ${Math.round(g.shear)}%</small>` : ''}</span><span class="bar"><i style="width:${Math.min(g.pct, 100)}%;background:var(--stabilize)"></i></span><b>${Math.round(g.pct)}%</b></div>`,
-    )
-    .join('');
+  $('#ph-support').innerHTML =
+    r.support
+      .map(
+        (g) =>
+          `<div class="bar-row"><span>${esc(g.label)}${g.shear >= 3 ? ` <small class="shear" title="Lực ngang (ma sát) tính theo % trọng lượng">↔ ${Math.round(g.shear)}%</small>` : ''}</span><span class="bar"><i style="width:${Math.min(g.pct, 100)}%;background:var(--stabilize)"></i></span><b>${Math.round(g.pct)}%</b></div>`,
+      )
+      .join('') + strapRows(r);
   $('#ph-loads').innerHTML = r.joints
     .filter((j) => j.total >= 3 && j.demands.length)
     .slice(0, 8)
@@ -984,6 +986,14 @@ function renderActivationLive() {
   el.innerHTML = html;
 }
 
+/** Tension in each strap strand (N and % body weight), under the floor support rows. */
+function strapRows(r) {
+  const T = (r.straps || []).reduce((a, s) => a + s.T, 0);
+  if (!r.straps?.length) return '';
+  const pct = (T / r.W) * 100;
+  return `<div class="bar-row" title="Lực kéo của dây giữa tay và bàn chân (tổng các nhánh dây)"><span>Dây tập (kéo tay ↔ chân)</span><span class="bar"><i style="width:${Math.min(pct, 100)}%;background:#4f9a7a"></i></span><b>${Math.round(T)} N</b></div>`;
+}
+
 /** The props of the current sequence ("2 gạch tập, tường"), with the model's limits. */
 function propsNote() {
   if (anim.env.empty) return '';
@@ -991,7 +1001,10 @@ function propsNote() {
   for (const p of anim.env.props) count.set(p.type, (count.get(p.type) || 0) + 1);
   const list = [...count].map(([t, n]) => (n > 1 ? `${n} ${PROP_NAMES[t]}` : PROP_NAMES[t])).join(', ');
   const wall = count.has('wall') ? ' Tường chỉ đẩy vuông góc với mặt tường (không tính ma sát giữa lưng / chân và tường).' : '';
-  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}</p>`;
+  const strap = count.has('strap')
+    ? ' Dây tập là một lực kéo giữa tay và bàn chân, chọn cùng lực sàn sao cho các khớp tốn ít sức nhất (dây không giãn, không tính ma sát dây trên bàn chân).'
+    : '';
+  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}${strap}</p>`;
 }
 
 /** Static analysis of each variant of the current asana, as an HTML table. */

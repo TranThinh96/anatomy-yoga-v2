@@ -35,7 +35,8 @@ export function asanaSteps(a, variant = 0) {
   return a.steps.map((s) => (s.pose === target ? { ...s, pose: v.pose } : s));
 }
 
-export const CATEGORIES = ['Tất cả', 'Đứng', 'Gập người', 'Ngửa sau', 'Chống tay', 'Ngồi & nằm', 'Chuỗi động tác'];
+export const CATEGORIES = ['Tất cả', 'Đứng', 'Gập người', 'Ngửa sau', 'Chống tay', 'Thăng bằng tay', 'Đảo ngược', 'Ngồi & nằm', 'Chuỗi động tác'];
+export const LEVELS = ['Cơ bản', 'Trung bình', 'Nâng cao'];
 
 export const ASANAS = [
   {
@@ -962,7 +963,7 @@ export const ASANAS = [
     sanskrit: 'Vasisthasana',
     vi: 'Tư thế Tấm ván nghiêng',
     en: 'Side Plank',
-    category: 'Chống tay',
+    category: 'Thăng bằng tay',
     level: 'Trung bình',
     steps: [{ pose: 'phalakasana' }, { pose: 'vasisthasana', anchor: ['wrist_R', 'ankle_R'], move: 2.2, hold: 2 }],
     loop: 'pingpong',
@@ -1458,7 +1459,7 @@ export const ASANAS = [
     sanskrit: 'Viparita Karani',
     vi: 'Tư thế Gác chân lên tường',
     en: 'Legs Up the Wall',
-    category: 'Ngồi & nằm',
+    category: 'Đảo ngược',
     level: 'Cơ bản',
     steps: [{ pose: 'viparita_karani_bent' }, { pose: 'viparita_karani', move: 2.2, hold: 3 }],
     loop: 'pingpong',
@@ -1661,6 +1662,39 @@ export const ASANAS = [
     ],
     benefits: ['Xoay cột sống nhẹ nhàng, thả lỏng lưng', 'Kéo giãn cơ chéo bụng, cơ mông, ngực'],
     cautions: ['Đau thắt lưng, thoát vị đĩa đệm: xoay ít, kê đỡ gối cao; hỏi ý kiến bác sĩ.', 'Thai kỳ: tránh xoay sâu ở bụng.'],
+  },
+  {
+    id: 'supta_padangusthasana',
+    sanskrit: 'Supta Padangusthasana',
+    vi: 'Tư thế Nằm ngửa kéo chân (với dây)',
+    en: 'Reclined Hand-to-Big-Toe (with a strap)',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [
+      { pose: 'supine' },
+      { pose: 'supta_padangusthasana_bent', anchor: SCAPULAE, move: 2, hold: 0.6 },
+      { pose: 'supta_padangusthasana', anchor: SCAPULAE, move: 2, hold: 3 },
+    ],
+    loop: 'pingpong',
+    roles: {
+      contract: [...side(QUADS, 'L'), 'biceps_brachii', 'forearm_flexors', 'latissimus_dorsi'],
+      stretch: ['hamstrings_L', 'gluteus_maximus_L'],
+      stabilize: ['rectus_abdominis', ...side(QUADS, 'R'), 'tibialis_anterior_R'],
+    },
+    joints: [
+      ['hip_L', 'Gập háng ~70–90°, chân duỗi'],
+      ['knee_L', 'Gối duỗi (hoặc hơi chùng)'],
+      ['ankle_L', 'Gập mu – đẩy gót lên trần'],
+      ['hip_R', 'Chân dưới duỗi trên sàn, háng trung tính'],
+    ],
+    cues: [
+      'Nằm ngửa, co gối trái về ngực, quàng dây qua ức bàn chân trái, hai tay giữ hai đầu dây.',
+      'Duỗi chân trái lên trần, đẩy gót lên; chỉ nâng tới chỗ lưng dưới và chân dưới vẫn nằm yên trên sàn.',
+      'Vai và đầu thả trên thảm; tay dài, khuỷu mềm – để dây giữ sức nặng của chân.',
+      'Chân phải duỗi, mũi chân hướng lên (hoặc co gối, bàn chân đặt sàn nếu lưng dưới căng).',
+    ],
+    benefits: ['Kéo giãn gân kheo an toàn, lưng được đỡ', 'Dây giữ chân nên cơ gập háng không phải gồng'],
+    cautions: ['Đau thần kinh tọa, thoát vị đĩa đệm: nâng thấp, dừng nếu tê lan xuống chân; hỏi ý kiến bác sĩ.', 'Gân kheo căng: chùng gối chân nâng.'],
   },
   {
     id: 'savasana',

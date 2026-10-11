@@ -33,7 +33,8 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
   → realMuscles.js  real BodyParts3D muscle surfaces, linear-blend skinned to the rig; anatomy mode only
                  (display only – lengths, moment arms and forces always come from the tubes)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
-props.js         floor + props (wall, block, bolster, folded blanket) as an Env on the rig: clearance, contact normals
+props.js         floor + props (wall, block, bolster, folded blanket, strap) as an Env on the rig: clearance, contact normals;
+                 a strap is a pull between a palm and the ball of a foot (solved with the floor forces)
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses (a spline through `via` poses), anchors (feet/hands stay put),
                  floor correction, stepping feet lifted (_liftSteps); balances each pose once (cached)
@@ -45,7 +46,7 @@ tools/           build-model, fit-poses, check-* (run by npm run check), shot.mj
 Data files:
 - `poses.js` – `POSES` (joint angles in degrees), `POSE_PROPS` (props a pose rests on, pose frame) and
   `POSE_FIT` (floor contacts + fitter goals).
-- `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants.
+- `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants; `CATEGORIES`, `LEVELS`.
 - `topics.js` – workshop topics (e.g. anterior pelvic tilt): a reference and a condition pose compared on
   the model, muscles coloured by length relative to the reference; `shorter` / `longer` muscles are
   verified by `npm run check`. Condition poses live in the "Postural deviations" section of `poses.js`.
@@ -99,6 +100,8 @@ Data files:
   so put a prop in only after the body part is clear of where it goes (Setu Bandha: hips up, then the block).
   While moving, only the segments that rest on a prop in the step's poses may rest on props (Env.segs);
   the others meet the floor only.
+  A strap (`{ type: 'strap', hands: [...], foot }`) is not a surface: a tension T ≥ 0 between body points,
+  internal to the body (joint moments only), chosen with the floor forces by solveContacts.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
   A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
   and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).

@@ -8,6 +8,9 @@ import * as THREE from 'three';
 //   { type: 'blanket', at: [x, z], yaw?, y? }            folded blanket
 //   { type: 'bolster', at: [x, z], yaw? }                round bolster lying on the floor
 //   { type: 'wall', at: [x, z], normal: [nx, nz] }       vertical plane; normal points to the body
+//   { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' } a strap from the hand(s) around the ball of
+//                                                         the foot: it only pulls (a tension between
+//                                                         two body points, not a surface), see Physics
 // yaw (degrees) turns a prop about the vertical axis; at yaw 0 its long side runs along X.
 export const PROP_SIZES = {
   // block 23 × 15 × 7.5 cm, standing on its broad face (flat), long edge (side) or end
@@ -16,7 +19,7 @@ export const PROP_SIZES = {
   bolster: { length: 0.65, radius: 0.11 },
 };
 
-export const PROP_NAMES = { block: 'gạch tập', blanket: 'chăn gấp', bolster: 'gối ôm', wall: 'tường' };
+export const PROP_NAMES = { block: 'gạch tập', blanket: 'chăn gấp', bolster: 'gối ôm', wall: 'tường', strap: 'dây tập' };
 
 const UP = new THREE.Vector3(0, 1, 0);
 // A point counts as over a prop (and may rest on it) unless it is more than this far below its top:
@@ -25,6 +28,7 @@ const SINK = 0.04;
 
 /** One prop resolved into world geometry (offset: the x/z shift of the pose frame). */
 function resolve(prop, offset = { x: 0, z: 0 }) {
+  if (prop.type === 'strap') return { ...prop, kind: 'strap' };
   const yaw = ((prop.yaw || 0) * Math.PI) / 180;
   const c = new THREE.Vector3(prop.at[0] + offset.x, prop.y || 0, prop.at[1] + offset.z);
   const u = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)); // long axis
@@ -59,6 +63,11 @@ export class Env {
 
   get empty() {
     return !this.props.length;
+  }
+
+  /** The straps (tensions between body points), not surfaces. */
+  get straps() {
+    return this.props.filter((p) => p.kind === 'strap');
   }
 
   /**
@@ -128,6 +137,38 @@ export class Env {
 
 export const NO_PROPS = new Env();
 
+/**
+ * Where a strap holds the body, in the rig's current pose: the middle of each hand's palm and the
+ * ball of the foot (the mean of the hand's contact points / of the foot's points in front of the
+ * ankle). Returns [{ hand, a, b }]: one strand per hand, from a (hand) to b (foot), world space.
+ */
+export function strapStrands(rig, strap) {
+  const mean = (seg, keep = () => true) => {
+    const pts = rig.contacts.filter((c) => c.seg === seg && keep(c));
+    const out = new THREE.Vector3();
+    for (const c of pts) out.add(rig.worldPoint(seg, c.local, new THREE.Vector3()));
+    return out.multiplyScalar(1 / Math.max(pts.length, 1));
+  };
+  const b = mean(strap.foot, (c) => c.local.z > 0.08);
+  return strap.hands.map((hand) => ({ hand, a: mean(hand), b }));
+}
+
+/** Moves the strap meshes of a props group (propMeshes) to the rig's current pose. */
+export function updateStraps(group, rig) {
+  if (!group) return;
+  const d = new THREE.Vector3();
+  for (const m of group.children) {
+    const s = m.userData.strap;
+    if (!s) continue;
+    const st = strapStrands(rig, s)[m.userData.strand];
+    d.subVectors(st.b, st.a);
+    const len = d.length();
+    m.position.copy(st.a).addScaledVector(d, 0.5);
+    m.scale.set(1, Math.max(len, 1e-3), 1);
+    if (len > 1e-6) m.quaternion.setFromUnitVectors(UP, d.multiplyScalar(1 / len));
+  }
+}
+
 /** Builds the meshes of an Env (for the viewer and the thumbnails). */
 export function propMeshes(env) {
   const group = new THREE.Group();
@@ -136,7 +177,18 @@ export function propMeshes(env) {
   const cloth = new THREE.MeshStandardMaterial({ color: 0xc58f63, roughness: 0.95 });
   const blanket = new THREE.MeshStandardMaterial({ color: 0x7b9ec2, roughness: 0.95 });
   const wall = new THREE.MeshStandardMaterial({ color: 0xd9d4cc, roughness: 1, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+  const webbing = new THREE.MeshStandardMaterial({ color: 0x4f9a7a, roughness: 0.8 });
   for (const p of env.props) {
+    if (p.kind === 'strap') {
+      // one strand per hand, a unit-length band stretched and placed by updateStraps
+      p.hands.forEach((_, i) => {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1, 0.004), webbing);
+        m.userData = { strap: p, strand: i };
+        m.castShadow = true;
+        group.add(m);
+      });
+      continue;
+    }
     let m;
     if (p.kind === 'box') {
       m = new THREE.Mesh(new THREE.BoxGeometry(...p.size), p.type === 'blanket' ? blanket : foam);
