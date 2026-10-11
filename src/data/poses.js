@@ -1620,7 +1620,46 @@ export const POSES = {
     thorax: { flex: -15 },
     shoulder: { flex: 22, abd: 12 },
     wrist: { ext: 83 },
-  },  // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
+  },  // Bharadvaja's twist (Bharadvajasana I): sitting with both knees bent and swung to the left, both
+  // feet beside the right hip (left shin in front, turned out; right shin back, turned in), turning
+  // to the left: right hand on the mat outside the left knee, left hand behind on the mat. Hip angles
+  // built from the thigh and shin directions. (The left ankle resting in the right instep is a
+  // foot-on-foot contact the physics lacks: the feet lie side by side.)
+  bharadvajasana: {
+    hip_L: { flex: 98, abd: -87, rot: 9 },
+    knee_L: { flex: 117 },
+    ankle_L: { dorsi: -30 },
+    hip_R: { flex: 79, abd: 67, rot: -9 },
+    knee_R: { flex: 152 },
+    ankle_R: { dorsi: -50 },
+    lumbar: { rot: 8 },
+    thorax: { rot: 35 },
+    neck: { rot: 25 },
+    shoulder_R: { flex: 28, abd: -15, rot: 30 },
+    elbow_R: { flex: -5 },
+    wrist_R: { ext: 80 },
+    shoulder_L: { flex: -11, abd: 9 },
+    wrist_L: { ext: 80 },
+    root: { roll: 3, pitch: -2 },
+    elbow_L: { flex: -1 },
+  },
+  // Accomplished pose (Siddhasana): sitting upright, knees wide on the mat, the left heel drawn in
+  // against the perineum, the right heel just in front of it (both shins along the front of the
+  // mat), hands resting on the knees. Hip angles built from the thigh and shin directions.
+  siddhasana: {
+    hip_L: { flex: 127, abd: -97, rot: -4 },
+    knee_L: { flex: 139 },
+    ankle_L: { dorsi: -20 },
+    hip_R: { flex: 127, abd: -97, rot: -5 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -20 },
+    root: { pitch: 5 },
+    lumbar: { flex: -5 },
+    shoulder: { flex: 37, abd: 8, rot: 13 },
+    elbow: { flex: -5 },
+    wrist: { pron: 90 },
+  },
+  // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
   // the pelvis can tip forward over the thighs.
   dandasana_blanket: {
     hip: { flex: 87 },
@@ -2600,6 +2639,20 @@ export const POSE_FIT = {
   eka_pada_rajakapotasana: {
     support: ['hip_L', 'ankle_L', 'hip_R|knee_R', 'ankle_R', 'wrist_L', 'wrist_R'],
     params: ['hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'ankle_L.dorsi', 'shoulder.flex', 'shoulder.abd', 'wrist.ext', 'hip_L.flex', 'knee_L.flex', 'root.pitch&-lumbar.flex'],
+  },
+  bharadvajasana: {
+    support: ['pelvis', 'hip_L|knee_L', 'hip_R|knee_R', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    at: [['wrist_R', 'knee_L', [0.12, 0.0, 0.0]]], // right hand on the mat outside the left knee
+    rel: [['pelvis', 'wrist_L', [0.12, -0.25]]], // left hand behind the left hip
+    params: ['root.roll', 'root.pitch', 'hip_R.rot', 'hip_R.abd', 'ankle.dorsi', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'elbow_R.flex', 'shoulder_L.flex', 'shoulder_L.abd', 'elbow_L.flex', 'wrist.ext'],
+  },
+  siddhasana: {
+    support: ['pelvis', 'hip_L', 'hip_R'],
+    // the backs of the hands on the knees (no hand–knee force in the physics)
+    at: [['wrist_L', 'knee_L', [0.0, 0.06, 0.08]], ['wrist_R', 'knee_R', [0.0, 0.06, 0.08]]],
+    dir: [['thorax', [0, 1, 0], [0, 1, 0]]], // trunk upright
+    params: ['ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
   },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
   ardha_purvottanasana: {

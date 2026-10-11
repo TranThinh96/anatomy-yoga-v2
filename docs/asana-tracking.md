@@ -19,12 +19,12 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
-| Ngồi (gồm Balasana) | 6 | 15 | 21 |
+| Ngồi (gồm Balasana) | 9 | 12 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
 | Chuỗi động tác | 5 | 2 | 7 |
-| **Tổng** | **74** | **44** | **118** |
+| **Tổng** | **76** | **42** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 12 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 14 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -166,10 +166,10 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `parsva_sukhasana` | Parsva Sukhasana | Nghiêng người ngồi | Seated Side Bend | Cơ bản | P1 | `sukhasana` | 🔁 |
 | ⬜ | `gomukhasana` | Gomukhasana | Mặt bò | Cow Face | Trung bình | P2 | `dandasana` | 🔁 🤝 gối chồng gối, tay móc sau lưng → biến thể 🪢 dây |
 | ⬜ | `agnistambhasana` | Agnistambhasana | Khúc củi | Fire Log | Trung bình | P2 | `sukhasana` | 🔁 🤝 cẳng chân chồng lên nhau · biến thể chăn dưới gối 🧱 |
-| ⬜ | `bharadvajasana` | Bharadvajasana I | Vặn mình Bharadvaja | Bharadvaja's Twist | Trung bình | P2 | `dandasana` | 🔁 |
+| ✅ | `bharadvajasana` | Bharadvajasana I | Vặn mình Bharadvaja | Bharadvaja's Twist | Trung bình | P2 | `dandasana` | 🔁 |
 | ⬜ | `marichyasana_1` | Marichyasana I | Marichi I (gập) | Marichi's Pose I | Trung bình | P2 | `dandasana` | 🔁 🤝 tay ôm gối |
 | ⬜ | `marichyasana_3` | Marichyasana III | Marichi III (vặn) | Marichi's Pose III | Trung bình | P2 | `dandasana` | 🔁 🤝 khuỷu móc gối → biến thể ôm gối |
-| ⬜ | `siddhasana` | Siddhasana | Ngồi thành tựu | Accomplished Pose | Trung bình | P2 | `sukhasana` | |
+| ✅ | `siddhasana` | Siddhasana | Ngồi thành tựu | Accomplished Pose | Trung bình | P2 | `sukhasana` | |
 | ⬜ | `ardha_padmasana` | Ardha Padmasana | Bán kiết già | Half Lotus | Trung bình | P3 | `sukhasana` | 🔁 🤝 bàn chân trên đùi · cảnh báo gối |
 | ⬜ | `padmasana` | Padmasana | Kiết già (Hoa sen) | Lotus | Nâng cao | P3 | `ardha_padmasana` | 🤝 · xoay háng ngoài lớn, cảnh báo gối |
 | ⬜ | `krounchasana` | Krounchasana | Con diệc | Heron | Nâng cao | P3 | `virasana` | 🔁 🤝 tay nắm chân → 🪢 dây |
@@ -268,6 +268,7 @@ Ký hiệu trong **Ghi chú**:
 - Nửa vầng trăng: tay trái trên gạch dựng đứng (23 cm). Tạm để dạng tĩnh: lối vào từ Chiến binh III (neo tay trên gạch, xoay chậu) làm tay và chân trụ thay nhau đỡ thân giữa chừng – giật 5–7 cm. Lối vào qua lunge sâu từ Chiến binh II thì gối trước gần chạm sàn.
 - Con cá: chậu nằm sàn, ngực ngửa, đỉnh đầu chạm nhẹ; bộ giải lực vẫn dồn ~17 % trọng lượng lên đầu (ghi trong lưu ý). Biến thể phục hồi = Cá có hỗ trợ.
 - Bồ câu (chuẩn bị): góc háng dựng từ hướng đùi và ống chân. Tạm để dạng tĩnh (đổi vị trí chân từ Chó úp / tư thế bàn cần nhiều bước trung gian). Biến thể chăn gấp dưới hông chưa khớp (hông vẫn hở 3 cm) – để sau.
+- Bharadvaja, Ngồi thành tựu: dạng tĩnh, góc háng dựng từ hướng đùi / ống chân (gối mở rộng, gập > 120° nên góc Euler có dạng ~−90° – vẫn đúng hình học). Chân tì lên chân chưa có lực; gối Ngồi thành tựu cách sàn ~5 cm.
 - ⛔ Luồn kim (`parsva_balasana`): cần điểm tiếp xúc ở vai sau / cánh tay trên và thái dương – mô hình chưa có (chỉ có trán, gáy, đỉnh đầu); phải thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
