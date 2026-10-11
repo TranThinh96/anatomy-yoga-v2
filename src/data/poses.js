@@ -1039,6 +1039,101 @@ export const POSES = {
     neck: { rot: 30 },
     shoulder: { abd: 28, flex: 38, rot: -100 },
   },
+  // Reclined mountain (Supta Tadasana): lying on the back, arms overhead on the mat, palms facing
+  // each other, legs together and long, feet flexed (heels pressing away).
+  supine_arms_up: {
+    root: { pitch: -90 },
+    shoulder: { flex: 90, abd: 8 },
+    ankle: { dorsi: -20 },
+    hip: { rot: 8 },
+  },
+  supta_tadasana: {
+    root: { pitch: -90 },
+    shoulder: { flex: 180, abd: 10, rot: 38 },
+    ankle: { dorsi: -15 },
+    hip: { rot: 0 },
+  },
+  // One-knee hug (Eka Pada Pavanamuktasana): lying on the back, the left knee drawn to the chest,
+  // hands clasped on the shin below the knee, right leg long on the mat.
+  // the left heel slid halfway in along the mat
+  pavanamuktasana_heel_slide: {
+    root: { pitch: -90 },
+    hip_L: { flex: 24 },
+    knee_L: { flex: 52 },
+    ankle_L: { dorsi: 5 },
+    hip_R: { rot: 15 },
+    ankle_R: { dorsi: -30 },
+    shoulder: { abd: 18, flex: -11, rot: 9 },
+    elbow: { flex: -4 },
+  },
+  pavanamuktasana_knee_up: {
+    root: { pitch: -90 },
+    hip_L: { flex: 46 },
+    knee_L: { flex: 100 },
+    ankle_L: { dorsi: -8 },
+    hip_R: { rot: 15 },
+    ankle_R: { dorsi: -30 },
+    shoulder: { abd: 18, flex: -11, rot: 9 },
+    elbow: { flex: 10 },
+  },
+  pavanamuktasana: {
+    root: { pitch: -90 },
+    hip_L: { flex: 125 },
+    knee_L: { flex: 125 },
+    ankle_L: { dorsi: -15 },
+    hip_R: { rot: 15 },
+    ankle_R: { dorsi: -30 },
+    shoulder: { flex: 48, abd: 14, rot: -25 },
+    elbow: { flex: -2 },
+    wrist: { pron: 90 },
+  },
+  // Revolved abdomen (Jathara Parivartanasana): lying on the back, arms out in a T on the mat, hips
+  // bent 90°; the legs swing over to the right while both shoulder blades stay down, so they stop
+  // about halfway and hover (the active, core form). The pelvis turns ~45° about the body's long
+  // axis, the spine turns back the same amount (about what the model's spine can turn).
+  // lying on the back, knees bent, feet on the mat, arms out in a T: the start
+  jathara_start: {
+    root: { pitch: -90 },
+    hip: { flex: 47 },
+    knee: { flex: 103 },
+    ankle: { dorsi: 9 },
+    shoulder: { abd: 80, rot: -53, flex: -16 },
+  },
+  jathara_knees_up: {
+    root: { pitch: -90 },
+    hip: { flex: 90 },
+    knee: { flex: 90 },
+    ankle: { dorsi: -10 },
+    shoulder: { abd: 80, rot: -53, flex: -16 },
+  },
+  jathara_legs_up: {
+    root: { pitch: -90 },
+    hip: { flex: 88 },
+    knee: { flex: 0 },
+    ankle: { dorsi: 0 },
+    shoulder: { abd: 80, rot: -53, flex: -16 },
+  },
+  jathara_parivartanasana: {
+    root: { pitch: -45, yaw: -90, roll: -90 }, // = lying on the back, pelvis turned 45° to the right
+    hip: { flex: 88 },
+    knee: { flex: 0 },
+    ankle: { dorsi: 0 },
+    lumbar: { rot: 10 },
+    thorax: { rot: 35 },
+    neck: { rot: 25 },
+    shoulder: { abd: 80, rot: -53, flex: -16 },
+  },
+  // knees-bent form: the same turn with the knees bent 90°
+  jathara_parivartanasana_knees: {
+    root: { pitch: -45, yaw: -90, roll: -90 },
+    hip: { flex: 90 },
+    knee: { flex: 90 },
+    ankle: { dorsi: -10 },
+    lumbar: { rot: 10 },
+    thorax: { rot: 35 },
+    neck: { rot: 25 },
+    shoulder: { abd: 80, rot: -53, flex: -16 },
+  },
   // Lying on the back, left knee drawn toward the chest, the strap around the ball of the left foot
   // held in both hands, right leg long: the step before the leg straightens up.
   supta_padangusthasana_bent: {
@@ -1368,6 +1463,50 @@ export const POSES = {
     shoulder: { flex: 65, abd: 10 },
     elbow: { flex: 90 },
     wrist: { pron: 90 },
+  },
+  // Reverse tabletop (Ardha Purvottanasana): hands under the shoulders with the fingers toward the
+  // feet, knees bent 90° over the ankles, hips lifted to the height of the knees and shoulders,
+  // chest open, head in line with the trunk.
+  ardha_purvottanasana: {
+    root: { pitch: -80 },
+    hip: { flex: 0 },
+    knee: { flex: 79 },
+    ankle: { dorsi: 2 },
+    shoulder: { flex: -81, abd: 8 },
+    wrist: { ext: 90 },
+    neck: { flex: 30 },
+    head: { flex: 20 },
+  },
+  // Sitting with the knees bent, feet flat, the hands on the mat behind the hips (fingers forward):
+  // the start of Reverse tabletop (and the way back down).
+  dandasana_knees_back: {
+    root: { pitch: -29 },
+    hip: { flex: 119 },
+    knee: { flex: 123 },
+    ankle: { dorsi: -23 },
+    shoulder: { flex: -55, abd: 4 },
+    wrist: { ext: 80 },
+  },
+  // Upward plank (Purvottanasana): the body one straight line from shoulders to feet, hands under
+  // the shoulders (fingers toward the feet), soles reaching for the mat, chest open.
+  purvottanasana: {
+    root: { pitch: -72 },
+    hip: { flex: -8 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -60 },
+    shoulder: { flex: -74, abd: 8 },
+    wrist: { ext: 99 },
+    neck: { flex: 30 },
+    head: { flex: 20 },
+  },
+  // Sitting with straight legs, leaning back on the hands placed behind the hips: the start of
+  // Upward plank.
+  dandasana_lean_back: {
+    root: { pitch: -25 },
+    hip: { flex: 66 },
+    ankle: { dorsi: -16 },
+    shoulder: { flex: -47, abd: 4 },
+    wrist: { ext: 80 },
   },
   // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
   // the pelvis can tip forward over the thighs.
@@ -2231,6 +2370,30 @@ export const POSE_FIT = {
     balance: true,
     params: ['knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'hip_L.abd', 'hip_L.rot', 'knee_L.flex', 'ankle_L.dorsi', 'hip_R.flex'],
   },
+  supine_arms_up: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'], params: [] },
+  supta_tadasana: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot'],
+  },
+  pavanamuktasana_heel_slide: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'ankle_L'], params: ['hip_L.flex', 'ankle_L.dorsi'] },
+  pavanamuktasana_knee_up: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'ankle_L'], params: ['hip_L.flex', 'ankle_L.dorsi'] },
+  pavanamuktasana: {
+    support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R'],
+    // hands clasped on the front of the left shin, below the knee
+    at: [['wrist_L', 'knee_L', [0.06, -0.1, 0.06]], ['wrist_R', 'knee_L', [-0.06, -0.1, 0.06]]],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
+  },
+  jathara_start: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['ankle.dorsi'] },
+  jathara_knees_up: { support: ['pelvis', 'scapula_L', 'scapula_R', 'wrist_L', 'wrist_R'], params: ['shoulder.abd', 'shoulder.rot', 'shoulder.flex'] },
+  jathara_legs_up: { support: ['pelvis', 'scapula_L', 'scapula_R', 'wrist_L', 'wrist_R'], params: ['shoulder.abd', 'shoulder.rot', 'shoulder.flex'] },
+  jathara_parivartanasana: {
+    support: ['scapula_L', 'scapula_R', 'pelvis', 'wrist_L', 'wrist_R'],
+    params: ['root.pitch', 'shoulder.abd', 'shoulder.flex', 'shoulder.rot', 'thorax.rot'],
+  },
+  jathara_parivartanasana_knees: {
+    support: ['scapula_L', 'scapula_R', 'pelvis', 'wrist_L', 'wrist_R'],
+    params: ['root.pitch', 'shoulder.abd', 'shoulder.flex', 'shoulder.rot', 'thorax.rot'],
+  },
   supta_padangusthasana_bent: {
     support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R'],
     params: ['shoulder.flex', 'elbow.flex', 'ankle_R.dorsi'],
@@ -2275,4 +2438,28 @@ export const POSE_FIT = {
   },
   natarajasana_knee: { support: ['ankle_R'], flat: ['ankle_R'], params: ['ankle_R.dorsi'] },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
+  ardha_purvottanasana: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R'], ['knee_L', 'ankle_L'], ['knee_R', 'ankle_R']],
+    params: ['shoulder.flex', 'knee.flex', 'ankle.dorsi', 'root.pitch&-shoulder.flex'],
+  },
+  dandasana_knees_back: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    rel: [['wrist_L', 'ankle_L', [-0.102, 0.855]]], // hands and feet where they are in Reverse tabletop
+    params: ['root.pitch&hip.flex', 'shoulder.flex', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.abd'],
+  },
+  dandasana_lean_back: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['wrist_L', 'ankle_L', [-0.111, 1.133]]], // hands and feet where they are in Upward plank
+    params: ['root.pitch&hip.flex', 'shoulder.flex', 'ankle.dorsi', 'shoulder.abd'],
+  },
+  purvottanasana: {
+    support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']],
+    params: ['root.pitch', 'shoulder.flex', 'ankle.dorsi'],
+  },
 };

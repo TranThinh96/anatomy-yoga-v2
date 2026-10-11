@@ -16,15 +16,15 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 |---|---:|---:|---:|
 | Đứng | 19 | 7 | 26 |
 | Gập người | 5 | 3 | 8 |
-| Ngửa sau | 10 | 7 | 17 |
+| Ngửa sau | 12 | 5 | 17 |
 | Chống tay & thăng bằng tay | 10 | 9 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
 | Ngồi (gồm Balasana) | 6 | 15 | 21 |
-| Nằm (ngửa / sấp) | 8 | 6 | 14 |
-| Chuỗi động tác | 3 | 4 | 7 |
-| **Tổng** | **62** | **56** | **118** |
+| Nằm (ngửa / sấp) | 11 | 3 | 14 |
+| Chuỗi động tác | 5 | 2 | 7 |
+| **Tổng** | **69** | **49** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 7 mục Đợt 4a. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -114,8 +114,8 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `salabhasana` | Salabhasana | Châu chấu | Locust | Cơ bản | P1 | `prone` | biến thể nâng một chân / chỉ ngực |
 | ✅ | `anahatasana` | Anahatasana | Chó con (mở tim) | Puppy Pose | Cơ bản | P1 | `tabletop` | biến thể trán trên gạch / tay trên tường 🧱 |
 | ✅ | `matsyasana_supported` | Salamba Matsyasana | Con cá có hỗ trợ | Supported Fish | Cơ bản | P1 | `supine` | 🧱 gối ôm / gạch dưới lưng (phục hồi) |
-| ⬜ | `ardha_purvottanasana` | Ardha Purvottanasana | Bàn ngửa | Reverse Tabletop | Cơ bản | P2 | `dandasana` (gối gập) | |
-| ⬜ | `purvottanasana` | Purvottanasana | Tấm ván ngửa | Upward Plank | Trung bình | P2 | `dandasana` | |
+| ✅ | `ardha_purvottanasana` | Ardha Purvottanasana | Bàn ngửa | Reverse Tabletop | Cơ bản | P2 | `dandasana` (gối gập) | |
+| ✅ | `purvottanasana` | Purvottanasana | Tấm ván ngửa | Upward Plank | Trung bình | P2 | `dandasana` | |
 | ⬜ | `matsyasana` | Matsyasana | Con cá | Fish Pose | Trung bình | P2 | `supine` | đỉnh đầu chạm sàn, cẳng tay đỡ |
 | ✅ | `dhanurasana` | Dhanurasana | Cánh cung | Bow Pose | Trung bình | P2 | `prone` | 🤝 tay nắm cổ chân → biến thể 🪢 dây |
 | ⬜ | `eka_pada_rajakapotasana` | Eka Pada Rajakapotasana (dạng chuẩn bị) | Bồ câu | Pigeon (prep) | Trung bình | P2 | `adho_mukha_svanasana` | 🔁 · biến thể gối ôm / chăn dưới hông 🧱 · có thể xếp nhóm Ngồi |
@@ -186,18 +186,18 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `apanasana` | Apanasana | Ôm gối trước ngực | Knees-to-Chest | Cơ bản | P1 | `supine_knees` | 🤝 tay ôm gối → biến thể tay đặt hờ |
 | ✅ | `supta_padangusthasana` | Supta Padangusthasana | Nằm ngửa kéo chân | Reclined Hand-to-Big-Toe | Cơ bản | P1 | `supine` | 🔁 🪢 dây (dạng phục hồi phổ biến nhất) |
 | ⬜ | `supta_kapotasana` | Supta Kapotasana | Bồ câu nằm ngửa (số 4) | Reclined Pigeon / Figure-4 | Cơ bản | P1 | `supine_knees` | 🔁 🤝 mắt cá đặt trên đùi |
-| ⬜ | `jathara_parivartanasana` | Jathara Parivartanasana | Vặn bụng | Revolved Abdomen | Trung bình | P2 | `supine` | 🔁 |
+| ✅ | `jathara_parivartanasana` | Jathara Parivartanasana | Vặn bụng | Revolved Abdomen | Trung bình | P2 | `supine` | 🔁 |
 | ✅ | `ananda_balasana` | Ananda Balasana | Em bé hạnh phúc | Happy Baby | Cơ bản | P2 | `apanasana` | 🤝 tay nắm bàn chân → 🪢 dây |
-| ⬜ | `pavanamuktasana` | Eka Pada Pavanamuktasana | Ôm một gối | Wind-Relieving | Cơ bản | P2 | `supine` | 🔁 🤝 |
-| ⬜ | `supta_tadasana` | Supta Tadasana | Núi nằm ngửa (vươn tay) | Reclined Mountain | Cơ bản | P2 | `supine` | |
+| ✅ | `pavanamuktasana` | Eka Pada Pavanamuktasana | Ôm một gối | Wind-Relieving | Cơ bản | P2 | `supine` | 🔁 🤝 |
+| ✅ | `supta_tadasana` | Supta Tadasana | Núi nằm ngửa (vươn tay) | Reclined Mountain | Cơ bản | P2 | `supine` | |
 | ⬜ | `viparita_karani_chair` (biến thể) | – | Gác cẳng chân lên ghế | Legs on a Chair | Cơ bản | P2 | `supine` | 🪢 ghế (đạo cụ mới) |
 
 ### 2.8 Chuỗi động tác
 
 | ✓ | id dự kiến | Tên | Tiếng Việt | Mức | Ưu tiên | Gồm | Ghi chú |
 |---|---|---|---|---|---|---|---|
-| ⬜ | `vinyasa_flow` | Vinyasa | Chuỗi chuyển tiếp | Trung bình | P2 | Plank → Chaturanga → Chó ngửa → Chó úp | các pose đã có |
-| ⬜ | `warrior_flow` | – | Chuỗi chiến binh | Cơ bản | P2 | Chiến binh II → Chiến binh đảo ngược → Góc nghiêng | cần `viparita_virabhadrasana` |
+| ✅ | `vinyasa_flow` | Vinyasa | Chuỗi chuyển tiếp | Trung bình | P2 | Plank → Chaturanga → Chó ngửa → Chó úp | các pose đã có |
+| ✅ | `warrior_flow` | – | Chuỗi chiến binh | Cơ bản | P2 | Chiến binh II → Chiến binh đảo ngược → Góc nghiêng | cần `viparita_virabhadrasana` |
 | ⬜ | `surya_namaskar_b` | Surya Namaskar B | Chào mặt trời B | Trung bình | P2 | thêm Cái ghế + Chiến binh I hai bên | cần chuyển chân sau xoay gót |
 | ⬜ | `chandra_namaskar` | Chandra Namaskar | Chào mặt trăng | Trung bình | P3 | nghiêng đứng, Nữ thần, Lunge ngang… | cần các pose 2.1 |
 | ✅ | `restorative_supine` | – | Chuỗi phục hồi | Cơ bản | P2 | Em bé có gối → Cầu kê gạch → Gác chân lên tường → Xác chết | pose đã có; chỉ ghép |
@@ -255,6 +255,13 @@ Ký hiệu trong **Ghi chú**:
   - Cánh cung: dây kéo ~18 N, mô-men thắt lưng giảm khoảng một nửa (36 → 19 N·m) – dây làm đúng việc của tay nắm cổ chân.
   - Vũ công: ~6 N. Nằm ngửa kéo chân: ~5 N.
   - Em bé hạnh phúc, Tay nắm ngón chân cái, Gập người ngồi dùng dây: 0 N – kéo dây chỉ làm sâu tư thế (một cố gắng chủ động) hoặc tốn sức vai hơn sức háng; mô hình không có lực kéo chủ động, nên ghi rõ trong phần lưu ý.
+
+### Ghi chú Đợt 4 (P2)
+
+- Đợt 4a: Núi nằm ngửa, Ôm một gối, Vặn bụng (+ co gối), Bàn ngửa, Tấm ván ngửa, chuỗi Vinyasa, chuỗi Chiến binh.
+- Vặn bụng: cột sống mô hình xoay ~45° nên giữ hai bả vai trên sàn thì chân dừng ở nửa đường, lơ lửng – đúng dạng chủ động (cơ chéo bụng giữ chân). Dạng thả chân xuống sàn là Vặn mình nằm ngửa.
+- Ôm một gối: tay ôm cẳng chân là tiếp xúc tay – chân, chưa tính lực; chân được giữ bởi cơ gập háng trong mô hình.
+- Bàn ngửa / Tấm ván ngửa: bắt đầu từ tư thế ngồi đã đặt tay sau mông (khoảng cách tay – chân bằng lúc nâng hông) nên tay và chân không trượt.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
 
