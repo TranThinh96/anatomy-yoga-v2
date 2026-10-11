@@ -18,7 +18,7 @@ for (const a of ASANAS) {
   for (const s of a.steps) poses.add(s.pose);
   for (const v of a.variants || []) for (const st of v.steps || [{ pose: v.pose }]) poses.add(st.pose);
 }
-const ASYMMETRIC = /vrksasana|matsyendrasana|virabhadrasana|trikonasana|parsvakonasana|ashwa_sanchalanasana|surya_step|anjaneyasana|crescent_lunge|eka_pada|bharmanasana|parsvottanasana|janu_sirsasana|parsva_tadasana|vasisthasana|parighasana|padangusthasana|natarajasana|pavanamuktasana|jathara_parivartanasana|skandasana|ardha_chandrasana/;
+const ASYMMETRIC = /vrksasana|matsyendrasana|virabhadrasana|trikonasana|parsvakonasana|ashwa_sanchalanasana|surya_step|anjaneyasana|crescent_lunge|eka_pada|bharmanasana|parsvottanasana|janu_sirsasana|parsva_tadasana|vasisthasana|parighasana|padangusthasana|natarajasana|pavanamuktasana|jathara_parivartanasana|skandasana|ardha_chandrasana|rajakapotasana/;
 let failures = 0;
 const fail = (pose, msg) => {
   failures++;

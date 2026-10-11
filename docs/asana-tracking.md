@@ -16,15 +16,15 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 |---|---:|---:|---:|
 | Đứng | 21 | 5 | 26 |
 | Gập người | 5 | 3 | 8 |
-| Ngửa sau | 12 | 5 | 17 |
+| Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
 | Ngồi (gồm Balasana) | 6 | 15 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
 | Chuỗi động tác | 5 | 2 | 7 |
-| **Tổng** | **72** | **46** | **118** |
+| **Tổng** | **74** | **44** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 10 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 12 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -116,9 +116,9 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `matsyasana_supported` | Salamba Matsyasana | Con cá có hỗ trợ | Supported Fish | Cơ bản | P1 | `supine` | 🧱 gối ôm / gạch dưới lưng (phục hồi) |
 | ✅ | `ardha_purvottanasana` | Ardha Purvottanasana | Bàn ngửa | Reverse Tabletop | Cơ bản | P2 | `dandasana` (gối gập) | |
 | ✅ | `purvottanasana` | Purvottanasana | Tấm ván ngửa | Upward Plank | Trung bình | P2 | `dandasana` | |
-| ⬜ | `matsyasana` | Matsyasana | Con cá | Fish Pose | Trung bình | P2 | `supine` | đỉnh đầu chạm sàn, cẳng tay đỡ |
+| ✅ | `matsyasana` | Matsyasana | Con cá | Fish Pose | Trung bình | P2 | `supine` | đỉnh đầu chạm sàn, cẳng tay đỡ |
 | ✅ | `dhanurasana` | Dhanurasana | Cánh cung | Bow Pose | Trung bình | P2 | `prone` | 🤝 tay nắm cổ chân → biến thể 🪢 dây |
-| ⬜ | `eka_pada_rajakapotasana` | Eka Pada Rajakapotasana (dạng chuẩn bị) | Bồ câu | Pigeon (prep) | Trung bình | P2 | `adho_mukha_svanasana` | 🔁 · biến thể gối ôm / chăn dưới hông 🧱 · có thể xếp nhóm Ngồi |
+| ✅ | `eka_pada_rajakapotasana` | Eka Pada Rajakapotasana (dạng chuẩn bị) | Bồ câu | Pigeon (prep) | Trung bình | P2 | `adho_mukha_svanasana` | 🔁 · biến thể gối ôm / chăn dưới hông 🧱 · có thể xếp nhóm Ngồi |
 | ✅ | `ustrasana_block` (biến thể) | Ustrasana | Lạc đà tay trên gạch / tay chống hông | Camel, supported | Cơ bản | P1 | `kneeling` | biến thể của `ustrasana` 🧱 |
 | ⬜ | `urdhva_dhanurasana` | Urdhva Dhanurasana | Bánh xe | Wheel | Nâng cao | P3 | `supine_knees` | đầu chạm sàn giữa chừng · tải cổ tay / vai lớn |
 | ⬜ | `camatkarasana` | Camatkarasana | Wild Thing | Wild Thing | Nâng cao | P3 | `adho_mukha_svanasana` | 🔁 |
@@ -266,6 +266,8 @@ Ký hiệu trong **Ghi chú**:
 - Cá heo: thân dốc nên cổ hơi ngửa để đầu không chạm sàn (cổ trung tính thì đỉnh đầu chạm thảm và gánh ~25 % trọng lượng – thành tư thế chuẩn bị trồng chuối đầu).
 - Lunge ngang: với khoảng cách chân như Gập người dang chân (1,1 m), giữ chân phải thẳng thì hông chỉ hạ được ~50 cm; tay chắp trước ngực.
 - Nửa vầng trăng: tay trái trên gạch dựng đứng (23 cm). Tạm để dạng tĩnh: lối vào từ Chiến binh III (neo tay trên gạch, xoay chậu) làm tay và chân trụ thay nhau đỡ thân giữa chừng – giật 5–7 cm. Lối vào qua lunge sâu từ Chiến binh II thì gối trước gần chạm sàn.
+- Con cá: chậu nằm sàn, ngực ngửa, đỉnh đầu chạm nhẹ; bộ giải lực vẫn dồn ~17 % trọng lượng lên đầu (ghi trong lưu ý). Biến thể phục hồi = Cá có hỗ trợ.
+- Bồ câu (chuẩn bị): góc háng dựng từ hướng đùi và ống chân. Tạm để dạng tĩnh (đổi vị trí chân từ Chó úp / tư thế bàn cần nhiều bước trung gian). Biến thể chăn gấp dưới hông chưa khớp (hông vẫn hở 3 cm) – để sau.
 - ⛔ Luồn kim (`parsva_balasana`): cần điểm tiếp xúc ở vai sau / cánh tay trên và thái dương – mô hình chưa có (chỉ có trán, gáy, đỉnh đầu); phải thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)

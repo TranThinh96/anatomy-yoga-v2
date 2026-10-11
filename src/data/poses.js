@@ -1310,6 +1310,31 @@ export const POSES = {
     shoulder: { flex: -17, abd: 6 },
     wrist: { pron: 90 },
   },
+  // Lying on the back, the hands slid palms down under the buttocks, elbows in by the waist: the
+  // start of Fish pose.
+  supine_hands_under: {
+    root: { pitch: -90 },
+    hip: { rot: 10 },
+    ankle: { dorsi: -30 },
+    shoulder: { flex: -12, abd: 4, rot: -20 },
+    elbow: { flex: 8 },
+    wrist: { pron: 90 },
+  },
+  // Fish (Matsyasana): legs long on the mat, forearms pressing down with the elbows under the ribs,
+  // hands under the buttocks; the chest lifted into a thoracic backbend, the crown of the head
+  // resting lightly on the mat (most of the weight on the forearms and the pelvis).
+  matsyasana: {
+    root: { pitch: -68 },
+    hip: { flex: 23, rot: 10 },
+    ankle: { dorsi: -30 },
+    lumbar: { flex: 1 },
+    thorax: { flex: -26 },
+    neck: { flex: -32 },
+    head: { flex: -8 },
+    shoulder: { flex: -41, abd: 8, rot: -20 },
+    elbow: { flex: 99 },
+    wrist: { pron: 90 },
+  },
   // Supported fish (a gentle chest opener): lying on the back over a block (flat) across the mat
   // under the shoulder blades, the back of the head on the mat, arms out to the sides, palms up.
   matsyasana_supported: {
@@ -1578,7 +1603,24 @@ export const POSES = {
     shoulder: { flex: -47, abd: 4 },
     wrist: { ext: 80 },
   },
-  // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
+  // Pigeon prep (Eka Pada Rajakapotasana, preparation) with the left leg in front: left shin across
+  // the mat (foot toward the right hip), outer left thigh and knee down; right leg straight back,
+  // top of the foot down; pelvis tipped forward and level, the lower back arched so the trunk is
+  // upright, fingertips on the mat beside the hips. Hip angles built from the thigh and shin
+  // directions.
+  eka_pada_rajakapotasana: {
+    root: { pitch: 47 },
+    hip_L: { flex: 100, abd: -89, rot: -32 },
+    knee_L: { flex: 122 },
+    ankle_L: { dorsi: -18 },
+    hip_R: { flex: -28 },
+    knee_R: { flex: 12 },
+    ankle_R: { dorsi: -60 },
+    lumbar: { flex: -29 },
+    thorax: { flex: -15 },
+    shoulder: { flex: 22, abd: 12 },
+    wrist: { ext: 83 },
+  },  // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
   // the pelvis can tip forward over the thighs.
   dandasana_blanket: {
     hip: { flex: 87 },
@@ -2450,6 +2492,14 @@ export const POSE_FIT = {
     dir: [['hip_L', [0, -1, 0], [0, -1, 0.05]]], // thighs about vertical: hips over the knees
     params: ['root.pitch&hip.flex', 'shoulder.flex', 'shoulder.abd', 'lumbar.flex', 'thorax.flex', 'wrist.ext', 'ankle.dorsi'],
   },
+  supine_hands_under: {
+    support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    params: ['shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
+  matsyasana: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'elbow_L', 'elbow_R', 'head'],
+    params: ['shoulder.flex', 'elbow.flex', 'neck.flex', 'head.flex', 'root.pitch&hip.flex', 'root.pitch&-lumbar.flex', 'thorax.flex'],
+  },
   matsyasana_supported: {
     support: ['pelvis', 'scapula_L', 'scapula_R', 'head', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
     onProp: ['scapula_L', 'scapula_R'], // the shoulder blades on the block
@@ -2547,6 +2597,10 @@ export const POSE_FIT = {
     params: ['hip_R.flex', 'ankle_R.dorsi', 'root.pitch&hip_R.flex&hip_L.flex'],
   },
   natarajasana_knee: { support: ['ankle_R'], flat: ['ankle_R'], params: ['ankle_R.dorsi'] },
+  eka_pada_rajakapotasana: {
+    support: ['hip_L', 'ankle_L', 'hip_R|knee_R', 'ankle_R', 'wrist_L', 'wrist_R'],
+    params: ['hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'ankle_L.dorsi', 'shoulder.flex', 'shoulder.abd', 'wrist.ext', 'hip_L.flex', 'knee_L.flex', 'root.pitch&-lumbar.flex'],
+  },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
   ardha_purvottanasana: {
     support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
