@@ -838,6 +838,19 @@ export const POSES = {
     neck: { flex: -30 },
     head: { flex: -15 },
   },
+  // Headstand prep (Salamba Sirsasana preparation): forearms down with the hands clasped (a triangle,
+  // elbows shoulder-width), the crown of the head on the mat just in front of the hands; legs
+  // straight, feet walked in so the hips rise over the shoulders.
+  sirsasana_prep: {
+    root: { pitch: 153 },
+    hip: { flex: 113 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -16 },
+    shoulder: { flex: 156, abd: 12, rot: 35 },
+    elbow: { flex: 80 },
+    wrist: { pron: 90 },
+    neck: { flex: 4 },
+  },
   // Side plank (Vasisthasana) on the right hand: the Plank body turned onto its right side, chest
   // facing the model's left, right hand under the shoulder, feet staggered (left foot in front of
   // the right: stacking them needs the foot-on-foot contact the physics lacks), left arm up.
@@ -2328,6 +2341,11 @@ export const POSE_FIT = {
     // upper arms near vertical (elbows under the shoulders), so the head hangs clear of the mat
     dir: [['shoulder_L', [0, -1, 0], [0, -1, 0.15]], ['shoulder_R', [0, -1, 0], [0, -1, 0.15]]],
     params: ['root.pitch&shoulder.flex', 'shoulder.flex', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'elbow.flex'],
+  },
+  sirsasana_prep: {
+    support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'head', 'ankle_L', 'ankle_R'],
+    rel: [['wrist_L', 'wrist_R', [-0.06, 0]]], // hands clasped
+    params: ['root.pitch&shoulder.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'neck.flex', 'hip.flex', 'ankle.dorsi'],
   },
   forearm_plank: {
     support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],

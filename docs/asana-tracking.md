@@ -18,13 +18,13 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Gập người | 5 | 3 | 8 |
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
-| Đảo ngược | 1 | 5 | 6 |
+| Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 8 | 13 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
 | Chuỗi động tác | 5 | 2 | 7 |
-| **Tổng** | **76** | **42** | **118** |
+| **Tổng** | **77** | **41** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 14 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 15 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -148,11 +148,11 @@ Ký hiệu trong **Ghi chú**:
 | ✓ | id dự kiến | Sanskrit | Tiếng Việt | English | Mức | Ưu tiên | Bắt đầu từ | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
 | ✅ | `viparita_karani_block` (biến thể) | Viparita Karani | Gác chân, gạch dưới xương cùng | Supported Inversion | Cơ bản | P1 | `setu_bandha_block` | biến thể của `viparita_karani` (không tường) 🧱 |
-| ⬜ | `salamba_sarvangasana` | Salamba Sarvangasana | Trồng cây chuối vai | Shoulder Stand | Trung bình | P2 | `supine` | 🧱 chăn gấp dưới vai · gập cổ lớn → cảnh báo cổ · kiểm tra có contact vai/lưng trên |
-| ⬜ | `halasana` | Halasana | Cái cày | Plow | Trung bình | P2 | `salamba_sarvangasana` | 🧱 chăn / ghế dưới chân 🪢 |
+| ⛔ | `salamba_sarvangasana` | Salamba Sarvangasana | Trồng cây chuối vai | Shoulder Stand | Trung bình | P2 | `supine` | 🧱 chăn gấp dưới vai · gập cổ lớn → cảnh báo cổ · kiểm tra có contact vai/lưng trên |
+| ⛔ | `halasana` | Halasana | Cái cày | Plow | Trung bình | P2 | `salamba_sarvangasana` | 🧱 chăn / ghế dưới chân 🪢 |
 | ⬜ | `karnapidasana` | Karnapidasana | Ép tai | Ear Pressure | Nâng cao | P3 | `halasana` | 🤝 gối cạnh tai |
 | ⬜ | `salamba_sirsasana` | Salamba Sirsasana | Trồng chuối đầu | Headstand | Nâng cao | P3 | `ardha_pincha_mayurasana` | ⚖ tải lên đầu/cổ – cần ghi rõ giới hạn · biến thể tựa tường 🧱 |
-| ⬜ | `sirsasana_prep` | – | Chuẩn bị trồng chuối đầu | Headstand Prep | Trung bình | P2 | `ardha_pincha_mayurasana` | đỉnh đầu chạm sàn, chân còn dưới |
+| ✅ | `sirsasana_prep` | – | Chuẩn bị trồng chuối đầu | Headstand Prep | Trung bình | P2 | `ardha_pincha_mayurasana` | đỉnh đầu chạm sàn, chân còn dưới |
 
 ### 2.6 Ngồi
 
@@ -270,6 +270,8 @@ Ký hiệu trong **Ghi chú**:
 - Bồ câu (chuẩn bị): góc háng dựng từ hướng đùi và ống chân. Tạm để dạng tĩnh (đổi vị trí chân từ Chó úp / tư thế bàn cần nhiều bước trung gian). Biến thể chăn gấp dưới hông chưa khớp (hông vẫn hở 3 cm) – để sau.
 - Bharadvaja, Ngồi thành tựu: dạng tĩnh, góc háng dựng từ hướng đùi / ống chân (gối mở rộng, gập > 120° nên góc Euler có dạng ~−90° – vẫn đúng hình học). Chân tì lên chân chưa có lực; gối Ngồi thành tựu cách sàn ~5 cm.
 - ⛔ Luồn kim (`parsva_balasana`): cần điểm tiếp xúc ở vai sau / cánh tay trên và thái dương – mô hình chưa có (chỉ có trán, gáy, đỉnh đầu); phải thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình.
+- Chuẩn bị trồng chuối đầu: dạng tĩnh, cẳng tay tam giác, tay đan. Bộ giải lực dồn ~35 % trọng lượng lên đỉnh đầu (ít tốn sức khớp nhất) – ngược với mục tiêu tập; ghi trong lưu ý.
+- ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
 
