@@ -19,7 +19,7 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
-| Ngồi (gồm Balasana) | 9 | 12 | 21 |
+| Ngồi (gồm Balasana) | 8 | 13 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
 | Chuỗi động tác | 5 | 2 | 7 |
 | **Tổng** | **76** | **42** | **118** |
