@@ -14,17 +14,17 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
-| Đứng | 8 | 18 | 26 |
+| Đứng | 12 | 14 | 26 |
 | Gập người | 3 | 5 | 8 |
-| Ngửa sau | 4 | 13 | 17 |
-| Chống tay & thăng bằng tay | 5 | 14 | 19 |
+| Ngửa sau | 6 | 11 | 17 |
+| Chống tay & thăng bằng tay | 8 | 11 | 19 |
 | Đảo ngược | 0 | 6 | 6 |
-| Ngồi (gồm Balasana) | 4 | 17 | 21 |
-| Nằm (ngửa / sấp) | 3 | 11 | 14 |
-| Chuỗi động tác | 2 | 5 | 7 |
-| **Tổng** | **29** | **89** | **118** |
+| Ngồi (gồm Balasana) | 5 | 16 | 21 |
+| Nằm (ngửa / sấp) | 5 | 9 | 14 |
+| Chuỗi động tác | 3 | 4 | 7 |
+| **Tổng** | **42** | **76** | **118** |
 
-(`Đã có` = 29 mục trong `ASANAS`, gồm 2 chuỗi. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -77,10 +77,10 @@ Ký hiệu trong **Ghi chú**:
 
 | ✓ | id dự kiến | Sanskrit | Tiếng Việt | English | Mức | Ưu tiên | Bắt đầu từ | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
-| ⬜ | `anjaneyasana` | Anjaneyasana | Lunge thấp (hạ gối sau) | Low Lunge | Cơ bản | P1 | `tadasana` → `ashwa_sanchalanasana` | 🔁 · biến thể tay trên đùi / gạch dưới tay |
-| ⬜ | `ashwa_sanchalanasana` | Ashwa Sanchalanasana | Lunge cao (tay chống sàn) | High Lunge, hands down | Cơ bản | P1 | `uttanasana` | 🔁 · pose đã có trong Chào mặt trời, chỉ cần mục asana |
-| ⬜ | `crescent_lunge` | Ashta Chandrasana | Lunge cao tay vươn (Trăng lưỡi liềm) | Crescent Lunge | Cơ bản | P1 | `ashwa_sanchalanasana` | 🔁 |
-| ⬜ | `viparita_virabhadrasana` | Viparita Virabhadrasana | Chiến binh đảo ngược | Reverse Warrior | Cơ bản | P1 | `virabhadrasana_2` | 🔁 · nghiêng thân về chân sau |
+| ✅ | `anjaneyasana` | Anjaneyasana | Lunge thấp (hạ gối sau) | Low Lunge | Cơ bản | P1 | `tadasana` → `ashwa_sanchalanasana` | 🔁 · biến thể tay trên đùi / gạch dưới tay |
+| ✅ | `ashwa_sanchalanasana` | Ashwa Sanchalanasana | Lunge cao (tay chống sàn) | High Lunge, hands down | Cơ bản | P1 | `uttanasana` | 🔁 · pose đã có trong Chào mặt trời, chỉ cần mục asana |
+| ✅ | `crescent_lunge` | Ashta Chandrasana | Lunge cao tay vươn (Trăng lưỡi liềm) | Crescent Lunge | Cơ bản | P1 | `ashwa_sanchalanasana` | 🔁 |
+| ✅ | `viparita_virabhadrasana` | Viparita Virabhadrasana | Chiến binh đảo ngược | Reverse Warrior | Cơ bản | P1 | `virabhadrasana_2` | 🔁 · nghiêng thân về chân sau |
 | ⬜ | `virabhadrasana_3` | Virabhadrasana III | Chiến binh III | Warrior III | Trung bình | P1 | `tadasana` / `crescent_lunge` | 🔁 ⚖ · biến thể tay chống gạch / tay chạm tường 🧱 |
 | ⬜ | `parsvottanasana` | Parsvottanasana | Kéo giãn một bên (Kim tự tháp) | Pyramid / Intense Side Stretch | Cơ bản | P1 | `tadasana` | 🔁 · biến thể tay trên gạch 🧱 |
 | ⬜ | `prasarita_padottanasana` | Prasarita Padottanasana | Gập người dang chân | Wide-Legged Forward Fold | Cơ bản | P1 | `tadasana` (bước chân rộng) | nhóm Gập người · biến thể đầu/tay trên gạch 🧱 |
@@ -110,8 +110,8 @@ Ký hiệu trong **Ghi chú**:
 
 | ✓ | id dự kiến | Sanskrit | Tiếng Việt | English | Mức | Ưu tiên | Bắt đầu từ | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
-| ⬜ | `salamba_bhujangasana` | Salamba Bhujangasana | Nhân sư | Sphinx | Cơ bản | P1 | `prone` | cẳng tay trên sàn |
-| ⬜ | `salabhasana` | Salabhasana | Châu chấu | Locust | Cơ bản | P1 | `prone` | biến thể nâng một chân / chỉ ngực |
+| ✅ | `salamba_bhujangasana` | Salamba Bhujangasana | Nhân sư | Sphinx | Cơ bản | P1 | `prone` | cẳng tay trên sàn |
+| ✅ | `salabhasana` | Salabhasana | Châu chấu | Locust | Cơ bản | P1 | `prone` | biến thể nâng một chân / chỉ ngực |
 | ⬜ | `anahatasana` | Anahatasana | Chó con (mở tim) | Puppy Pose | Cơ bản | P1 | `tabletop` | biến thể trán trên gạch / tay trên tường 🧱 |
 | ⬜ | `matsyasana_supported` | Salamba Matsyasana | Con cá có hỗ trợ | Supported Fish | Cơ bản | P1 | `supine` | 🧱 gối ôm / gạch dưới lưng (phục hồi) |
 | ⬜ | `ardha_purvottanasana` | Ardha Purvottanasana | Bàn ngửa | Reverse Tabletop | Cơ bản | P2 | `dandasana` (gối gập) | |
@@ -128,9 +128,9 @@ Ký hiệu trong **Ghi chú**:
 
 | ✓ | id dự kiến | Sanskrit | Tiếng Việt | English | Mức | Ưu tiên | Bắt đầu từ | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
-| ⬜ | `eka_pada_adho_mukha_svanasana` | Eka Pada Adho Mukha Svanasana | Chó úp mặt ba chân | Three-Legged Dog | Cơ bản | P1 | `adho_mukha_svanasana` | 🔁 |
-| ⬜ | `dandayamana_bharmanasana` | Dandayamana Bharmanasana | Chim – chó (duỗi tay chân đối) | Bird Dog | Cơ bản | P1 | `tabletop` | 🔁 ⚖ |
-| ⬜ | `forearm_plank` | Makara Adho Mukha Svanasana / Forearm plank | Tấm ván cẳng tay | Forearm Plank | Cơ bản | P1 | `phalakasana` | biến thể hạ gối |
+| ✅ | `eka_pada_adho_mukha_svanasana` | Eka Pada Adho Mukha Svanasana | Chó úp mặt ba chân | Three-Legged Dog | Cơ bản | P1 | `adho_mukha_svanasana` | 🔁 |
+| ✅ | `dandayamana_bharmanasana` | Dandayamana Bharmanasana | Chim – chó (duỗi tay chân đối) | Bird Dog | Cơ bản | P1 | `tabletop` | 🔁 ⚖ |
+| ✅ | `forearm_plank` | Makara Adho Mukha Svanasana / Forearm plank | Tấm ván cẳng tay | Forearm Plank | Cơ bản | P1 | `phalakasana` | biến thể hạ gối |
 | ⬜ | `vasisthasana` | Vasisthasana | Tấm ván nghiêng | Side Plank | Trung bình | P1 | `phalakasana` | 🔁 ⚖ · biến thể hạ gối dưới / cẳng tay |
 | ⬜ | `parighasana` | Parighasana | Cánh cổng (nghiêng quỳ) | Gate Pose | Cơ bản | P1 | `kneeling` | 🔁 · có thể xếp nhóm Ngồi |
 | ⬜ | `parsva_balasana` | Parsva Balasana | Luồn kim | Thread the Needle | Cơ bản | P2 | `tabletop` | 🔁 vai & thái dương trên sàn |
@@ -159,7 +159,7 @@ Ký hiệu trong **Ghi chú**:
 | ✓ | id dự kiến | Sanskrit | Tiếng Việt | English | Mức | Ưu tiên | Bắt đầu từ | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
 | ⬜ | `sukhasana` | Sukhasana | Ngồi xếp bằng | Easy Seat | Cơ bản | P1 | `dandasana` | 🤝 cẳng chân chéo nhau · biến thể ngồi chăn gấp 🧱 |
-| ⬜ | `vajrasana` | Vajrasana | Ngồi quỳ (Kim cương) | Thunderbolt | Cơ bản | P1 | `kneeling` | mông trên gót (giống `balasana` `at`) |
+| ✅ | `vajrasana` | Vajrasana | Ngồi quỳ (Kim cương) | Thunderbolt | Cơ bản | P1 | `kneeling` | mông trên gót (giống `balasana` `at`) |
 | ⬜ | `virasana` | Virasana | Anh hùng | Hero Pose | Cơ bản | P1 | `kneeling` | biến thể ngồi gạch 🧱 |
 | ⬜ | `baddha_konasana` | Baddha Konasana | Góc cố định (Con bướm) | Bound Angle | Cơ bản | P1 | `dandasana` | 🤝 lòng bàn chân áp nhau · biến thể gạch dưới đùi / chăn 🧱 |
 | ⬜ | `parivrtta_sukhasana` | Parivrtta Sukhasana | Vặn mình ngồi xếp bằng | Easy Seated Twist | Cơ bản | P1 | `sukhasana` | 🔁 |
@@ -180,8 +180,8 @@ Ký hiệu trong **Ghi chú**:
 
 | ✓ | id dự kiến | Sanskrit | Tiếng Việt | English | Mức | Ưu tiên | Bắt đầu từ | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
-| ⬜ | `constructive_rest` | – | Nằm co gối (nghỉ xây dựng) | Constructive Rest | Cơ bản | P1 | `supine` | pose `supine_knees` đã có, chỉ cần mục asana |
-| ⬜ | `makarasana` | Makarasana | Cá sấu (nằm sấp nghỉ) | Crocodile | Cơ bản | P1 | `prone` | |
+| ✅ | `constructive_rest` | – | Nằm co gối (nghỉ xây dựng) | Constructive Rest | Cơ bản | P1 | `supine` | pose `supine_knees` đã có, chỉ cần mục asana |
+| ✅ | `makarasana` | Makarasana | Cá sấu (nằm sấp nghỉ) | Crocodile | Cơ bản | P1 | `prone` | |
 | ⬜ | `supta_matsyendrasana` | Supta Matsyendrasana | Vặn mình nằm ngửa | Supine Twist | Cơ bản | P1 | `supine_knees` | 🔁 · biến thể gối ôm dưới gối 🧱 |
 | ⬜ | `apanasana` | Apanasana | Ôm gối trước ngực | Knees-to-Chest | Cơ bản | P1 | `supine_knees` | 🤝 tay ôm gối → biến thể tay đặt hờ |
 | ⬜ | `supta_padangusthasana` | Supta Padangusthasana | Nằm ngửa kéo chân | Reclined Hand-to-Big-Toe | Cơ bản | P1 | `supine` | 🔁 🪢 dây (dạng phục hồi phổ biến nhất) |
@@ -200,7 +200,7 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `warrior_flow` | – | Chuỗi chiến binh | Cơ bản | P2 | Chiến binh II → Chiến binh đảo ngược → Góc nghiêng | cần `viparita_virabhadrasana` |
 | ⬜ | `surya_namaskar_b` | Surya Namaskar B | Chào mặt trời B | Trung bình | P2 | thêm Cái ghế + Chiến binh I hai bên | cần chuyển chân sau xoay gót |
 | ⬜ | `chandra_namaskar` | Chandra Namaskar | Chào mặt trăng | Trung bình | P3 | nghiêng đứng, Nữ thần, Lunge ngang… | cần các pose 2.1 |
-| ⬜ | `restorative_sequence` | – | Chuỗi phục hồi | Cơ bản | P2 | Em bé có gối → Cầu kê gạch → Gác chân lên tường → Xác chết | pose đã có; chỉ ghép |
+| ✅ | `restorative_supine` | – | Chuỗi phục hồi | Cơ bản | P2 | Em bé có gối → Cầu kê gạch → Gác chân lên tường → Xác chết | pose đã có; chỉ ghép |
 
 ---
 
@@ -217,15 +217,24 @@ Ký hiệu trong **Ghi chú**:
 
 ## 4. Gợi ý thứ tự làm (theo đợt)
 
-1. **Đợt 1 – nhanh, pose gần có sẵn (P1):** `ashwa_sanchalanasana`, `constructive_rest`, `anjaneyasana`, `crescent_lunge`,
+1. ✅ **Đợt 1 – nhanh, pose gần có sẵn (P1):** xong (xem ghi chú bên dưới). `ashwa_sanchalanasana`, `constructive_rest`, `anjaneyasana`, `crescent_lunge`,
    `viparita_virabhadrasana`, `vajrasana`, `salamba_bhujangasana`, `salabhasana`, `makarasana`, `eka_pada_adho_mukha_svanasana`,
-   `dandayamana_bharmanasana`, `forearm_plank`, `restorative_sequence`.
+   `dandayamana_bharmanasana`, `forearm_plank`, `restorative_supine`.
 2. **Đợt 2 – P1 còn lại:** `parsvottanasana`, `prasarita_padottanasana`, `utkata_konasana`, `parsva_tadasana`, `virabhadrasana_3`,
    `vasisthasana`, `parighasana`, `anahatasana`, `matsyasana_supported`, `janu_sirsasana`, `upavistha_konasana`, `virasana`,
    `supta_matsyendrasana`, biến thể `ustrasana_block`, `viparita_karani_block`.
 3. **Đợt 3 – cần quyết định / tính năng:** nhóm mới + mức Nâng cao, đạo cụ dây → `supta_padangusthasana`, `sukhasana`, `baddha_konasana`, `malasana`, `apanasana`, `supta_kapotasana`.
 4. **Đợt 4 – P2:** ngửa sau trung bình, vặn xoắn đứng, đảo ngược có hỗ trợ, các chuỗi.
 5. **Đợt 5 – P3:** sau khi có tiếp xúc thân – thân.
+
+### Ghi chú Đợt 1
+
+- `restorative_supine` (Chuỗi phục hồi nằm ngửa) chỉ gồm các tư thế nằm ngửa: Savasana → co gối → Cây cầu → Cầu kê gạch → Góc cố định nằm ngửa → Savasana. Em bé có gối ôm và Gác chân lên tường chưa ghép vào vì chưa có chuyển động lăn người / xoay vào tường.
+- Lunge thấp và Lunge cao vào tư thế qua chuỗi bước chân của Chào mặt trời. Lunge thấp giữ ngón chân sau co (không duỗi mu bàn chân).
+- Lunge cao: chân sau hơi chùng gối (~16°) vì chân trước giữ ~80° với cùng độ dài bước như Ashwa Sanchalanasana.
+- Vajrasana: mô hình không có tiếp xúc mông – gót, nên khớp gối phải giữ lực lớn và cột "Hoạt động" (thử nghiệm) sai ở đây – cùng giới hạn như Balasana.
+- Cá sấu: trán đặt gần tay nhưng không được tay đỡ trong vật lý (chưa có tiếp xúc thân – thân).
+- Nằm ngửa, mô hình tựa trên bả vai, xương chậu cách sàn ~1 cm (hình dạng mô hình), nên các bước nằm ngửa neo theo bả vai.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
 
