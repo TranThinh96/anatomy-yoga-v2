@@ -169,6 +169,63 @@ export const POSES = {
     lumbar: { flex: 5 },
     thorax: { flex: 10 },
   },
+  // Extended hand-to-big-toe with a strap (Utthita Hasta Padangusthasana): standing on the right leg,
+  // the straight left leg raised forward toward hip height, the strap around the ball of the left
+  // foot held in the left hand, right hand on the hip, trunk upright.
+  utthita_hasta_padangusthasana: {
+    hip_L: { flex: 82 },
+    knee_L: { flex: 0 },
+    ankle_L: { dorsi: 10 },
+    shoulder_L: { flex: 55, abd: 5 },
+    elbow_L: { flex: 10 },
+    wrist_L: { pron: 90 },
+    shoulder_R: { abd: 35, rot: -20 },
+    elbow_R: { flex: 100 },
+    ankle_R: { dorsi: 3 },
+  },
+  // Standing on the right leg, left knee lifted, the strap around the left foot in the left hand:
+  // passed through on the way into Utthita Hasta Padangusthasana.
+  utthita_hasta_padangusthasana_knee: {
+    hip_L: { flex: 80, rot: 0 },
+    knee_L: { flex: 100 },
+    ankle_L: { dorsi: 0 },
+    shoulder_L: { flex: 35, abd: 5 },
+    elbow_L: { flex: 30 },
+    wrist_L: { pron: 90 },
+    shoulder_R: { abd: 35, rot: -20 },
+    elbow_R: { flex: 100 },
+    ankle_R: { dorsi: 3 },
+  },
+  // Dancer (Natarajasana) with a strap: standing on the right leg, the left knee bent and the foot
+  // lifted behind, the strap around the ball of the left foot held in the left hand behind; the trunk
+  // tips forward as the foot presses back into the strap, right arm reaching forward.
+  natarajasana: {
+    root: { pitch: 32 },
+    hip_R: { flex: 40 },
+    hip_L: { flex: -13 },
+    knee_L: { flex: 110 },
+    ankle_L: { dorsi: 0 },
+    lumbar: { flex: -14 },
+    thorax: { flex: -8 },
+    neck: { flex: -15 },
+    shoulder_L: { flex: -40, abd: 10 },
+    elbow_L: { flex: 15 },
+    wrist_L: { pron: 90 },
+    shoulder_R: { flex: 150 },
+    ankle_R: { dorsi: -5 },
+  },
+  // Standing on the right leg, left heel drawn up behind toward the buttock, strap in the left hand:
+  // passed through on the way into Natarajasana.
+  natarajasana_knee: {
+    hip_L: { flex: 0 },
+    knee_L: { flex: 110 },
+    ankle_L: { dorsi: -10 },
+    shoulder_L: { flex: -20, abd: 10 },
+    elbow_L: { flex: 20 },
+    wrist_L: { pron: 90 },
+    shoulder_R: { flex: 60 },
+    ankle_R: { dorsi: 3 },
+  },
   // Standing on the right leg with the left knee lifted in front: the step before opening the knee
   // into Vrksasana. Going there directly, the slerped hip rotation and knee bend drive the left
   // toes into the floor before the foot leaves it, and the body rocks onto the standing foot late.
@@ -909,6 +966,29 @@ export const POSES = {
     elbow: { flex: 75 },
     wrist: { pron: 180 },
   },
+  // Lying prone, knees bent with the heels toward the buttocks, arms reaching back to the strap around
+  // the feet: the step before lifting into Dhanurasana.
+  dhanurasana_prep: {
+    root: { pitch: 82 },
+    knee: { flex: 105 },
+    ankle: { dorsi: -10 },
+    neck: { flex: -10 },
+    shoulder: { flex: -45, abd: 15 },
+    elbow: { flex: 10 },
+    hip: { flex: -3 },
+  },
+  // Bow (Dhanurasana) with a strap: lying on the belly, knees bent, the strap around the feet held in
+  // both hands behind; the legs kick back into the strap and lift the chest and the thighs.
+  dhanurasana: {
+    root: { pitch: 90 },
+    hip: { flex: -20 },
+    knee: { flex: 100 },
+    ankle: { dorsi: 0 },
+    lumbar: { flex: -18 },
+    thorax: { flex: -15 },
+    neck: { flex: -10 },
+    shoulder: { flex: -60, abd: 15 },
+  },
   setu_bandha: {
     root: { pitch: -120 },
     hip: { flex: -10 },
@@ -984,6 +1064,29 @@ export const POSES = {
     ankle_R: { dorsi: -29 },
     shoulder: { flex: 50, abd: 8 },
     elbow: { flex: 10 },
+    wrist: { pron: 90 },
+  },
+  // Happy baby (Ananda Balasana) with straps: lying on the back, knees drawn wide toward the armpits,
+  // shins vertical, soles to the ceiling; a strap around the ball of each foot, held in the hand of
+  // its side (holding the feet directly is a hand-on-foot contact the physics lacks).
+  ananda_balasana: {
+    root: { pitch: -90 },
+    hip: { flex: 149, rot: 3, abd: -32 },
+    knee: { flex: 60 },
+    ankle: { dorsi: 10 },
+    shoulder: { flex: 60, abd: 20 },
+    elbow: { flex: 20 },
+    wrist: { pron: 90 },
+  },
+  // Lying on the back, knees drawn in over the chest (Apanasana-like), hands holding the straps:
+  // the step between supine_knees and Ananda Balasana.
+  ananda_balasana_in: {
+    root: { pitch: -90 },
+    hip: { flex: 110 },
+    knee: { flex: 110 },
+    ankle: { dorsi: 0 },
+    shoulder: { flex: 45, abd: 15 },
+    elbow: { flex: 40 },
     wrist: { pron: 90 },
   },
   // Lying on the back, knees bent, the soles together on the mat: the start of Supta Baddha Konasana.
@@ -1253,6 +1356,19 @@ export const POSES = {
     shoulder: { flex: 168 },
     wrist: { ext: 10, pron: 90 },
   },
+  // Paschimottanasana with a strap around both feet held in the hands: a shallower fold, the spine
+  // long, arms reaching forward to the strap.
+  paschimottanasana_strap: {
+    root: { pitch: 30 },
+    hip: { flex: 122 },
+    ankle: { dorsi: 7 },
+    lumbar: { flex: 14 },
+    thorax: { flex: 12 },
+    neck: { flex: 8 },
+    shoulder: { flex: 65, abd: 10 },
+    elbow: { flex: 90 },
+    wrist: { pron: 90 },
+  },
   // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
   // the pelvis can tip forward over the thighs.
   dandasana_blanket: {
@@ -1417,6 +1533,35 @@ export const POSE_PROPS = {
   // a strap around the ball of the left foot, held in both hands
   supta_padangusthasana_bent: [{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }],
   supta_padangusthasana: [{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }],
+  // a strap around the ball of each foot, held in the hand of its side
+  ananda_balasana: [
+    { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' },
+    { type: 'strap', hands: ['wrist_R'], foot: 'ankle_R' },
+  ],
+  ananda_balasana_in: [
+    { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' },
+    { type: 'strap', hands: ['wrist_R'], foot: 'ankle_R' },
+  ],
+  // one strap around both feet (a strand from each hand to the foot of its side)
+  dhanurasana_prep: [
+    { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' },
+    { type: 'strap', hands: ['wrist_R'], foot: 'ankle_R' },
+  ],
+  dhanurasana: [
+    { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' },
+    { type: 'strap', hands: ['wrist_R'], foot: 'ankle_R' },
+  ],
+  // a strap around the ball of the raised (left) foot, held in the left hand
+  utthita_hasta_padangusthasana: [{ type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' }],
+  utthita_hasta_padangusthasana_knee: [{ type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' }],
+  // a strap around the ball of the lifted (left) foot behind, held in the left hand
+  natarajasana: [{ type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' }],
+  natarajasana_knee: [{ type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' }],
+  // a strap around both feet (a strand from each hand to the foot of its side)
+  paschimottanasana_strap: [
+    { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' },
+    { type: 'strap', hands: ['wrist_R'], foot: 'ankle_R' },
+  ],
   // a block lying flat (its lowest height) under the sacrum
   setu_bandha_block: [{ type: 'block', stand: 'flat', at: [0, 0.03] }],
   // a block on its long edge under each outer thigh, along the thigh
@@ -2095,4 +2240,39 @@ export const POSE_FIT = {
     dir: [['hip_L', [0, -1, 0], [0, 0.95, 0.3]]], // the raised leg near vertical
     params: ['hip_L.flex', 'ankle_R.dorsi'],
   },
+  ananda_balasana: {
+    support: ['pelvis', 'scapula_L', 'scapula_R'],
+    dir: [
+      ['knee_L', [0, -1, 0], [0, 1, 0]], // shins vertical, soles up
+      ['knee_R', [0, -1, 0], [0, 1, 0]],
+      ['hip_L', [0, -1, 0], [0.55, 0.5, -0.67]], // knees wide, toward the armpits
+      ['hip_R', [0, -1, 0], [-0.55, 0.5, -0.67]],
+    ],
+    params: ['hip.flex', 'hip.abd', 'hip.rot', 'knee.flex', 'ankle.dorsi'],
+  },
+  ananda_balasana_in: { support: ['pelvis', 'scapula_L', 'scapula_R'], params: [] },
+  dhanurasana_prep: {
+    support: ['pelvis', 'thorax', 'hip_L|knee_L', 'hip_R|knee_R'],
+    params: ['root.pitch', 'hip.flex', 'shoulder.flex'],
+  },
+  dhanurasana: {
+    support: ['pelvis', 'lumbar'], // rocking on the belly
+    params: ['root.pitch', 'hip.flex', 'lumbar.flex'],
+  },
+  utthita_hasta_padangusthasana: {
+    support: ['ankle_R'],
+    flat: ['ankle_R'],
+    dir: [['hip_L', [0, -1, 0], [0, -0.15, 1]], ['thorax', [0, 1, 0], [0, 1, 0]]], // leg about hip height, trunk upright
+    params: ['hip_L.flex', 'ankle_R.dorsi', 'lumbar.flex'],
+  },
+  utthita_hasta_padangusthasana_knee: { support: ['ankle_R'], flat: ['ankle_R'], params: ['ankle_R.dorsi'] },
+  natarajasana: {
+    support: ['ankle_R'],
+    flat: ['ankle_R'],
+    balance: true,
+    dir: [['hip_R', [0, -1, 0], [0, -1, 0]]], // standing leg vertical
+    params: ['hip_R.flex', 'ankle_R.dorsi', 'root.pitch&hip_R.flex&hip_L.flex'],
+  },
+  natarajasana_knee: { support: ['ankle_R'], flat: ['ankle_R'], params: ['ankle_R.dorsi'] },
+  paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
 };

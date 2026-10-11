@@ -14,17 +14,17 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
-| Đứng | 17 | 9 | 26 |
+| Đứng | 19 | 7 | 26 |
 | Gập người | 5 | 3 | 8 |
-| Ngửa sau | 9 | 8 | 17 |
+| Ngửa sau | 10 | 7 | 17 |
 | Chống tay & thăng bằng tay | 10 | 9 | 19 |
 | Đảo ngược | 1 | 5 | 6 |
 | Ngồi (gồm Balasana) | 6 | 15 | 21 |
-| Nằm (ngửa / sấp) | 7 | 7 | 14 |
+| Nằm (ngửa / sấp) | 8 | 6 | 14 |
 | Chuỗi động tác | 3 | 4 | 7 |
-| **Tổng** | **58** | **60** | **118** |
+| **Tổng** | **62** | **56** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + Supta Padangusthasana. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -92,9 +92,9 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `parivrtta_parsvakonasana` | Parivrtta Parsvakonasana | Góc nghiêng vặn xoắn | Revolved Side Angle | Trung bình | P2 | `crescent_lunge` | 🔁 🤝 khuỷu móc đùi → biến thể tay chống gạch / hạ gối |
 | ⬜ | `parivrtta_utkatasana` | Parivrtta Utkatasana | Cái ghế vặn xoắn | Revolved Chair | Trung bình | P2 | `utkatasana` | 🔁 🤝 khuỷu móc đùi → biến thể tay chắp, không móc |
 | ⬜ | `skandasana` | Skandasana | Lunge ngang | Side Lunge | Trung bình | P2 | `utkata_konasana` | 🔁 |
-| ⬜ | `utthita_hasta_padangusthasana` | Utthita Hasta Padangusthasana | Tay nắm ngón chân cái | Extended Hand-to-Big-Toe | Trung bình | P2 | `tadasana` | 🔁 ⚖ 🤝 → biến thể 🪢 dây / chân gác ghế hoặc tường 🧱 |
+| ✅ | `utthita_hasta_padangusthasana` | Utthita Hasta Padangusthasana | Tay nắm ngón chân cái | Extended Hand-to-Big-Toe | Trung bình | P2 | `tadasana` | 🔁 ⚖ 🤝 → biến thể 🪢 dây / chân gác ghế hoặc tường 🧱 |
 | ⬜ | `garudasana` | Garudasana | Đại bàng | Eagle Pose | Trung bình | P3 | `utkatasana` | 🔁 ⚖ 🤝 tay quấn tay, chân quấn chân |
-| ⬜ | `natarajasana` | Natarajasana | Vũ công | Dancer Pose | Trung bình | P3 | `tadasana` | 🔁 ⚖ 🤝 tay nắm bàn chân → biến thể 🪢 dây |
+| ✅ | `natarajasana` | Natarajasana | Vũ công | Dancer Pose | Trung bình | P3 | `tadasana` | 🔁 ⚖ 🤝 tay nắm bàn chân → biến thể 🪢 dây |
 
 ### 2.2 Gập người
 
@@ -117,7 +117,7 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `ardha_purvottanasana` | Ardha Purvottanasana | Bàn ngửa | Reverse Tabletop | Cơ bản | P2 | `dandasana` (gối gập) | |
 | ⬜ | `purvottanasana` | Purvottanasana | Tấm ván ngửa | Upward Plank | Trung bình | P2 | `dandasana` | |
 | ⬜ | `matsyasana` | Matsyasana | Con cá | Fish Pose | Trung bình | P2 | `supine` | đỉnh đầu chạm sàn, cẳng tay đỡ |
-| ⬜ | `dhanurasana` | Dhanurasana | Cánh cung | Bow Pose | Trung bình | P2 | `prone` | 🤝 tay nắm cổ chân → biến thể 🪢 dây |
+| ✅ | `dhanurasana` | Dhanurasana | Cánh cung | Bow Pose | Trung bình | P2 | `prone` | 🤝 tay nắm cổ chân → biến thể 🪢 dây |
 | ⬜ | `eka_pada_rajakapotasana` | Eka Pada Rajakapotasana (dạng chuẩn bị) | Bồ câu | Pigeon (prep) | Trung bình | P2 | `adho_mukha_svanasana` | 🔁 · biến thể gối ôm / chăn dưới hông 🧱 · có thể xếp nhóm Ngồi |
 | ✅ | `ustrasana_block` (biến thể) | Ustrasana | Lạc đà tay trên gạch / tay chống hông | Camel, supported | Cơ bản | P1 | `kneeling` | biến thể của `ustrasana` 🧱 |
 | ⬜ | `urdhva_dhanurasana` | Urdhva Dhanurasana | Bánh xe | Wheel | Nâng cao | P3 | `supine_knees` | đầu chạm sàn giữa chừng · tải cổ tay / vai lớn |
@@ -187,7 +187,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `supta_padangusthasana` | Supta Padangusthasana | Nằm ngửa kéo chân | Reclined Hand-to-Big-Toe | Cơ bản | P1 | `supine` | 🔁 🪢 dây (dạng phục hồi phổ biến nhất) |
 | ⬜ | `supta_kapotasana` | Supta Kapotasana | Bồ câu nằm ngửa (số 4) | Reclined Pigeon / Figure-4 | Cơ bản | P1 | `supine_knees` | 🔁 🤝 mắt cá đặt trên đùi |
 | ⬜ | `jathara_parivartanasana` | Jathara Parivartanasana | Vặn bụng | Revolved Abdomen | Trung bình | P2 | `supine` | 🔁 |
-| ⬜ | `ananda_balasana` | Ananda Balasana | Em bé hạnh phúc | Happy Baby | Cơ bản | P2 | `apanasana` | 🤝 tay nắm bàn chân → 🪢 dây |
+| ✅ | `ananda_balasana` | Ananda Balasana | Em bé hạnh phúc | Happy Baby | Cơ bản | P2 | `apanasana` | 🤝 tay nắm bàn chân → 🪢 dây |
 | ⬜ | `pavanamuktasana` | Eka Pada Pavanamuktasana | Ôm một gối | Wind-Relieving | Cơ bản | P2 | `supine` | 🔁 🤝 |
 | ⬜ | `supta_tadasana` | Supta Tadasana | Núi nằm ngửa (vươn tay) | Reclined Mountain | Cơ bản | P2 | `supine` | |
 | ⬜ | `viparita_karani_chair` (biến thể) | – | Gác cẳng chân lên ghế | Legs on a Chair | Cơ bản | P2 | `supine` | 🪢 ghế (đạo cụ mới) |
@@ -248,8 +248,13 @@ Ký hiệu trong **Ghi chú**:
 
 ### Ghi chú Đợt 3 (tính năng)
 
-- Dây tập: lực kéo giữa lòng bàn tay và ức bàn chân, chỉ kéo, không giãn; giải cùng lực sàn (ít tốn sức khớp nhất). Hiện là dải xanh trong cảnh và dòng "Dây tập" trong bảng lực. Dùng cho: Supta Padangusthasana. Tiếp theo: Em bé hạnh phúc, Cánh cung, Vũ công, Tay nắm ngón chân cái (biến thể dây).
+- Dây tập: lực kéo giữa lòng bàn tay và ức bàn chân, chỉ kéo, không giãn; giải cùng lực sàn (ít tốn sức khớp nhất). Hiện là dải xanh trong cảnh và dòng "Dây tập" trong bảng lực. Dùng cho: Supta Padangusthasana, Em bé hạnh phúc, Cánh cung, Vũ công, Tay nắm ngón chân cái, biến thể "Dùng dây" của Gập người ngồi.
 - Với Supta Padangusthasana chân gần thẳng đứng, mô-men chân nhỏ nên dây chỉ gánh vài N (háng 12 → 9 N·m). Dây sẽ có tác dụng rõ hơn khi chân hạ thấp hoặc ở tư thế đứng.
+
+- Lực dây theo mô hình (chia tải theo sức của từng khớp, chọn cách ít tốn sức nhất):
+  - Cánh cung: dây kéo ~18 N, mô-men thắt lưng giảm khoảng một nửa (36 → 19 N·m) – dây làm đúng việc của tay nắm cổ chân.
+  - Vũ công: ~6 N. Nằm ngửa kéo chân: ~5 N.
+  - Em bé hạnh phúc, Tay nắm ngón chân cái, Gập người ngồi dùng dây: 0 N – kéo dây chỉ làm sâu tư thế (một cố gắng chủ động) hoặc tốn sức vai hơn sức háng; mô hình không có lực kéo chủ động, nên ghi rõ trong phần lưu ý.
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
 
