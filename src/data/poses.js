@@ -404,6 +404,21 @@ export const POSES = {
     elbow: { flex: 103 },
     wrist: { ext: 70 },
   },
+  // Garland / yogi squat (Malasana): feet a little wider than the hips, toes turned out, heels down,
+  // hips sunk low between the knees, trunk leaning slightly forward and long, palms together at the
+  // chest with the elbows inside the knees (the elbow-on-knee press is a contact the physics lacks).
+  // Hip angles built from where the feet and knees go.
+  malasana: {
+    root: { pitch: 42 },
+    hip: { flex: 145, abd: -42, rot: 30 },
+    knee: { flex: 134 },
+    ankle: { dorsi: 44 },
+    lumbar: { flex: -27 },
+    thorax: { flex: -5 },
+    shoulder: { flex: 23, abd: 21, rot: -39 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
   utkata_konasana_stance: {
     ...ARMS_DOWN,
     hip: { abd: 33, rot: 40 },
@@ -2691,6 +2706,13 @@ export const POSE_FIT = {
     rel: [['ankle_L', 'ankle_R', [-1.1, 0]]], // the Prasarita stance
     at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
     params: ['ankle_L.dorsi', 'ankle_R.dorsi', 'hip_L.flex', 'knee_L.flex', 'hip_R.abd', 'hip_R.flex', 'hip_R.rot', 'root.roll', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
+  },
+  malasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    balance: true,
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    params: ['ankle.dorsi', 'root.pitch&-lumbar.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
   },
   utkata_konasana_stance: {
     support: ['ankle_L', 'ankle_R'],

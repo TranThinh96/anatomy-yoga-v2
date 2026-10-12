@@ -14,7 +14,7 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
-| Đứng | 24 | 2 | 26 |
+| Đứng | 25 | 1 | 26 |
 | Gập người | 5 | 3 | 8 |
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
@@ -22,9 +22,9 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngồi (gồm Balasana) | 12 | 9 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **88** | **30** | **118** |
+| **Tổng** | **89** | **29** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 6 mục P1 còn lại. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -84,7 +84,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `virabhadrasana_3` | Virabhadrasana III | Chiến binh III | Warrior III | Trung bình | P1 | `tadasana` / `crescent_lunge` | 🔁 ⚖ · biến thể tay chống gạch / tay chạm tường 🧱 |
 | ✅ | `parsvottanasana` | Parsvottanasana | Kéo giãn một bên (Kim tự tháp) | Pyramid / Intense Side Stretch | Cơ bản | P1 | `tadasana` | 🔁 · biến thể tay trên gạch 🧱 |
 | ✅ | `prasarita_padottanasana` | Prasarita Padottanasana | Gập người dang chân | Wide-Legged Forward Fold | Cơ bản | P1 | `tadasana` (bước chân rộng) | nhóm Gập người · biến thể đầu/tay trên gạch 🧱 |
-| ⬜ | `malasana` | Malasana | Ngồi xổm (Vòng hoa) | Garland / Yogi Squat | Cơ bản | P1 | `tadasana` | 🤝 khuỷu đẩy gối → biến thể ngồi trên gạch / chăn dưới gót 🧱 |
+| ✅ | `malasana` | Malasana | Ngồi xổm (Vòng hoa) | Garland / Yogi Squat | Cơ bản | P1 | `tadasana` | 🤝 khuỷu đẩy gối → biến thể ngồi trên gạch / chăn dưới gót 🧱 |
 | ✅ | `utkata_konasana` | Utkata Konasana | Nữ thần | Goddess Pose | Cơ bản | P1 | `tadasana` | đối xứng, dang chân rộng |
 | ✅ | `parsva_tadasana` | Parsva Urdhva Hastasana | Nghiêng người đứng | Standing Side Bend | Cơ bản | P1 | `urdhva_hastasana` | 🔁 |
 | ✅ | `ardha_chandrasana` | Ardha Chandrasana | Nửa vầng trăng | Half Moon | Trung bình | P2 | `trikonasana` | 🔁 ⚖ · biến thể tay trên gạch / lưng tựa tường 🧱 |
@@ -279,6 +279,7 @@ Ký hiệu trong **Ghi chú**:
 - Ngồi xếp bằng (+ nghiêng, vặn): cẳng chân bắt chéo đặt sát nhau (không truyền lực chân – chân), tay trên gối không truyền lực. Ngồi xếp bằng và Nghiêng người dạng tĩnh (tay chống sàn rồi rời sàn đẩy thân lên 4–8 cm giữa chừng); Vặn mình có chuyển động.
 - Ôm hai gối, Bồ câu nằm ngửa (số 4): có chuyển động; tay ôm cẳng chân / đan sau đùi và cổ chân gác trên đùi đặt sát nhưng không truyền lực.
 - Con bướm: bắt đầu từ ngồi co gối (bàn chân đặt sàn), gối mở dần. Cổ chân mô hình không lật trong nên hai lòng bàn chân chỉ áp một phần.
+- Ngồi xổm: dạng tĩnh, tay chắp, khuỷu trong gối (không truyền lực); cổ chân gập mu ~45° để gót chạm sàn – lưu ý nhắc kê chăn dưới gót.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)

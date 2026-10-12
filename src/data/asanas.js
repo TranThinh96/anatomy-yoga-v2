@@ -619,6 +619,37 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'malasana',
+    sanskrit: 'Malasana',
+    vi: 'Tư thế Ngồi xổm (Vòng hoa)',
+    en: 'Garland / Yogi Squat',
+    category: 'Đứng',
+    level: 'Cơ bản',
+    steps: [{ pose: 'malasana', hold: 3 }],
+    loop: 'static',
+    roles: {
+      contract: ['tibialis_anterior', 'erector_spinae', 'adductors'],
+      stretch: ['soleus', 'gluteus_maximus'],
+      stabilize: [...QUADS, 'gluteus_medius', 'rectus_abdominis'],
+    },
+    joints: [
+      ['hip', 'Gập háng sâu + dạng + xoay ngoài'],
+      ['knee', 'Gối gập sâu, hướng theo ngón chân'],
+      ['ankle', 'Gập mu sâu – gót chạm sàn'],
+      ['lumbar_spine_joint', 'Lưng dài, không tròn'],
+    ],
+    cues: [
+      'Đứng chân rộng hơn hông, mũi chân xoay ra ngoài; hạ hông xuống giữa hai gối.',
+      'Gót ấn xuống sàn – gót không chạm thì kê chăn gấp dưới gót, hoặc ngồi lên gạch.',
+      'Chắp tay trước ngực, khuỷu đặt phía trong gối, nhẹ nhàng đẩy gối ra; kéo dài cột sống.',
+    ],
+    benefits: ['Tăng tầm vận động cổ chân, háng, gối', 'Kéo giãn bắp chân, cơ mông; mở háng'],
+    cautions: [
+      'Đau gối, mổ thay khớp gối: ngồi trên gạch cao, không hạ sâu.',
+      'Mô hình: cổ chân gập mu ~45° để gót chạm sàn – nhiều người không đạt, cần kê gót; khuỷu ép gối không truyền lực (chưa có tiếp xúc tay – chân). Chưa có chuyển động vào tư thế.',
+    ],
+  },
+  {
     id: 'virabhadrasana_3',
     sanskrit: 'Virabhadrasana III',
     vi: 'Tư thế Chiến binh III',
