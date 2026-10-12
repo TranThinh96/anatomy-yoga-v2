@@ -333,6 +333,23 @@ export const POSES = {
     elbow: { flex: -1 },
   },
   // Wide-legged stance, feet parallel about 1.1 m apart, hands down: the start of Prasarita Padottanasana.
+  // Revolved triangle (Parivrtta Trikonasana), left leg in front: the Pyramid stance with straight
+  // legs, hips square, the trunk long and level over the front leg and turned to the left; the right
+  // hand on a block (on its end) inside the left foot under the right shoulder, the left arm straight
+  // up, chest open to the left. Legs as in parsvottanasana (angles for the pelvis pitched 88°).
+  parivrtta_trikonasana: {
+    root: { pitch: 88 },
+    hip_L: { flex: 120, abd: 0, rot: 8 },
+    hip_R: { flex: 62, abd: -27, rot: 9 },
+    ankle_L: { dorsi: -33 },
+    ankle_R: { dorsi: 24 },
+    lumbar: { flex: -14, rot: 23 },
+    thorax: { flex: -5, rot: 42 },
+    neck: { rot: 25 },
+    shoulder_R: { flex: 31, abd: 58 },
+    wrist_R: { ext: 48, pron: 180 },
+    shoulder_L: { flex: -11, abd: 97, rot: -90 },
+  },
   prasarita_stance: {
     ...ARMS_DOWN,
     hip: { abd: 38, rot: -6 },
@@ -1832,6 +1849,8 @@ export const POSE_PROPS = {
   supine_bolster: [{ type: 'bolster', at: [0, 0.33] }],
   // a block on its end under the lower (left) hand, in front of the standing foot (half moon)
   ardha_chandrasana: [{ type: 'block', stand: 'end', at: [0.5, 0.0] }],
+  // a block on its long edge inside the front (left) foot, under the right hand (revolved triangle)
+  parivrtta_trikonasana: [{ type: 'block', stand: 'side', at: [0.04, 0.48], yaw: 90 }],
   // a block on its end in front of and inside the front (left) foot, under the lower hand
   trikonasana_block: [{ type: 'block', stand: 'end', at: [0.56, 0.12], yaw: 90 }],
   // a folded blanket under the sit bones, lengthwise
@@ -2430,6 +2449,15 @@ export const POSE_FIT = {
     // legs as in the stance (root.pitch&hip.flex would not keep abducted / rotated legs: the hip's
     // abduction is its outermost angle), spine curve kept: only the arms and ankles adjust
     params: ['shoulder.flex', 'shoulder.abd', 'elbow.flex', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.flex'],
+  },
+  parivrtta_trikonasana: {
+    support: ['ankle_L', 'ankle_R', 'wrist_R'],
+    onProp: ['wrist_R'],
+    flat: ['ankle_L', 'ankle_R', 'wrist_R'], // palm flat on the block
+    balance: true,
+    rel: [['ankle_L', 'ankle_R', [-0.16, -0.75]]], // the Pyramid stance
+    dir: [['shoulder_R', [0, -1, 0], [0, -1, 0]], ['shoulder_L', [0, -1, 0], [0, 1, 0]]], // arms one vertical line
+    params: ['thorax.rot', 'lumbar.rot', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_R.ext', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.flex'],
   },
   prasarita_stance: {
     support: ['ankle_L', 'ankle_R'],
