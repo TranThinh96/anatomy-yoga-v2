@@ -1004,7 +1004,8 @@ function propsNote() {
   const strap = count.has('strap')
     ? ' Dây tập là một lực kéo giữa tay và bàn chân, chọn cùng lực sàn sao cho các khớp tốn ít sức nhất (dây không giãn, không tính ma sát dây trên bàn chân).'
     : '';
-  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}${strap}</p>`;
+  const chair = count.has('chair') ? ' Ghế: chỉ mặt ghế đỡ cơ thể; mô hình chưa có điểm tựa bắp chân lên đạo cụ nên gót chân tựa trên mặt ghế.' : '';
+  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}${strap}${chair}</p>`;
 }
 
 /** Static analysis of each variant of the current asana, as an HTML table. */

@@ -1930,6 +1930,7 @@ export const ASANAS = [
     steps: [{ pose: 'viparita_karani_bent' }, { pose: 'viparita_karani', move: 2.2, hold: 3 }],
     loop: 'pingpong',
     variants: [
+      { label: 'Gác cẳng chân lên ghế', pose: 'viparita_karani_chair', steps: [{ pose: 'viparita_karani_chair', hold: 3 }] },
       {
         // hips up, the block under the sacrum, hips down onto it, then the knees in and the legs up
         label: 'Gạch dưới xương cùng (không tường)',

@@ -33,7 +33,7 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
   → realMuscles.js  real BodyParts3D muscle surfaces, linear-blend skinned to the rig; anatomy mode only
                  (display only – lengths, moment arms and forces always come from the tubes)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
-props.js         floor + props (wall, block, bolster, folded blanket, strap) as an Env on the rig: clearance, contact normals;
+props.js         floor + props (wall, block, bolster, folded blanket, chair, strap) as an Env on the rig: clearance, contact normals;
                  a strap is a pull between a palm and the ball of a foot (solved with the floor forces)
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses (a spline through `via` poses), anchors (feet/hands stay put),
@@ -102,6 +102,8 @@ Data files:
   the others meet the floor only.
   A strap (`{ type: 'strap', hands: [...], foot }`) is not a surface: a tension T ≥ 0 between body points,
   internal to the body (joint moments only), chosen with the floor forces by solveContacts.
+  A chair (`{ type: 'chair', at, yaw }`) is a surface only at its seat (45 cm); the calf points rest on
+  walls only, so legs on a chair rest on the heels.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
   A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
   and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).

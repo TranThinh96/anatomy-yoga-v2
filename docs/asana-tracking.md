@@ -20,11 +20,11 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 8 | 13 | 21 |
-| Nằm (ngửa / sấp) | 11 | 3 | 14 |
+| Nằm (ngửa / sấp) | 12 | 2 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **81** | **37** | **118** |
+| **Tổng** | **82** | **36** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 19 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -190,7 +190,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `ananda_balasana` | Ananda Balasana | Em bé hạnh phúc | Happy Baby | Cơ bản | P2 | `apanasana` | 🤝 tay nắm bàn chân → 🪢 dây |
 | ✅ | `pavanamuktasana` | Eka Pada Pavanamuktasana | Ôm một gối | Wind-Relieving | Cơ bản | P2 | `supine` | 🔁 🤝 |
 | ✅ | `supta_tadasana` | Supta Tadasana | Núi nằm ngửa (vươn tay) | Reclined Mountain | Cơ bản | P2 | `supine` | |
-| ⬜ | `viparita_karani_chair` (biến thể) | – | Gác cẳng chân lên ghế | Legs on a Chair | Cơ bản | P2 | `supine` | 🪢 ghế (đạo cụ mới) |
+| ✅ | `viparita_karani_chair` (biến thể) | – | Gác cẳng chân lên ghế | Legs on a Chair | Cơ bản | P2 | `supine` | 🪢 ghế (đạo cụ mới) |
 
 ### 2.8 Chuỗi động tác
 
@@ -210,10 +210,10 @@ Ký hiệu trong **Ghi chú**:
 |---|---|---|---|
 | ⬜ | Tiếp xúc thân – thân trong vật lý (tay–chân, gối–cánh tay, chân–đùi) | mọi tư thế 🤝 (≈ 30) | CLAUDE.md: thiếu tiếp xúc này cũng là nguồn sai số chính ở Balasana, Vrksasana, Paschimottanasana. Trước khi có: làm biến thể không bám hoặc đặt sát nhưng không truyền lực, ghi rõ giới hạn trong UI |
 | ✅ | Đạo cụ **dây** (strap) | Supta Padangusthasana, Dhanurasana, Natarajasana, Gomukhasana… | thêm loại prop mới; lực kéo dây cần mô hình riêng |
-| ⬜ | Đạo cụ **ghế** | chân gác ghế, Halasana có ghế, tư thế ngồi ghế | |
+| ✅ | Đạo cụ **ghế** | chân gác ghế, Halasana có ghế, tư thế ngồi ghế | chỉ mặt ghế là bề mặt đỡ; bắp chân chưa tựa được lên đạo cụ (điểm tiếp xúc bắp chân chỉ dùng cho tường) |
 | ✅ | Nhóm mới trong `CATEGORIES`: `Thăng bằng tay`, `Đảo ngược` | lọc danh sách gọn hơn | Tấm ván nghiêng → Thăng bằng tay, Gác chân lên tường → Đảo ngược |
 | ✅ | Mức `Nâng cao` trong `level` (`LEVELS`) | P3 | nhãn màu vàng trong danh sách; check-data kiểm tra mức hợp lệ |
-| ⬜ | Kiểm tra contact vai / lưng trên / đỉnh đầu đủ cho đảo ngược | 2.5 | thiếu contact → thêm trong `tools/bp3d-build.mjs` rồi rebuild, không sửa `body-model.gen.js` |
+| ⬜ | Thêm contact vai trên / C7 / mặt sau cánh tay trên / thái dương | Trồng cây chuối vai, Cái cày, Luồn kim | đã kiểm tra: thiếu (chỉ có góc dưới xương bả vai, gáy, trán, đỉnh đầu) → thêm trong `tools/bp3d-build.mjs` rồi rebuild (cần bộ BodyParts3D), không sửa `body-model.gen.js` |
 
 ## 4. Gợi ý thứ tự làm (theo đợt)
 
@@ -275,6 +275,7 @@ Ký hiệu trong **Ghi chú**:
 - Tam giác vặn xoắn: dạng tĩnh, tay phải trên gạch nằm nghiêng (15 cm) phía trong bàn chân trái. Chuyển động vào tư thế bị giật như Nửa vầng trăng (tay đáp lên gạch làm điểm đỡ đổi đột ngột). Bộ giải lực dồn 54 % lên tay – ghi trong lưu ý.
 - Góc nghiêng vặn xoắn: dạng hạ gối sau, tay chắp, có chuyển động (qua chuỗi bước chân vào Lunge thấp). Chậu nghiêng trước 50° nên cơ thắt lưng – chậu chân sau không dài ra trong mô hình (chỉ cơ thẳng đùi); vai trò kéo giãn ghi theo đó.
 - Chào mặt trời B: như A, thêm Cái ghế và Chiến binh I (bên trái) giữa hai lần vinyasa; Chiến binh I dùng thế chân dài của lunge (`virabhadrasana_1_long`, ~0,95 m) để bàn chân không trượt khi hạ gót sau.
+- Đạo cụ mới: ghế (chỉ mặt ghế là bề mặt đỡ, cao 45 cm). Biến thể Gác cẳng chân lên ghế (của Gác chân lên tường) – dạng tĩnh; gót chân tựa mặt ghế vì điểm tiếp xúc bắp chân chỉ tựa được vào tường.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)

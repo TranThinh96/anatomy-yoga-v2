@@ -1387,6 +1387,17 @@ export const POSES = {
     shoulder: { abd: 45, rot: -80, flex: -35 },
   },
   // Legs up the wall, knees bent and soles flat on the wall: the start (and the way out).
+  // Legs on a chair (restorative): lying on the back, hips and knees bent 90°, the lower legs resting
+  // on the seat of a chair, arms beside the body, palms up. The model's calf points lean on walls only,
+  // so the heels rest on the seat here (the real load is spread along the calves).
+  viparita_karani_chair: {
+    root: { pitch: -90 },
+    hip: { flex: 93 },
+    knee: { flex: 93 },
+    ankle: { dorsi: 0 },
+    shoulder: { abd: 18, flex: -17, rot: 60 },
+    elbow: { flex: -4 },
+  },
   viparita_karani_bent: {
     root: { pitch: -90 },
     hip: { flex: 124 },
@@ -1969,6 +1980,8 @@ export const POSE_PROPS = {
     { type: 'block', stand: 'side', at: [0.3, 0.11], yaw: -37 },
     { type: 'block', stand: 'side', at: [-0.3, 0.11], yaw: 37 },
   ],
+  // a chair facing the body, the lower legs on its seat
+  viparita_karani_chair: [{ type: 'chair', at: [0, 0.3] }],
   // the wall a little beyond the buttocks (legs up the wall)
   viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
   viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
@@ -2287,6 +2300,11 @@ export const POSE_FIT = {
     support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'hip_L', 'hip_R', 'wrist_L', 'wrist_R'], // the thighs on the blocks
     rel: [['ankle_R', 'ankle_L', [0.16, 0]]],
     params: ['hip.abd', 'hip.rot', 'shoulder.flex'],
+  },
+  viparita_karani_chair: {
+    support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    onProp: ['ankle_L', 'ankle_R'], // the heels on the seat
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd'],
   },
   viparita_karani_bent: {
     support: ['pelvis', 'thorax', 'head', 'wrist_L', 'wrist_R'],
