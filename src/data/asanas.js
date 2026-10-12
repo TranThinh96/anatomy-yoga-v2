@@ -2757,6 +2757,38 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'ardha_padmasana',
+    sanskrit: 'Ardha Padmasana',
+    vi: 'Tư thế Bán kiết già (Nửa hoa sen)',
+    en: 'Half Lotus',
+    category: 'Ngồi & nằm',
+    level: 'Trung bình',
+    steps: [{ pose: 'ardha_padmasana', hold: 3 }],
+    loop: 'static',
+    roles: {
+      contract: ['erector_spinae'],
+      stretch: ['gluteus_medius_L', 'piriformis_L', 'adductors_L'],
+      stabilize: ['rectus_abdominis'],
+    },
+    joints: [
+      ['hip', 'Háng trên (trái) gập + dạng + xoay ngoài rất lớn – nguồn chuyển động chính'],
+      ['knee', 'Gối gập sâu, chỉ là bản lề – không được xoắn'],
+      ['ankle', 'Bàn chân trên duỗi, mu bàn chân tựa đùi'],
+    ],
+    cues: [
+      'Từ ngồi xếp bằng, ôm cẳng chân trái bằng hai tay, xoay cả đùi ra ngoài từ khớp háng rồi mới đặt bàn chân lên đùi phải, gần nếp háng.',
+      'Bàn chân phải nằm dưới gối trái; ngồi đều trên hai ụ ngồi.',
+      'Gối trái chưa chạm sàn: kê chăn gấp dưới gối, ngồi cao lên chăn.',
+      'Đổi bên chân trên mỗi lần ngồi.',
+    ],
+    benefits: ['Tư thế ngồi thiền vững hơn ngồi xếp bằng khi háng đủ linh hoạt', 'Mở háng (xoay ngoài)'],
+    cautions: [
+      'Đau gối, đặc biệt mặt trong gối: dừng ngay – háng chưa đủ xoay ngoài nên gối bị xoắn. Ngồi xếp bằng thay thế.',
+      'Không dùng tay ép gối xuống sàn.',
+      'Mô hình chưa có tiếp xúc giữa các phần cơ thể: bàn chân trái chỉ đặt sát trên đùi phải, không truyền lực; gối trái cách sàn ~12 cm (thường gặp – kê chăn).',
+    ],
+  },
+  {
     id: 'agnistambhasana',
     sanskrit: 'Agnistambhasana',
     vi: 'Tư thế Khúc củi',

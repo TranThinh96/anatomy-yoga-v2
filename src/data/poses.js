@@ -2041,6 +2041,24 @@ export const POSES = {
     wrist_L: { ext: 93 },
     shoulder_R: { flex: -6, abd: 184, rot: -90 },
   },
+  // Half lotus (Ardha Padmasana): the left foot resting on top of the right thigh near the hip crease,
+  // sole turned up, the right leg folded under with its foot below the left knee (no foot–thigh force
+  // in the physics). Hip angles built from the thigh and shin directions.
+  ardha_padmasana: {
+    hip_L: { flex: 99, abd: -103, rot: -13 },
+    knee_L: { flex: 139 },
+    ankle_L: { dorsi: -25 },
+    hip_R: { flex: 116, abd: -99, rot: 1 },
+    knee_R: { flex: 120 },
+    ankle_R: { dorsi: -20 },
+    root: { pitch: 5, roll: 8 },
+    lumbar: { flex: -5, side: -12 },
+    shoulder_L: { flex: 34, abd: -2 },
+    shoulder_R: { flex: 33, abd: 9 },
+    elbow_L: { flex: 8 },
+    elbow_R: { flex: 8 },
+    wrist: { pron: 90 },
+  },
   // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
   // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
   // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
@@ -3278,6 +3296,12 @@ export const POSE_FIT = {
     flat: ['wrist_L'],
     dir: [['shoulder_R', [0, -1, 0], [0.55, 0.83, 0]]], // top arm reaching up and over to the left
     params: ['shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.abd', 'shoulder_R.flex', 'thorax.side', 'ankle.dorsi'],
+  },
+  ardha_padmasana: {
+    support: ['pelvis', 'hip_R', 'ankle_R'],
+    dir: [['thorax', [0, 1, 0], [0, 1, 0]]], // trunk upright over the tilted pelvis
+    at: [['wrist_L', 'pelvis', [0.15, 0.13, 0.38]], ['wrist_R', 'pelvis', [-0.22, 0.06, 0.36]]], // hands resting on the knees
+    params: ['root.roll', 'hip_R.flex', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'lumbar.side', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
   },
   agnistambhasana: {
     support: ['pelvis', 'hip_R', 'ankle_R'],
