@@ -336,6 +336,15 @@ export const POSES = {
     neck: { side: 6 },
     ankle: { dorsi: 3 },
   },
+  // Side bend to the right (mirror of parsva_tadasana), for Chandra Namaskar.
+  parsva_tadasana_R: {
+    shoulder: { flex: 172, abd: 4, rot: 0 },
+    scapula: { elev: 10 },
+    lumbar: { side: -8 },
+    thorax: { side: -18 },
+    neck: { side: -6 },
+    ankle: { dorsi: 3 },
+  },
   // Pyramid stance: left foot forward, right foot about a leg length behind and turned out ~45°,
   // both legs straight, hips square to the front, trunk upright, hands on the hips area (arms down).
   parsvottanasana_stance: {
@@ -417,7 +426,22 @@ export const POSES = {
     shoulder: { flex: 20, abd: 18, rot: -38 },
     elbow: { flex: 103 },
     wrist: { ext: 70 },
+  },  // Side lunge to the right (mirror of skandasana), for Chandra Namaskar.
+  skandasana_R: {
+    root: { pitch: 25 },
+    hip_R: { flex: 87, abd: 8, rot: 44 },
+    knee_R: { flex: 85 },
+    ankle_R: { dorsi: 10 },
+    hip_L: { flex: 39, abd: 32, rot: 49 },
+    knee_L: { flex: 4 },
+    ankle_L: { dorsi: 5 },
+    lumbar: { flex: -5 },
+    thorax: { flex: -5 },
+    shoulder: { flex: 20, abd: 18, rot: -38 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
   },
+
   // Garland / yogi squat (Malasana): feet a little wider than the hips, toes turned out, heels down,
   // hips sunk low between the knees, trunk leaning slightly forward and long, palms together at the
   // chest with the elbows inside the knees (the elbow-on-knee press is a contact the physics lacks).
@@ -2909,6 +2933,11 @@ export const POSE_FIT = {
     flat: ['ankle_L', 'ankle_R'],
     params: ['ankle.dorsi'],
   },
+  parsva_tadasana_R: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    params: ['ankle.dorsi'],
+  },
   parsvottanasana_stance: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
@@ -2966,7 +2995,15 @@ export const POSE_FIT = {
     rel: [['ankle_L', 'ankle_R', [-1.1, 0]]], // the Prasarita stance
     at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
     params: ['ankle_L.dorsi', 'ankle_R.dorsi', 'hip_L.flex', 'knee_L.flex', 'hip_R.abd', 'hip_R.flex', 'hip_R.rot', 'root.roll', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
+  },  skandasana_R: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_R'],
+    balance: true,
+    rel: [['ankle_L', 'ankle_R', [-1.1, 0]]],
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]],
+    params: [],
   },
+
   malasana: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],

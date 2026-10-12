@@ -21,10 +21,10 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 18 | 3 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
-| Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **98** | **20** | **118** |
+| Chuỗi động tác | 7 | 0 | 7 |
+| **Tổng** | **99** | **19** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 5 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 6 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -199,7 +199,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `vinyasa_flow` | Vinyasa | Chuỗi chuyển tiếp | Trung bình | P2 | Plank → Chaturanga → Chó ngửa → Chó úp | các pose đã có |
 | ✅ | `warrior_flow` | – | Chuỗi chiến binh | Cơ bản | P2 | Chiến binh II → Chiến binh đảo ngược → Góc nghiêng | cần `viparita_virabhadrasana` |
 | ✅ | `surya_namaskar_b` | Surya Namaskar B | Chào mặt trời B | Trung bình | P2 | thêm Cái ghế + Chiến binh I hai bên | cần chuyển chân sau xoay gót |
-| ⬜ | `chandra_namaskar` | Chandra Namaskar | Chào mặt trăng | Trung bình | P3 | nghiêng đứng, Nữ thần, Lunge ngang… | cần các pose 2.1 |
+| ✅ | `chandra_namaskar` | Chandra Namaskar | Chào mặt trăng | Trung bình | P3 | nghiêng đứng, Nữ thần, Lunge ngang… | cần các pose 2.1 |
 | ✅ | `restorative_supine` | – | Chuỗi phục hồi | Cơ bản | P2 | Em bé có gối → Cầu kê gạch → Gác chân lên tường → Xác chết | pose đã có; chỉ ghép |
 
 ---
@@ -289,6 +289,7 @@ Ký hiệu trong **Ghi chú**:
 - Gập đứng nắm ngón chân cái (P3): có chuyển động từ Núi; ngón tay đặt sát ngón chân cái, khuỷu mở sang hai bên – lực kéo tay – chân chưa tính.
 - Con diệc (P3): dạng tĩnh, dùng dây (lực dây tay – bàn chân có tính). Chân dưới gập kiểu Janu Sirsasana vì mô hình không gập gối đủ cho chân Anh hùng; bàn chân dưới chạm sàn làm rộng chân đế (không có thì trọng tâm rơi ra trước ụ ngồi).
 - Bán kiết già (P3): dạng tĩnh; bàn chân trái đặt sát trên đùi phải (không truyền lực), gối trái cách sàn ~12 cm. Chậu hơi nghiêng (roll 8°) để đùi và bàn chân phải cùng chạm sàn, thắt lưng nghiêng bù cho thân thẳng.
+- Chào mặt trăng (P3): bản rút gọn – Núi → tay lên → nghiêng trái / phải → Nữ thần → Lunge ngang trái / phải → Núi (thêm `parsva_tadasana_R`, `skandasana_R` đối xứng). Chưa có Tam giác, Gập người chân trước, Lunge thấp vì dùng thế chân khác (đổi thế chân giữa chừng cần nhiều bước). Khi bước rộng chân, trọng tâm không dồn sang chân trụ (như các mục bước chân khác của app).
 - ⛔ Bánh xe (`urdhva_dhanurasana`): đã thử – đai vai mô hình cứng (bả vai không xoay lên, không nâng) nên vai không thể nằm trên cổ tay. Để bàn tay áp sàn, bộ fit phải đẩy cổ tay ngửa ~120°, cột sống ngực ngửa ~45° hoặc háng duỗi ~45° – đều vượt tầm thật, dạy sai. Cần mô hình hoá xoay lên của xương bả vai trước.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
