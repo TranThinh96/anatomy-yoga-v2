@@ -1719,6 +1719,102 @@ export const POSES = {
     elbow_R: { flex: 16 },
     root: { pitch: -6 },
   },
+  // Marichyasana III steps: from Dandasana the right knee is drawn up, the foot flat on the floor in
+  // front of the right sit bone, hands still beside the hips; then the trunk turns to the right, the
+  // left elbow hooked against the outside of the right knee (no arm–knee force in the physics), the
+  // right hand on the floor behind the pelvis.
+  marichyasana_3_knee_up: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 153, abd: 4 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -20 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -16, abd: 10 },
+    wrist: { ext: 80 },
+  },
+  // The left hand lifts off the floor before it reaches for the knee (as in Ardha Matsyendrasana).
+  marichyasana_3_hand_off: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 153, abd: 4 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -20 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -16, abd: 10 },
+    wrist: { ext: 80 },
+    shoulder_L: { flex: -26 },
+    wrist_L: { ext: 90 },
+  },
+  marichyasana_3_hand_up: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 153, abd: 4 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -20 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -16, abd: 10 },
+    wrist: { ext: 80 },
+    shoulder_L: { flex: -30 },
+    elbow_L: { flex: 75 },
+    wrist_L: { ext: 90 },
+  },
+  marichyasana_3: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 157, abd: -8 },
+    knee_R: { flex: 137 },
+    ankle_R: { dorsi: -25 },
+    lumbar: { flex: -2, rot: -5 },
+    thorax: { rot: -42 },
+    neck: { rot: -25 },
+    shoulder_L: { flex: 70, abd: -1, rot: -25 },
+    elbow_L: { flex: 109 },
+    shoulder_R: { flex: -2, abd: 11 },
+    wrist_R: { ext: 97 },
+    elbow_R: { flex: 5 },
+  },
+  // Both hands lift off the floor before they reach for the shin (as on the way into Navasana).
+  marichyasana_1_hands_off: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 153, abd: 4 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -20 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -24, abd: 10 },
+    wrist: { ext: 90 },
+  },
+  marichyasana_1_hands_up: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 153, abd: 4 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -20 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: -30, abd: 10 },
+    elbow: { flex: 75 },
+    wrist: { ext: 90 },
+  },
+  // Marichyasana I, preparation without the bind: the right knee up as in Marichyasana III, both arms
+  // hugging the right shin just below the knee (hands clasped in front of it), the spine long and the
+  // trunk tipped forward from the hips over the left leg (no hand–shin force in the physics).
+  marichyasana_1: {
+    root: { pitch: 10 },
+    hip_L: { flex: 102 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 156, abd: 5 },
+    knee_R: { flex: 116 },
+    ankle_R: { dorsi: -30 },
+    lumbar: { flex: 2 },
+    neck: { flex: -5 },
+    shoulder_L: { flex: 20, abd: -39, rot: -4 },
+    shoulder_R: { flex: 24, abd: -43, rot: 9 },
+    elbow_L: { flex: 63 },
+    elbow_R: { flex: 74 },
+    wrist: { pron: 90 },
+  },
+
   paschimottanasana: {
     root: { pitch: 42 },
     hip: { flex: 134 },
@@ -2499,6 +2595,39 @@ export const POSE_FIT = {
       ['thorax', [0, 0, 1], [-0.6, 0, 0.8]], // chest turned about 35° to the right
     ],
     params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'lumbar.rot', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'elbow_R.flex', 'wrist_R.ext'],
+  },
+  marichyasana_3_knee_up: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_L', 'wrist_R'],
+    rel: [['pelvis', 'ankle_R', [-0.1, 0.3]], ['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]],
+    params: ['hip_L.flex', 'hip_R.flex', 'hip_R.abd', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'wrist.ext'],
+  },
+  marichyasana_1_hands_off: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: [] },
+  marichyasana_1_hands_up: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: [] },
+  marichyasana_1: {
+    support: ['pelvis', 'ankle_L', 'ankle_R'],
+    flat: ['ankle_R'],
+    at: [
+      ['wrist_R', 'knee_R', [-0.04, -0.1, 0.09]], // hands clasped in front of the right shin
+      ['wrist_L', 'knee_R', [0.04, -0.1, 0.09]],
+    ],
+    dir: [['thorax', [0, 1, 0], [0, 0.94, 0.34]]], // spine long, tipped about 20° forward
+    params: ['hip_L.flex', 'hip_R.flex', 'hip_R.abd', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'elbow_R.flex', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex'],
+  },
+
+  marichyasana_3_hand_off: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'], params: [] },
+  marichyasana_3_hand_up: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'], params: [] },
+  marichyasana_3: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_R'],
+    rel: [['pelvis', 'ankle_R', [-0.1, 0.3]], ['pelvis', 'wrist_R', [-0.2, -0.17]]],
+    at: [['elbow_L', 'knee_R', [-0.09, 0.03, 0.02]]], // left elbow against the outside of the right knee
+    dir: [
+      ['thorax', [0, 1, 0], [0, 1, 0]], // spine tall
+      ['thorax', [0, 0, 1], [-0.6, 0, 0.8]], // chest turned about 35° to the right
+      ['elbow_L', [0, -1, 0], [0, 1, 0]], // left forearm pointing up
+    ],
+    params: ['hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'thorax.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'wrist_R.ext'],
   },
   dandasana_blanket: {
     support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
