@@ -273,6 +273,21 @@ export const POSES = {
     elbow: { flex: 6 },
     scapula: { elev: 8 },
   },
+  // Warrior I in the stance of Sun Salutation B: the left foot where it stepped up between the
+  // hands, the right heel dropped and turned out ~45° where the ball of the foot was.
+  virabhadrasana_1_long: {
+    root: { pitch: 33 },
+    hip_L: { flex: 110 },
+    knee_L: { flex: 77 },
+    ankle_L: { dorsi: 0 },
+    hip_R: { flex: -21, abd: 17, rot: 44 },
+    ankle_R: { dorsi: 33 },
+    lumbar: { flex: -38 },
+    thorax: { flex: -10 },
+    neck: { flex: -10 },
+    shoulder: { flex: 170, abd: 6 },
+    scapula: { elev: 8 },
+  },
   virabhadrasana_1: {
     root: { pitch: 26 },
     hip_L: { flex: 85 },
@@ -2017,6 +2032,15 @@ export const POSE_FIT = {
     at: [['ankle_L', 'hip_R', [0.07, -0.16, 0.0]]],
     dir: [['hip_L', [0, -1, 0], [0.9, -0.45, 0.25]]], // knee opens out to the side, slightly forward
     params: ['hip_L.flex', 'hip_L.abd', 'hip_L.rot', 'knee_L.flex', 'ankle_L.dorsi'],
+  },
+  virabhadrasana_1_long: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    balance: true,
+    rel: [['ankle_L', 'ankle_R', [-0.158, -0.95]]], // the lunge stance, back heel down
+    dir: [['ankle_R', [0, 0, 1], [-0.7, 0, 0.7]], ['thorax', [0, 1, 0], [0, 1, -0.1]]], // back foot out ~45°, trunk upright
+    above: [['knee_L', 'ankle_L']],
+    params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'hip_R.rot', 'hip_R.abd', 'knee_L.flex', 'ankle_R.dorsi', 'ankle_L.dorsi', 'hip_L.flex'],
   },
   virabhadrasana_1: { support: ['ankle_L', 'ankle_R'], params: ['root.pitch&hip_L.flex&hip_R.flex&-lumbar.flex', 'hip_R.flex', 'knee_L.flex', 'ankle_R.dorsi', 'hip_L.flex'] },
   virabhadrasana_2: {

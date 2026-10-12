@@ -21,10 +21,10 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 8 | 13 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
-| Chuỗi động tác | 5 | 2 | 7 |
-| **Tổng** | **80** | **38** | **118** |
+| Chuỗi động tác | 6 | 1 | 7 |
+| **Tổng** | **81** | **37** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 18 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 19 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -198,7 +198,7 @@ Ký hiệu trong **Ghi chú**:
 |---|---|---|---|---|---|---|---|
 | ✅ | `vinyasa_flow` | Vinyasa | Chuỗi chuyển tiếp | Trung bình | P2 | Plank → Chaturanga → Chó ngửa → Chó úp | các pose đã có |
 | ✅ | `warrior_flow` | – | Chuỗi chiến binh | Cơ bản | P2 | Chiến binh II → Chiến binh đảo ngược → Góc nghiêng | cần `viparita_virabhadrasana` |
-| ⬜ | `surya_namaskar_b` | Surya Namaskar B | Chào mặt trời B | Trung bình | P2 | thêm Cái ghế + Chiến binh I hai bên | cần chuyển chân sau xoay gót |
+| ✅ | `surya_namaskar_b` | Surya Namaskar B | Chào mặt trời B | Trung bình | P2 | thêm Cái ghế + Chiến binh I hai bên | cần chuyển chân sau xoay gót |
 | ⬜ | `chandra_namaskar` | Chandra Namaskar | Chào mặt trăng | Trung bình | P3 | nghiêng đứng, Nữ thần, Lunge ngang… | cần các pose 2.1 |
 | ✅ | `restorative_supine` | – | Chuỗi phục hồi | Cơ bản | P2 | Em bé có gối → Cầu kê gạch → Gác chân lên tường → Xác chết | pose đã có; chỉ ghép |
 
@@ -274,6 +274,7 @@ Ký hiệu trong **Ghi chú**:
 - Cái ghế vặn xoắn: dạng tay chắp, khuỷu đặt cạnh gối (chưa móc – chưa có tiếp xúc tay – chân); có chuyển động Núi → Cái ghế tay chắp → xoay.
 - Tam giác vặn xoắn: dạng tĩnh, tay phải trên gạch nằm nghiêng (15 cm) phía trong bàn chân trái. Chuyển động vào tư thế bị giật như Nửa vầng trăng (tay đáp lên gạch làm điểm đỡ đổi đột ngột). Bộ giải lực dồn 54 % lên tay – ghi trong lưu ý.
 - Góc nghiêng vặn xoắn: dạng hạ gối sau, tay chắp, có chuyển động (qua chuỗi bước chân vào Lunge thấp). Chậu nghiêng trước 50° nên cơ thắt lưng – chậu chân sau không dài ra trong mô hình (chỉ cơ thẳng đùi); vai trò kéo giãn ghi theo đó.
+- Chào mặt trời B: như A, thêm Cái ghế và Chiến binh I (bên trái) giữa hai lần vinyasa; Chiến binh I dùng thế chân dài của lunge (`virabhadrasana_1_long`, ~0,95 m) để bàn chân không trượt khi hạ gót sau.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
