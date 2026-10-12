@@ -1643,6 +1643,24 @@ export const POSES = {
     elbow_R: { flex: 5 },
     root: { roll: 0 },
   },
+  // Heron (Krounchasana) with a strap, beginner form: the right leg folded in as in Janu Sirsasana (the
+  // model cannot fold the knee enough for the half-hero leg), the left leg raised straight in front,
+  // a strap around the ball of the left foot held in both hands, the spine tall.
+  krounchasana: {
+    hip_L: { flex: 145 },
+    knee_L: { flex: 0 },
+    ankle_L: { dorsi: 10 },
+    hip_R: { flex: 134, abd: -93, rot: 4 },
+    knee_R: { flex: 114 },
+    ankle_R: { dorsi: 10 },
+    lumbar: { flex: -5 },
+    shoulder_L: { flex: 90, abd: 97 },
+    shoulder_R: { flex: 101, abd: 96 },
+    elbow_L: { flex: 10 },
+    elbow_R: { flex: 10 },
+    wrist: { pron: 90 },
+    root: { pitch: 0 },
+  },
   // Head-to-knee (Janu Sirsasana): from janu_sirsasana_up the trunk folds from the hips over the
   // long left leg, chest turned toward it, hands resting on either side of the left shin.
   janu_sirsasana: {
@@ -3044,6 +3062,16 @@ export const POSE_FIT = {
     ],
     dir: [['shoulder_R', [0, -1, 0], [0.85, 0.5, 0.15]]], // top arm reaching over toward the left foot
     params: ['hip_L.flex', 'root.roll', 'shoulder_L.flex', 'shoulder_L.abd', 'elbow_L.flex', 'shoulder_R.abd', 'shoulder_R.flex', 'shoulder_R.rot'],
+  },
+  krounchasana: {
+    support: ['pelvis', 'hip_R|knee_R', 'ankle_R'],
+    balance: true,
+    dir: [
+      ['hip_L', [0, -1, 0], [0, 0.82, 0.57]], // leg about 55° up
+      ['thorax', [0, 1, 0], [0, 0.99, -0.1]], // spine tall
+    ],
+    at: [['wrist_L', 'pelvis', [0.1, 0.52, 0.33]], ['wrist_R', 'pelvis', [-0.02, 0.52, 0.33]]], // hands on the strap, short of the foot
+    params: ['root.pitch', 'hip_L.flex', 'ankle_R.dorsi', 'knee_R.flex', 'hip_R.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
   },
   janu_sirsasana: {
     support: ['pelvis', 'ankle_L', 'hip_R|knee_R'],
