@@ -1229,6 +1229,57 @@ export const POSES = {
     ankle: { dorsi: -15 },
     hip: { rot: 0 },
   },
+  // Knees to chest (Apanasana): lying on the back, both knees drawn in toward the chest, hands on the
+  // shins below the knees (no hand–shin force in the physics), head and shoulders on the mat.
+  apanasana: {
+    root: { pitch: -90 },
+    hip: { flex: 120 },
+    knee: { flex: 125 },
+    ankle: { dorsi: -15 },
+    shoulder: { flex: 34, abd: 1, rot: -13 },
+    elbow: { flex: 15 },
+    wrist: { pron: 90 },
+  },
+  // Reclined pigeon / figure 4 (Supta Kapotasana), left ankle over the right thigh: lying on the back,
+  // right hip and knee bent 90° (shin level), the left ankle resting on the front of the right thigh
+  // below the knee, left knee open to the side, hands clasped behind the right thigh. Left hip angles
+  // built from where the ankle rests; the ankle-on-thigh and hands-on-thigh contacts carry no force in
+  // the physics. Passed through on the way: the left knee drawn up, then the ankle crossed over the
+  // right knee with the right foot still on the mat.
+  supta_kapotasana_knee_up: {
+    root: { pitch: -90 },
+    hip_L: { flex: 90 },
+    knee_L: { flex: 95 },
+    ankle_L: { dorsi: 5 },
+    hip_R: { flex: 47 },
+    knee_R: { flex: 103 },
+    ankle_R: { dorsi: 9 },
+    shoulder: { flex: -8, abd: 6 },
+    wrist: { pron: 90 },
+  },
+  supta_kapotasana_cross: {
+    root: { pitch: -90 },
+    hip_L: { flex: 128, abd: -93, rot: 37 },
+    knee_L: { flex: 125 },
+    ankle_L: { dorsi: 10 },
+    hip_R: { flex: 47 },
+    knee_R: { flex: 103 },
+    ankle_R: { dorsi: 9 },
+    shoulder: { flex: -8, abd: 6 },
+    wrist: { pron: 90 },
+  },
+  supta_kapotasana: {
+    root: { pitch: -90 },
+    hip_L: { flex: 124, abd: -103, rot: -6 },
+    knee_L: { flex: 128 },
+    ankle_L: { dorsi: 10 },
+    hip_R: { flex: 92 },
+    knee_R: { flex: 90 },
+    ankle_R: { dorsi: 5 },
+    shoulder: { flex: 18, abd: -6, rot: -11 },
+    elbow: { flex: 15 },
+    wrist: { pron: 90 },
+  },
   // One-knee hug (Eka Pada Pavanamuktasana): lying on the back, the left knee drawn to the chest,
   // hands clasped on the shin below the knee, right leg long on the mat.
   // the left heel slid halfway in along the mat
@@ -2776,6 +2827,18 @@ export const POSE_FIT = {
   supine_arms_up: { support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R'], params: [] },
   supta_tadasana: {
     support: ['pelvis', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot'],
+  },
+  apanasana: {
+    support: ['pelvis', 'scapula_L', 'scapula_R'],
+    at: [['wrist_L', 'knee_L', [0.0, -0.1, 0.06]], ['wrist_R', 'knee_R', [0.0, -0.1, 0.06]]], // hands on the shins
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot'],
+  },
+  supta_kapotasana_knee_up: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['ankle_R.dorsi'] },
+  supta_kapotasana_cross: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['ankle_R.dorsi'] },
+  supta_kapotasana: {
+    support: ['pelvis', 'scapula_L', 'scapula_R'],
+    at: [['wrist_L', 'hip_R', [0.03, -0.3, -0.07]], ['wrist_R', 'hip_R', [-0.05, -0.3, -0.07]]], // hands clasped behind the right thigh
     params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot'],
   },
   pavanamuktasana_heel_slide: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'ankle_L'], params: ['hip_L.flex', 'ankle_L.dorsi'] },

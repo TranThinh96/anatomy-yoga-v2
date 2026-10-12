@@ -20,11 +20,11 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 11 | 10 | 21 |
-| Nằm (ngửa / sấp) | 12 | 2 | 14 |
+| Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **85** | **33** | **118** |
+| **Tổng** | **87** | **31** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 3 mục P1 còn lại. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 5 mục P1 còn lại. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -183,9 +183,9 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `constructive_rest` | – | Nằm co gối (nghỉ xây dựng) | Constructive Rest | Cơ bản | P1 | `supine` | pose `supine_knees` đã có, chỉ cần mục asana |
 | ✅ | `makarasana` | Makarasana | Cá sấu (nằm sấp nghỉ) | Crocodile | Cơ bản | P1 | `prone` | |
 | ✅ | `supta_matsyendrasana` | Supta Matsyendrasana | Vặn mình nằm ngửa | Supine Twist | Cơ bản | P1 | `supine_knees` | 🔁 · biến thể gối ôm dưới gối 🧱 |
-| ⬜ | `apanasana` | Apanasana | Ôm gối trước ngực | Knees-to-Chest | Cơ bản | P1 | `supine_knees` | 🤝 tay ôm gối → biến thể tay đặt hờ |
+| ✅ | `apanasana` | Apanasana | Ôm gối trước ngực | Knees-to-Chest | Cơ bản | P1 | `supine_knees` | 🤝 tay ôm gối → biến thể tay đặt hờ |
 | ✅ | `supta_padangusthasana` | Supta Padangusthasana | Nằm ngửa kéo chân | Reclined Hand-to-Big-Toe | Cơ bản | P1 | `supine` | 🔁 🪢 dây (dạng phục hồi phổ biến nhất) |
-| ⬜ | `supta_kapotasana` | Supta Kapotasana | Bồ câu nằm ngửa (số 4) | Reclined Pigeon / Figure-4 | Cơ bản | P1 | `supine_knees` | 🔁 🤝 mắt cá đặt trên đùi |
+| ✅ | `supta_kapotasana` | Supta Kapotasana | Bồ câu nằm ngửa (số 4) | Reclined Pigeon / Figure-4 | Cơ bản | P1 | `supine_knees` | 🔁 🤝 mắt cá đặt trên đùi |
 | ✅ | `jathara_parivartanasana` | Jathara Parivartanasana | Vặn bụng | Revolved Abdomen | Trung bình | P2 | `supine` | 🔁 |
 | ✅ | `ananda_balasana` | Ananda Balasana | Em bé hạnh phúc | Happy Baby | Cơ bản | P2 | `apanasana` | 🤝 tay nắm bàn chân → 🪢 dây |
 | ✅ | `pavanamuktasana` | Eka Pada Pavanamuktasana | Ôm một gối | Wind-Relieving | Cơ bản | P2 | `supine` | 🔁 🤝 |
@@ -277,6 +277,7 @@ Ký hiệu trong **Ghi chú**:
 - Chào mặt trời B: như A, thêm Cái ghế và Chiến binh I (bên trái) giữa hai lần vinyasa; Chiến binh I dùng thế chân dài của lunge (`virabhadrasana_1_long`, ~0,95 m) để bàn chân không trượt khi hạ gót sau.
 - Đạo cụ mới: ghế (chỉ mặt ghế là bề mặt đỡ, cao 45 cm). Biến thể Gác cẳng chân lên ghế (của Gác chân lên tường) – dạng tĩnh; gót chân tựa mặt ghế vì điểm tiếp xúc bắp chân chỉ tựa được vào tường.
 - Ngồi xếp bằng (+ nghiêng, vặn): cẳng chân bắt chéo đặt sát nhau (không truyền lực chân – chân), tay trên gối không truyền lực. Ngồi xếp bằng và Nghiêng người dạng tĩnh (tay chống sàn rồi rời sàn đẩy thân lên 4–8 cm giữa chừng); Vặn mình có chuyển động.
+- Ôm hai gối, Bồ câu nằm ngửa (số 4): có chuyển động; tay ôm cẳng chân / đan sau đùi và cổ chân gác trên đùi đặt sát nhưng không truyền lực.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
