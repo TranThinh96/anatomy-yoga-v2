@@ -1973,6 +1973,42 @@ export const POSES = {
     wrist_L: { ext: 93 },
     shoulder_R: { flex: -6, abd: 184, rot: -90 },
   },
+  // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
+  // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
+  // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
+  agnistambhasana: {
+    hip_L: { flex: 106, abd: -90, rot: -15 },
+    knee_L: { flex: 106 },
+    ankle_L: { dorsi: 5 },
+    hip_R: { flex: 106, abd: -90, rot: -3 },
+    knee_R: { flex: 106 },
+    ankle_R: { dorsi: 3 },
+    root: { pitch: 5, roll: 1 },
+    lumbar: { flex: -5 },
+    shoulder_L: { flex: 36, abd: 0 },
+    shoulder_R: { flex: 36, abd: 5 },
+    elbow_L: { flex: 8 },
+    elbow_R: { flex: 8 },
+    wrist: { pron: 90 },
+  },
+  // Cow face (Gomukhasana): the right knee stacked over the left in front of the pelvis, the feet beside
+  // the opposite hips; the right arm up with the elbow bent behind the head, the left arm down with the
+  // back of the hand up the spine, the hands reaching for each other (no hand–hand or knee–knee force in
+  // the physics). Hip angles built from the thigh and shin directions.
+  gomukhasana: {
+    hip_L: { flex: 77, abd: -90, rot: -2 },
+    knee_L: { flex: 136 },
+    ankle_L: { dorsi: -30 },
+    hip_R: { flex: 78, abd: -85, rot: -18 },
+    knee_R: { flex: 136 },
+    ankle_R: { dorsi: -48 },
+    root: { pitch: 5, roll: -2 },
+    lumbar: { flex: -5 },
+    shoulder_R: { flex: 188, abd: 21, rot: 53 },
+    elbow_R: { flex: 125 },
+    shoulder_L: { flex: 39, abd: 50, rot: -113 },
+    elbow_L: { flex: 83 },
+  },
   // Seated twist (Parivrtta Sukhasana) to the left: right hand on the left knee, left hand on the
   // mat behind the hips, the turn from the chest.
   parivrtta_sukhasana: {
@@ -3138,6 +3174,24 @@ export const POSE_FIT = {
     flat: ['wrist_L'],
     dir: [['shoulder_R', [0, -1, 0], [0.55, 0.83, 0]]], // top arm reaching up and over to the left
     params: ['shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.abd', 'shoulder_R.flex', 'thorax.side', 'ankle.dorsi'],
+  },
+  agnistambhasana: {
+    support: ['pelvis', 'hip_R', 'ankle_R'],
+    at: [['wrist_L', 'pelvis', [0.16, 0.13, 0.38]], ['wrist_R', 'pelvis', [-0.2, 0.13, 0.38]]], // hands resting on the top knee and foot
+    params: ['root.roll', 'ankle_R.dorsi', 'knee_R.flex', 'hip_R.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
+  },
+  gomukhasana: {
+    support: ['pelvis', 'hip_L', 'ankle_L', 'ankle_R'],
+    at: [
+      ['wrist_R', 'thorax', [-0.0, 0.2, -0.14]], // top hand between the shoulder blades
+      ['wrist_L', 'thorax', [0.0, -0.08, -0.15]], // bottom hand on the back of the waist
+    ],
+    dir: [
+      ['shoulder_R', [0, -1, 0], [0, 1, 0]], // top upper arm pointing straight up, elbow beside the head
+      ['shoulder_L', [0, -1, 0], [0.2, -0.85, -0.5]], // bottom upper arm down and back
+      ['elbow_L', [0, -1, 0], [-0.9, 0.4, 0]], // bottom forearm across the back
+    ],
+    params: ['root.roll', 'ankle_R.dorsi', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'elbow_R.flex', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex'],
   },
   parivrtta_sukhasana: {
     support: ['pelvis', 'hip_L', 'hip_R', 'wrist_L'],

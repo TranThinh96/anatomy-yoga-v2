@@ -19,12 +19,12 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
-| Ngồi (gồm Balasana) | 14 | 7 | 21 |
+| Ngồi (gồm Balasana) | 16 | 5 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **91** | **27** | **118** |
+| **Tổng** | **93** | **25** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 2 mục Marichi. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực). `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -164,8 +164,8 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `baddha_konasana` | Baddha Konasana | Góc cố định (Con bướm) | Bound Angle | Cơ bản | P1 | `dandasana` | 🤝 lòng bàn chân áp nhau · biến thể gạch dưới đùi / chăn 🧱 |
 | ✅ | `parivrtta_sukhasana` | Parivrtta Sukhasana | Vặn mình ngồi xếp bằng | Easy Seated Twist | Cơ bản | P1 | `sukhasana` | 🔁 |
 | ✅ | `parsva_sukhasana` | Parsva Sukhasana | Nghiêng người ngồi | Seated Side Bend | Cơ bản | P1 | `sukhasana` | 🔁 |
-| ⬜ | `gomukhasana` | Gomukhasana | Mặt bò | Cow Face | Trung bình | P2 | `dandasana` | 🔁 🤝 gối chồng gối, tay móc sau lưng → biến thể 🪢 dây |
-| ⬜ | `agnistambhasana` | Agnistambhasana | Khúc củi | Fire Log | Trung bình | P2 | `sukhasana` | 🔁 🤝 cẳng chân chồng lên nhau · biến thể chăn dưới gối 🧱 |
+| ✅ | `gomukhasana` | Gomukhasana | Mặt bò | Cow Face | Trung bình | P2 | `dandasana` | 🔁 🤝 gối chồng gối, tay móc sau lưng → biến thể 🪢 dây |
+| ✅ | `agnistambhasana` | Agnistambhasana | Khúc củi | Fire Log | Trung bình | P2 | `sukhasana` | 🔁 🤝 cẳng chân chồng lên nhau · biến thể chăn dưới gối 🧱 |
 | ✅ | `bharadvajasana` | Bharadvajasana I | Vặn mình Bharadvaja | Bharadvaja's Twist | Trung bình | P2 | `dandasana` | 🔁 |
 | ✅ | `marichyasana_1` | Marichyasana I | Marichi I (gập) | Marichi's Pose I | Trung bình | P2 | `dandasana` | 🔁 🤝 tay ôm gối |
 | ✅ | `marichyasana_3` | Marichyasana III | Marichi III (vặn) | Marichi's Pose III | Trung bình | P2 | `dandasana` | 🔁 🤝 khuỷu móc gối → biến thể ôm gối |
@@ -282,6 +282,8 @@ Ký hiệu trong **Ghi chú**:
 - Ngồi xổm: dạng tĩnh, tay chắp, khuỷu trong gối (không truyền lực); cổ chân gập mu ~45° để gót chạm sàn – lưu ý nhắc kê chăn dưới gót.
 - Marichi III: khuỷu tay trái đặt sát mặt ngoài gối phải, cẳng tay hướng lên (không truyền lực tay – gối); tay trái nhấc khỏi sàn trước khi với tới gối (như Vặn mình ngồi). Neo chậu + bàn chân (đùi trái hơi hở sàn ~1,5 cm).
 - Marichi I: dạng chuẩn bị – hai tay ôm cẳng chân phải dưới gối, lưng dài, thân nghiêng ra trước ~10–15°. Nghiêng sâu hơn thì bàn chân phải phải trượt xa ra trước (đùi phải không thể dựng cao hơn) nên không còn đúng dáng; bản khóa tay sau lưng cần tiếp xúc tay – tay.
+- Khúc củi: dạng tĩnh; cẳng chân chồng song song mép thảm (dưới đặt sàn, trên đặt sát – không truyền lực). Mô hình không có điểm tiếp xúc mặt ngoài cẳng chân nên chân dưới tựa trên mặt ngoài đùi và bàn chân. Chưa có biến thể chăn dưới gối.
+- Mặt bò: dạng tĩnh; gối chồng gối, hai bàn chân cạnh hông. Tay: tay trên khuỷu hướng lên, bàn tay sau gáy; tay dưới vòng sau lưng ngang eo – hai tay cách nhau ~25 cm (dạng dùng dây, nhưng dây trong mô hình chỉ nối tay – bàn chân nên chưa vẽ). Đai vai cứng nên tay dưới cần xoay trong lớn hơn thực tế ở khớp vai – cánh tay.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
