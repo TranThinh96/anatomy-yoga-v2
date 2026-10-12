@@ -750,7 +750,40 @@ export const POSES = {
     ankle_R: { dorsi: 23 },
     shoulder: { flex: 170, abd: 4 },
     scapula: { elev: 8 },
+  },  // Low lunge with the palms together in front of the chest: the step before the revolved lunge.
+  anjaneyasana_prayer: {
+    root: { pitch: 14 },
+    lumbar: { flex: -10 },
+    thorax: { flex: -8 },
+    hip_L: { flex: 123 },
+    knee_L: { flex: 111 },
+    ankle_L: { dorsi: 3 },
+    hip_R: { flex: -22 },
+    knee_R: { flex: 76 },
+    ankle_R: { dorsi: 25 },
+    shoulder: { flex: 22, abd: 21, rot: -39 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
   },
+  // Revolved side angle, back knee down (Parivrtta Parsvakonasana, the low-lunge form), left leg in
+  // front: the trunk leans forward over the front thigh and turns to the left, palms together, the
+  // right elbow beside the outer left knee (hooking it is an arm-on-leg contact the physics lacks).
+  parivrtta_parsvakonasana: {
+    root: { pitch: 50 },
+    lumbar: { flex: 5, rot: 12 },
+    thorax: { flex: 15, rot: 50 },
+    neck: { flex: -15, rot: 20 },
+    hip_L: { flex: 159 },
+    knee_L: { flex: 111 },
+    ankle_L: { dorsi: 3 },
+    hip_R: { flex: 14 },
+    knee_R: { flex: 76 },
+    ankle_R: { dorsi: 25 },
+    shoulder: { flex: 27, abd: 28, rot: -40 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
+
   // High (crescent) lunge: the lunge legs of Ashwa Sanchalanasana, back leg straight on the ball of
   // the foot, trunk upright over the pelvis, arms reaching up.
   crescent_lunge: {
@@ -2740,6 +2773,25 @@ export const POSE_FIT = {
     balance: true,
     at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]],
     params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'root.pitch&hip.flex', 'ankle.dorsi'],
+  },
+  anjaneyasana_prayer: {
+    support: ['ankle_L', 'hip_R|knee_R', 'ankle_R'],
+    flat: ['ankle_L'],
+    balance: true,
+    rel: [['ankle_L', 'knee_R', [-0.152, -0.6]]],
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'ankle_R.dorsi'],
+  },
+  parivrtta_parsvakonasana: {
+    support: ['ankle_L', 'hip_R|knee_R', 'ankle_R'],
+    flat: ['ankle_L'],
+    balance: true,
+    rel: [['ankle_L', 'knee_R', [-0.152, -0.6]]],
+    at: [
+      ['wrist_L', 'thorax', [0.03, 0.12, 0.2]], // palms together at the chest
+      ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]],
+    ],
+    params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'ankle_R.dorsi'],
   },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
   ardha_purvottanasana: {

@@ -14,7 +14,7 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
-| Đứng | 23 | 3 | 26 |
+| Đứng | 24 | 2 | 26 |
 | Gập người | 5 | 3 | 8 |
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
@@ -22,9 +22,9 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngồi (gồm Balasana) | 8 | 13 | 21 |
 | Nằm (ngửa / sấp) | 11 | 3 | 14 |
 | Chuỗi động tác | 5 | 2 | 7 |
-| **Tổng** | **79** | **39** | **118** |
+| **Tổng** | **80** | **38** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 17 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 18 mục Đợt 4. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -89,7 +89,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `parsva_tadasana` | Parsva Urdhva Hastasana | Nghiêng người đứng | Standing Side Bend | Cơ bản | P1 | `urdhva_hastasana` | 🔁 |
 | ✅ | `ardha_chandrasana` | Ardha Chandrasana | Nửa vầng trăng | Half Moon | Trung bình | P2 | `trikonasana` | 🔁 ⚖ · biến thể tay trên gạch / lưng tựa tường 🧱 |
 | ✅ | `parivrtta_trikonasana` | Parivrtta Trikonasana | Tam giác vặn xoắn | Revolved Triangle | Trung bình | P2 | `parsvottanasana` | 🔁 · biến thể gạch 🧱 |
-| ⬜ | `parivrtta_parsvakonasana` | Parivrtta Parsvakonasana | Góc nghiêng vặn xoắn | Revolved Side Angle | Trung bình | P2 | `crescent_lunge` | 🔁 🤝 khuỷu móc đùi → biến thể tay chống gạch / hạ gối |
+| ✅ | `parivrtta_parsvakonasana` | Parivrtta Parsvakonasana | Góc nghiêng vặn xoắn | Revolved Side Angle | Trung bình | P2 | `crescent_lunge` | 🔁 🤝 khuỷu móc đùi → biến thể tay chống gạch / hạ gối |
 | ✅ | `parivrtta_utkatasana` | Parivrtta Utkatasana | Cái ghế vặn xoắn | Revolved Chair | Trung bình | P2 | `utkatasana` | 🔁 🤝 khuỷu móc đùi → biến thể tay chắp, không móc |
 | ✅ | `skandasana` | Skandasana | Lunge ngang | Side Lunge | Trung bình | P2 | `utkata_konasana` | 🔁 |
 | ✅ | `utthita_hasta_padangusthasana` | Utthita Hasta Padangusthasana | Tay nắm ngón chân cái | Extended Hand-to-Big-Toe | Trung bình | P2 | `tadasana` | 🔁 ⚖ 🤝 → biến thể 🪢 dây / chân gác ghế hoặc tường 🧱 |
@@ -273,6 +273,7 @@ Ký hiệu trong **Ghi chú**:
 - Chuẩn bị trồng chuối đầu: dạng tĩnh, cẳng tay tam giác, tay đan. Bộ giải lực dồn ~35 % trọng lượng lên đỉnh đầu (ít tốn sức khớp nhất) – ngược với mục tiêu tập; ghi trong lưu ý.
 - Cái ghế vặn xoắn: dạng tay chắp, khuỷu đặt cạnh gối (chưa móc – chưa có tiếp xúc tay – chân); có chuyển động Núi → Cái ghế tay chắp → xoay.
 - Tam giác vặn xoắn: dạng tĩnh, tay phải trên gạch nằm nghiêng (15 cm) phía trong bàn chân trái. Chuyển động vào tư thế bị giật như Nửa vầng trăng (tay đáp lên gạch làm điểm đỡ đổi đột ngột). Bộ giải lực dồn 54 % lên tay – ghi trong lưu ý.
+- Góc nghiêng vặn xoắn: dạng hạ gối sau, tay chắp, có chuyển động (qua chuỗi bước chân vào Lunge thấp). Chậu nghiêng trước 50° nên cơ thắt lưng – chậu chân sau không dài ra trong mô hình (chỉ cơ thẳng đùi); vai trò kéo giãn ghi theo đó.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
