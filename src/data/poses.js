@@ -1776,6 +1776,61 @@ export const POSES = {
     elbow: { flex: -5 },
     wrist: { pron: 90 },
   },
+  // Easy seat (Sukhasana): sitting cross-legged, shins crossed (left shin behind, each foot under the
+  // opposite shin), knees wide and a little above the mat, trunk upright, hands resting on the knees.
+  // Hip angles built from the thigh and shin directions; the feet lie by the shins without a
+  // foot-on-leg force (a contact the physics lacks).
+  sukhasana: {
+    hip_L: { flex: 117, abd: -95, rot: -1 },
+    knee_L: { flex: 130 },
+    ankle_L: { dorsi: -20 },
+    hip_R: { flex: 117, abd: -99, rot: -3 },
+    knee_R: { flex: 120 },
+    ankle_R: { dorsi: -20 },
+    root: { pitch: 5 },
+    lumbar: { flex: -5 },
+    shoulder: { flex: 38, abd: 8 },
+    elbow: { flex: 5 },
+    wrist: { pron: 90 },
+  },
+  // Seated side bend (Parsva Sukhasana) to the left: left hand on the mat beside the hip, right arm
+  // up and over, the trunk bending to the left, both sit bones down.
+  parsva_sukhasana: {
+    hip_L: { flex: 117, abd: -95, rot: -1 },
+    knee_L: { flex: 130 },
+    ankle_L: { dorsi: -20 },
+    hip_R: { flex: 117, abd: -99, rot: -3 },
+    knee_R: { flex: 120 },
+    ankle_R: { dorsi: -20 },
+    root: { pitch: 5 },
+    lumbar: { flex: -5, side: 10 },
+    thorax: { side: 13 },
+    neck: { side: 5 },
+    shoulder_L: { flex: -25, abd: 12 },
+    elbow_L: { flex: 10 },
+    wrist_L: { ext: 93 },
+    shoulder_R: { flex: -6, abd: 184, rot: -90 },
+  },
+  // Seated twist (Parivrtta Sukhasana) to the left: right hand on the left knee, left hand on the
+  // mat behind the hips, the turn from the chest.
+  parivrtta_sukhasana: {
+    hip_L: { flex: 117, abd: -95, rot: -1 },
+    knee_L: { flex: 130 },
+    ankle_L: { dorsi: -20 },
+    hip_R: { flex: 117, abd: -99, rot: -3 },
+    knee_R: { flex: 120 },
+    ankle_R: { dorsi: -20 },
+    root: { pitch: 5 },
+    lumbar: { flex: -5, rot: 8 },
+    thorax: { rot: 35 },
+    neck: { rot: 25 },
+    shoulder_R: { flex: 31, abd: -14, rot: 9 },
+    elbow_R: { flex: 20 },
+    wrist_R: { pron: 90 },
+    shoulder_L: { flex: -17, abd: 8 },
+    elbow_L: { flex: 5 },
+    wrist_L: { ext: 73 },
+  },
   // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
   // the pelvis can tip forward over the thighs.
   dandasana_blanket: {
@@ -2834,6 +2889,20 @@ export const POSE_FIT = {
       ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]],
     ],
     params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'ankle_R.dorsi'],
+  },
+  sukhasana: { support: ['pelvis', 'hip_L', 'hip_R'], params: ['ankle.dorsi'] },
+  parsva_sukhasana: {
+    support: ['pelvis', 'hip_L', 'hip_R', 'wrist_L'],
+    flat: ['wrist_L'],
+    dir: [['shoulder_R', [0, -1, 0], [0.55, 0.83, 0]]], // top arm reaching up and over to the left
+    params: ['shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.abd', 'shoulder_R.flex', 'thorax.side', 'ankle.dorsi'],
+  },
+  parivrtta_sukhasana: {
+    support: ['pelvis', 'hip_L', 'hip_R', 'wrist_L'],
+    flat: ['wrist_L'],
+    at: [['wrist_R', 'knee_L', [0.0, 0.06, 0.08]]], // right hand on the left knee (no force)
+    rel: [['pelvis', 'wrist_L', [0.1, -0.25]]], // left hand behind the hips
+    params: ['shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'ankle.dorsi'],
   },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
   ardha_purvottanasana: {
