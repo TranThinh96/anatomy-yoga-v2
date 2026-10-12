@@ -973,6 +973,33 @@ export const POSES = {
     neck: { flex: -20 },
     head: { flex: -8 },
   },
+  // Handstand at the wall (Adho Mukha Vrksasana), chest to the wall (walked up from plank): hands
+  // shoulder-width, arms straight overhead, body upside down and long, toes resting on the wall.
+  adho_mukha_vrksasana_wall: {
+    root: { pitch: 178 },
+    hip: { flex: 0 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -20 },
+    lumbar: { flex: -5 },
+    shoulder: { flex: 179, abd: 5 },
+    elbow: { flex: 0 },
+    wrist: { ext: 99, pron: 180 },
+    neck: { flex: -20 },
+  },
+  // Forearm stand at the wall (Pincha Mayurasana), chest to the wall: forearms parallel on the mat as in
+  // Dolphin, upper arms vertical, body upside down and long, toes resting on the wall.
+  pincha_mayurasana_wall: {
+    root: { pitch: 178 },
+    hip: { flex: 0 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -20 },
+    lumbar: { flex: -5 },
+    shoulder: { flex: 179 },
+    elbow: { flex: 85 },
+    wrist: { pron: 180 },
+    neck: { flex: -45 },
+    head: { flex: -20 },
+  },
   ardha_pincha_mayurasana: {
     root: { pitch: 151 },
     hip: { flex: 109 },
@@ -2374,6 +2401,9 @@ export const POSE_PROPS = {
   // a chair facing the body, the lower legs on its seat
   viparita_karani_chair: [{ type: 'chair', at: [0, 0.3] }],
   // the wall a little beyond the buttocks (legs up the wall)
+  // the wall in front of the chest, the toes resting on it
+  adho_mukha_vrksasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
+  pincha_mayurasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
   viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
   viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
 };
@@ -2889,6 +2919,20 @@ export const POSE_FIT = {
     support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],
     flat: ['elbow_L', 'elbow_R'],
     params: ['root.pitch&shoulder.flex', 'shoulder.flex', 'elbow.flex', 'ankle.dorsi'],
+  },
+  adho_mukha_vrksasana_wall: {
+    support: ['wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    wall: ['ankle_L', 'ankle_R'], // toes on the wall
+    rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
+    params: ['wrist.ext'],
+  },
+  pincha_mayurasana_wall: {
+    support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R'],
+    flat: ['elbow_L', 'elbow_R'],
+    wall: ['ankle_L', 'ankle_R'], // toes on the wall
+    dir: [['shoulder_L', [0, -1, 0], [0, -1, 0.1]], ['shoulder_R', [0, -1, 0], [0, -1, 0.1]]], // upper arms near vertical
+    params: ['root.pitch', 'shoulder.flex', 'elbow.flex'],
   },
   ardha_pincha_mayurasana: {
     support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'],

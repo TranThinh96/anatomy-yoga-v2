@@ -17,14 +17,14 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Đứng | 25 | 1 | 26 |
 | Gập người | 7 | 1 | 8 |
 | Ngửa sau | 15 | 2 | 17 |
-| Chống tay & thăng bằng tay | 11 | 8 | 19 |
+| Chống tay & thăng bằng tay | 13 | 6 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 18 | 3 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **99** | **19** | **118** |
+| **Tổng** | **101** | **17** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 6 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 8 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -140,8 +140,8 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `tolasana` | Tolasana | Cái cân | Scale | Nâng cao | P3 | `padmasana` | 🤝 chân kiết già |
 | ⬜ | `lolasana` | Lolasana | Mặt dây chuyền | Pendant | Nâng cao | P3 | `vajrasana` | ⚖ |
 | ⬜ | `astavakrasana` | Astavakrasana | Tám góc | Eight-Angle | Nâng cao | P3 | `dandasana` | 🔁 ⚖ 🤝 |
-| ⬜ | `pincha_mayurasana` | Pincha Mayurasana | Đứng cẳng tay (Lông công) | Forearm Stand | Nâng cao | P3 | `ardha_pincha_mayurasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
-| ⬜ | `adho_mukha_vrksasana` | Adho Mukha Vrksasana | Trồng chuối | Handstand | Nâng cao | P3 | `adho_mukha_svanasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
+| ✅ | `pincha_mayurasana` | Pincha Mayurasana | Đứng cẳng tay (Lông công) | Forearm Stand | Nâng cao | P3 | `ardha_pincha_mayurasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
+| ✅ | `adho_mukha_vrksasana` | Adho Mukha Vrksasana | Trồng chuối | Handstand | Nâng cao | P3 | `adho_mukha_svanasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
 
 ### 2.5 Đảo ngược (nhóm mới)
 
@@ -290,6 +290,7 @@ Ký hiệu trong **Ghi chú**:
 - Con diệc (P3): dạng tĩnh, dùng dây (lực dây tay – bàn chân có tính). Chân dưới gập kiểu Janu Sirsasana vì mô hình không gập gối đủ cho chân Anh hùng; bàn chân dưới chạm sàn làm rộng chân đế (không có thì trọng tâm rơi ra trước ụ ngồi).
 - Bán kiết già (P3): dạng tĩnh; bàn chân trái đặt sát trên đùi phải (không truyền lực), gối trái cách sàn ~12 cm. Chậu hơi nghiêng (roll 8°) để đùi và bàn chân phải cùng chạm sàn, thắt lưng nghiêng bù cho thân thẳng.
 - Chào mặt trăng (P3): bản rút gọn – Núi → tay lên → nghiêng trái / phải → Nữ thần → Lunge ngang trái / phải → Núi (thêm `parsva_tadasana_R`, `skandasana_R` đối xứng). Chưa có Tam giác, Gập người chân trước, Lunge thấp vì dùng thế chân khác (đổi thế chân giữa chừng cần nhiều bước). Khi bước rộng chân, trọng tâm không dồn sang chân trụ (như các mục bước chân khác của app).
+- Trồng chuối, Đứng cẳng tay (P3): dạng tĩnh, bản mặt hướng vào tường (đi bộ chân lên tường từ Plank), mũi chân tựa tường gánh 2–4 % trọng lượng; app xếp ở nhóm Đảo ngược. Bản lưng hướng tường (đá chân lên) và bản tự do chưa có. Đứng cẳng tay: cổ ngửa ~45° để đầu không chạm sàn.
 - ⛔ Bánh xe (`urdhva_dhanurasana`): đã thử – đai vai mô hình cứng (bả vai không xoay lên, không nâng) nên vai không thể nằm trên cổ tay. Để bàn tay áp sàn, bộ fit phải đẩy cổ tay ngửa ~120°, cột sống ngực ngửa ~45° hoặc háng duỗi ~45° – đều vượt tầm thật, dạy sai. Cần mô hình hoá xoay lên của xương bả vai trước.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
