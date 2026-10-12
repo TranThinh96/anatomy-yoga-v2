@@ -1593,6 +1593,25 @@ export const POSES = {
     shoulder: { flex: -16, abd: 10 },
     wrist: { ext: 80 },
   },
+  // Revolved head-to-knee (Parivrtta Janu Sirsasana), beginner form: the left leg straight out to the
+  // side, the right sole against the inner left thigh; the trunk bends sideways over the left leg with
+  // the chest turned up, the left hand on the inner left shin, the right arm reaching over the ear
+  // toward the left foot (no hand–shin force in the physics).
+  parivrtta_janu_sirsasana: {
+    hip_L: { flex: 91, rot: 35 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 134, abd: -93, rot: 1 },
+    knee_R: { flex: 153 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { flex: -2, side: 22, rot: -5 },
+    thorax: { side: 32, rot: -18 },
+    neck: { rot: -20 },
+    shoulder_L: { flex: 16, abd: 76 },
+    elbow_L: { flex: 50 },
+    shoulder_R: { flex: -15, abd: 172, rot: -75 },
+    elbow_R: { flex: 5 },
+    root: { roll: 0 },
+  },
   // Head-to-knee (Janu Sirsasana): from janu_sirsasana_up the trunk folds from the hips over the
   // long left leg, chest turned toward it, hands resting on either side of the left shin.
   janu_sirsasana: {
@@ -2968,6 +2987,14 @@ export const POSE_FIT = {
     at: [['ankle_R', 'hip_L', [-0.07, -0.18, 0]]], // sole against the inner left thigh
     rel: [['pelvis', 'wrist_L', [0.25, -0.12]], ['pelvis', 'wrist_R', [-0.25, -0.12]]], // hands where they are in Dandasana
     params: ['hip_R.flex', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'shoulder.flex', 'wrist.ext'],
+  },
+  parivrtta_janu_sirsasana: {
+    support: ['pelvis', 'ankle_L', 'hip_R|knee_R'],
+    at: [
+      ['wrist_L', 'knee_L', [-0.05, -0.12, 0.05]], // left hand on the inner left shin
+    ],
+    dir: [['shoulder_R', [0, -1, 0], [0.85, 0.5, 0.15]]], // top arm reaching over toward the left foot
+    params: ['hip_L.flex', 'root.roll', 'shoulder_L.flex', 'shoulder_L.abd', 'elbow_L.flex', 'shoulder_R.abd', 'shoulder_R.flex', 'shoulder_R.rot'],
   },
   janu_sirsasana: {
     support: ['pelvis', 'ankle_L', 'hip_R|knee_R'],
