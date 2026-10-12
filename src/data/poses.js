@@ -1882,6 +1882,34 @@ export const POSES = {
     elbow_L: { flex: 5 },
     wrist_L: { ext: 73 },
   },
+  // Sitting with the knees bent up, feet flat and close together in front of the pelvis, hands on the
+  // shins: the start of Bound angle (the knees then fall open).
+  baddha_konasana_up: {
+    hip: { flex: 140 },
+    knee: { flex: 124 },
+    ankle: { dorsi: -21 },
+    root: { pitch: -8 },
+    lumbar: { flex: -5 },
+    shoulder: { flex: 55, abd: 8 },
+    elbow: { flex: 30 },
+    wrist: { pron: 90 },
+  },
+  // Bound angle (Baddha Konasana): sitting upright, soles together close to the pelvis, knees falling
+  // out to the sides, hands holding the feet (no hand–foot force in the physics). Hip angles built from
+  // where the feet rest; the model's ankle has no inversion, so the soles meet only partly.
+  baddha_konasana: {
+    hip_L: { flex: 148, abd: -76, rot: -4 },
+    knee_L: { flex: 134 },
+    ankle_L: { dorsi: -10 },
+    hip_R: { flex: 148, abd: -76, rot: -4 },
+    knee_R: { flex: 134 },
+    ankle_R: { dorsi: -10 },
+    root: { pitch: 5 },
+    lumbar: { flex: -5 },
+    shoulder: { flex: 30, abd: -6, rot: -11 },
+    elbow: { flex: 10 },
+    wrist: { pron: 90 },
+  },
   // Dandasana and Paschimottanasana sitting on a folded blanket: the sit bones raised a few cm so
   // the pelvis can tip forward over the thighs.
   dandasana_blanket: {
@@ -2966,6 +2994,17 @@ export const POSE_FIT = {
     at: [['wrist_R', 'knee_L', [0.0, 0.06, 0.08]]], // right hand on the left knee (no force)
     rel: [['pelvis', 'wrist_L', [0.1, -0.25]]], // left hand behind the hips
     params: ['shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'ankle.dorsi'],
+  },
+  baddha_konasana_up: {
+    support: ['pelvis', 'ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    rel: [['pelvis', 'ankle_L', [0.08, 0.38]]], // heels a little in front of the sit bones
+    params: ['hip.flex', 'knee.flex', 'ankle.dorsi', 'shoulder.flex'],
+  },
+  baddha_konasana: {
+    support: ['pelvis', 'ankle_L', 'ankle_R'],
+    at: [['wrist_L', 'ankle_L', [0.0, -0.02, 0.1]], ['wrist_R', 'ankle_R', [0.0, -0.02, 0.1]]], // hands on the feet
+    params: ['ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot'],
   },
   paschimottanasana_strap: { support: ['pelvis', 'ankle_L', 'ankle_R'], params: ['hip.flex', 'ankle.dorsi'] },
   ardha_purvottanasana: {

@@ -2531,6 +2531,40 @@ export const ASANAS = [
     cautions: ['Thoát vị đĩa đệm, loãng xương: xoay nhẹ; hỏi ý kiến bác sĩ.', 'Mô hình: tay đặt trên gối không truyền lực (chưa có tiếp xúc tay – chân).'],
   },
   {
+    id: 'baddha_konasana',
+    sanskrit: 'Baddha Konasana',
+    vi: 'Tư thế Góc cố định (Con bướm)',
+    en: 'Bound Angle',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [
+      { pose: 'baddha_konasana_up' },
+      { pose: 'baddha_konasana', anchor: ['pelvis'], move: 2.2, hold: 3 },
+    ],
+    loop: 'pingpong',
+    roles: {
+      contract: ['erector_spinae'],
+      stretch: ['adductors', 'gluteus_medius'],
+      stabilize: ['rectus_abdominis', 'trapezius'],
+    },
+    joints: [
+      ['hip', 'Gập + dạng + xoay ngoài sâu – gối rơi sang hai bên'],
+      ['knee', 'Gối gập sâu, hai lòng bàn chân áp nhau'],
+      ['lumbar_spine_joint', 'Lưng dưới giữ đường cong tự nhiên'],
+    ],
+    cues: [
+      'Từ Cây gậy, gập gối, áp hai lòng bàn chân vào nhau và kéo gót về gần chậu.',
+      'Tay nắm bàn chân hoặc cổ chân; ngồi thẳng trên xương ngồi, đỉnh đầu vươn lên.',
+      'Để gối rơi tự nhiên sang hai bên – không ấn gối xuống. Gối cao hơn hông: ngồi lên chăn gấp, kê gạch dưới đùi.',
+      'Muốn sâu hơn: thở ra gập thân về trước từ háng, lưng dài.',
+    ],
+    benefits: ['Kéo giãn cơ khép (đùi trong), mở háng', 'Tư thế ngồi thoải mái cho thở'],
+    cautions: [
+      'Đau gối, háng: đặt bàn chân xa chậu hơn, kê đỡ dưới đùi.',
+      'Mô hình: cổ chân không có chuyển động lật trong nên hai lòng bàn chân chỉ áp một phần; tay nắm bàn chân và chân áp chân không truyền lực (chưa có tiếp xúc thân – thân).',
+    ],
+  },
+  {
     id: 'siddhasana',
     sanskrit: 'Siddhasana',
     vi: 'Tư thế Ngồi thành tựu',

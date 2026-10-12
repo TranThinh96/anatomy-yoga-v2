@@ -19,12 +19,12 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngửa sau | 14 | 3 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
-| Ngồi (gồm Balasana) | 11 | 10 | 21 |
+| Ngồi (gồm Balasana) | 12 | 9 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **87** | **31** | **118** |
+| **Tổng** | **88** | **30** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 5 mục P1 còn lại. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 6 mục P1 còn lại. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -161,7 +161,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `sukhasana` | Sukhasana | Ngồi xếp bằng | Easy Seat | Cơ bản | P1 | `dandasana` | 🤝 cẳng chân chéo nhau · biến thể ngồi chăn gấp 🧱 |
 | ✅ | `vajrasana` | Vajrasana | Ngồi quỳ (Kim cương) | Thunderbolt | Cơ bản | P1 | `kneeling` | mông trên gót (giống `balasana` `at`) |
 | ✅ | `virasana` | Virasana | Anh hùng | Hero Pose | Cơ bản | P1 | `kneeling` | biến thể ngồi gạch 🧱 |
-| ⬜ | `baddha_konasana` | Baddha Konasana | Góc cố định (Con bướm) | Bound Angle | Cơ bản | P1 | `dandasana` | 🤝 lòng bàn chân áp nhau · biến thể gạch dưới đùi / chăn 🧱 |
+| ✅ | `baddha_konasana` | Baddha Konasana | Góc cố định (Con bướm) | Bound Angle | Cơ bản | P1 | `dandasana` | 🤝 lòng bàn chân áp nhau · biến thể gạch dưới đùi / chăn 🧱 |
 | ✅ | `parivrtta_sukhasana` | Parivrtta Sukhasana | Vặn mình ngồi xếp bằng | Easy Seated Twist | Cơ bản | P1 | `sukhasana` | 🔁 |
 | ✅ | `parsva_sukhasana` | Parsva Sukhasana | Nghiêng người ngồi | Seated Side Bend | Cơ bản | P1 | `sukhasana` | 🔁 |
 | ⬜ | `gomukhasana` | Gomukhasana | Mặt bò | Cow Face | Trung bình | P2 | `dandasana` | 🔁 🤝 gối chồng gối, tay móc sau lưng → biến thể 🪢 dây |
@@ -278,6 +278,7 @@ Ký hiệu trong **Ghi chú**:
 - Đạo cụ mới: ghế (chỉ mặt ghế là bề mặt đỡ, cao 45 cm). Biến thể Gác cẳng chân lên ghế (của Gác chân lên tường) – dạng tĩnh; gót chân tựa mặt ghế vì điểm tiếp xúc bắp chân chỉ tựa được vào tường.
 - Ngồi xếp bằng (+ nghiêng, vặn): cẳng chân bắt chéo đặt sát nhau (không truyền lực chân – chân), tay trên gối không truyền lực. Ngồi xếp bằng và Nghiêng người dạng tĩnh (tay chống sàn rồi rời sàn đẩy thân lên 4–8 cm giữa chừng); Vặn mình có chuyển động.
 - Ôm hai gối, Bồ câu nằm ngửa (số 4): có chuyển động; tay ôm cẳng chân / đan sau đùi và cổ chân gác trên đùi đặt sát nhưng không truyền lực.
+- Con bướm: bắt đầu từ ngồi co gối (bàn chân đặt sàn), gối mở dần. Cổ chân mô hình không lật trong nên hai lòng bàn chân chỉ áp một phần.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)
