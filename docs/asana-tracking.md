@@ -15,16 +15,16 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
 | Đứng | 25 | 1 | 26 |
-| Gập người | 6 | 2 | 8 |
+| Gập người | 7 | 1 | 8 |
 | Ngửa sau | 15 | 2 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 16 | 5 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **95** | **23** | **118** |
+| **Tổng** | **96** | **22** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 2 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 3 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -102,7 +102,7 @@ Ký hiệu trong **Ghi chú**:
 |---|---|---|---|---|---|---|---|---|
 | ✅ | `janu_sirsasana` | Janu Sirsasana | Gập người chạm gối | Head-to-Knee | Cơ bản | P1 | `dandasana` | 🔁 · bàn chân gập áp đùi trong 🤝 (đặt sát, không đỡ) · biến thể chăn gấp 🧱 / dây 🪢 |
 | ✅ | `upavistha_konasana` | Upavistha Konasana | Gập người dang chân ngồi | Wide-Angle Seated Fold | Cơ bản | P1 | `dandasana` | biến thể tựa gối ôm / chăn gấp 🧱 |
-| ⬜ | `padangusthasana` | Padangusthasana | Gập đứng nắm ngón chân cái | Big Toe Pose | Trung bình | P3 | `uttanasana` | 🤝 ngón tay móc ngón chân |
+| ✅ | `padangusthasana` | Padangusthasana | Gập đứng nắm ngón chân cái | Big Toe Pose | Trung bình | P3 | `uttanasana` | 🤝 ngón tay móc ngón chân |
 | ✅ | `parivrtta_janu_sirsasana` | Parivrtta Janu Sirsasana | Gập chạm gối vặn mình | Revolved Head-to-Knee | Trung bình | P3 | `janu_sirsasana` | 🔁 nghiêng bên + vặn |
 | ⬜ | `kurmasana` | Kurmasana | Con rùa | Tortoise | Trung bình | P3 | `upavistha_konasana` | 🤝 cánh tay dưới đùi |
 
@@ -286,6 +286,7 @@ Ký hiệu trong **Ghi chú**:
 - Mặt bò: dạng tĩnh; gối chồng gối, hai bàn chân cạnh hông. Tay: tay trên khuỷu hướng lên, bàn tay sau gáy; tay dưới vòng sau lưng ngang eo – hai tay cách nhau ~25 cm (dạng dùng dây, nhưng dây trong mô hình chỉ nối tay – bàn chân nên chưa vẽ). Đai vai cứng nên tay dưới cần xoay trong lớn hơn thực tế ở khớp vai – cánh tay.
 - Gập chạm gối vặn mình (P3): dạng tĩnh, bản dễ – tay trái trên ống chân trái, tay phải vươn qua tai; chân trái dạng ~35° (với háng gập 90°, góc dạng nằm trong `rot` vì khóa gimbal).
 - Wild Thing (P3): dạng tĩnh, tay phải trụ, bàn chân trái đặt sau chân phải. Bàn chân phải duỗi mũi (mô hình không có điểm tiếp xúc mép ngoài bàn chân) và cách sàn ~1,7 cm – vẫn trong ngưỡng tiếp xúc 2 cm, gánh ~8 % trọng lượng. Chưa có chuyển động lật từ Chó ba chân.
+- Gập đứng nắm ngón chân cái (P3): có chuyển động từ Núi; ngón tay đặt sát ngón chân cái, khuỷu mở sang hai bên – lực kéo tay – chân chưa tính.
 - ⛔ Bánh xe (`urdhva_dhanurasana`): đã thử – đai vai mô hình cứng (bả vai không xoay lên, không nâng) nên vai không thể nằm trên cổ tay. Để bàn tay áp sàn, bộ fit phải đẩy cổ tay ngửa ~120°, cột sống ngực ngửa ~45° hoặc háng duỗi ~45° – đều vượt tầm thật, dạy sai. Cần mô hình hoá xoay lên của xương bả vai trước.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 

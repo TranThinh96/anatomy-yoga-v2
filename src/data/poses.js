@@ -105,6 +105,20 @@ export const POSES = {
     thorax: { flex: -4 },
     neck: { flex: -8 },
   },
+  // Big toe pose (Padangusthasana): Uttanasana with the feet hip-width apart, the first two fingers
+  // hooked around the big toes, elbows bent out to the sides drawing the trunk long toward the legs
+  // (no finger–toe force in the physics: the hands are not a support).
+  padangusthasana: {
+    root: { pitch: 95 },
+    hip: { flex: 107, abd: -7 },
+    lumbar: { flex: 20 },
+    thorax: { flex: 15 },
+    neck: { flex: 15 },
+    shoulder: { flex: 64, abd: 137, rot: 14 },
+    ankle: { dorsi: 0 },
+    elbow: { flex: 35 },
+    wrist: { ext: 10, pron: 90 },
+  },
   uttanasana: {
     root: { pitch: 104 },
     hip: { flex: 104 },
@@ -2339,6 +2353,15 @@ export const POSE_FIT = {
     params: ['root.pitch&hip.flex&shoulder.flex', 'shoulder.flex', 'hip.flex', 'wrist.ext'],
   },
   kneeling: { support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'], balance: true, params: ['ankle.dorsi', 'hip.flex', 'knee.flex'] },
+  padangusthasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    dir: [['shoulder_L', [0, -1, 0], [0.35, -0.9, 0.25]], ['shoulder_R', [0, -1, 0], [-0.35, -0.9, 0.25]]], // elbows bending out to the sides
+    balance: true,
+    rel: [['ankle_R', 'ankle_L', [0.2, 0]]], // feet hip-width apart
+    at: [['wrist_L', 'ankle_L', [-0.02, 0.1, 0.12]], ['wrist_R', 'ankle_R', [0.02, 0.1, 0.12]]], // fingers around the big toes
+    params: ['root.pitch&hip.flex', 'hip.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'hip.abd'],
+  },
   uttanasana: {
     support: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
     flat: ['ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
