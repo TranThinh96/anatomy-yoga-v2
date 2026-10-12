@@ -16,15 +16,15 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 |---|---:|---:|---:|
 | Đứng | 25 | 1 | 26 |
 | Gập người | 6 | 2 | 8 |
-| Ngửa sau | 14 | 3 | 17 |
+| Ngửa sau | 15 | 2 | 17 |
 | Chống tay & thăng bằng tay | 11 | 8 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
 | Ngồi (gồm Balasana) | 16 | 5 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 6 | 1 | 7 |
-| **Tổng** | **94** | **24** | **118** |
+| **Tổng** | **95** | **23** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 1 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 2 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -121,7 +121,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `eka_pada_rajakapotasana` | Eka Pada Rajakapotasana (dạng chuẩn bị) | Bồ câu | Pigeon (prep) | Trung bình | P2 | `adho_mukha_svanasana` | 🔁 · biến thể gối ôm / chăn dưới hông 🧱 · có thể xếp nhóm Ngồi |
 | ✅ | `ustrasana_block` (biến thể) | Ustrasana | Lạc đà tay trên gạch / tay chống hông | Camel, supported | Cơ bản | P1 | `kneeling` | biến thể của `ustrasana` 🧱 |
 | ⬜ | `urdhva_dhanurasana` | Urdhva Dhanurasana | Bánh xe | Wheel | Nâng cao | P3 | `supine_knees` | đầu chạm sàn giữa chừng · tải cổ tay / vai lớn |
-| ⬜ | `camatkarasana` | Camatkarasana | Wild Thing | Wild Thing | Nâng cao | P3 | `adho_mukha_svanasana` | 🔁 |
+| ✅ | `camatkarasana` | Camatkarasana | Wild Thing | Wild Thing | Nâng cao | P3 | `adho_mukha_svanasana` | 🔁 |
 | ⬜ | `supta_virasana` | Supta Virasana | Anh hùng nằm | Reclining Hero | Nâng cao | P3 | `virasana` | gối gập tối đa · biến thể gối ôm dưới lưng 🧱 |
 
 ### 2.4 Chống tay & thăng bằng tay
@@ -285,6 +285,7 @@ Ký hiệu trong **Ghi chú**:
 - Khúc củi: dạng tĩnh; cẳng chân chồng song song mép thảm (dưới đặt sàn, trên đặt sát – không truyền lực). Mô hình không có điểm tiếp xúc mặt ngoài cẳng chân nên chân dưới tựa trên mặt ngoài đùi và bàn chân. Chưa có biến thể chăn dưới gối.
 - Mặt bò: dạng tĩnh; gối chồng gối, hai bàn chân cạnh hông. Tay: tay trên khuỷu hướng lên, bàn tay sau gáy; tay dưới vòng sau lưng ngang eo – hai tay cách nhau ~25 cm (dạng dùng dây, nhưng dây trong mô hình chỉ nối tay – bàn chân nên chưa vẽ). Đai vai cứng nên tay dưới cần xoay trong lớn hơn thực tế ở khớp vai – cánh tay.
 - Gập chạm gối vặn mình (P3): dạng tĩnh, bản dễ – tay trái trên ống chân trái, tay phải vươn qua tai; chân trái dạng ~35° (với háng gập 90°, góc dạng nằm trong `rot` vì khóa gimbal).
+- Wild Thing (P3): dạng tĩnh, tay phải trụ, bàn chân trái đặt sau chân phải. Bàn chân phải duỗi mũi (mô hình không có điểm tiếp xúc mép ngoài bàn chân) và cách sàn ~1,7 cm – vẫn trong ngưỡng tiếp xúc 2 cm, gánh ~8 % trọng lượng. Chưa có chuyển động lật từ Chó ba chân.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
 ## 5. Checklist cho mỗi tư thế (Definition of done)

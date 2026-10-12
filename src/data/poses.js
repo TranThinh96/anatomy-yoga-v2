@@ -962,6 +962,23 @@ export const POSES = {
   // Side plank (Vasisthasana) on the right hand: the Plank body turned onto its right side, chest
   // facing the model's left, right hand under the shoulder, feet staggered (left foot in front of
   // the right: stacking them needs the foot-on-foot contact the physics lacks), left arm up.
+  // Wild thing (Camatkarasana): from side plank on the right hand, the left foot steps back behind
+  // the right leg (knee bent, foot flat), the hips lift and the chest turns up into a backbend, the
+  // left arm reaching overhead.
+  camatkarasana: {
+    root: { yaw: 90, roll: -79, pitch: -51 },
+    hip_R: { flex: -25, abd: 13 },
+    hip_L: { flex: -26, abd: -30 },
+    knee_L: { flex: 54 },
+    ankle_R: { dorsi: -61 },
+    ankle_L: { dorsi: 15 },
+    lumbar: { flex: 8 },
+    thorax: { flex: -15 },
+    neck: { flex: -15, rot: 10 },
+    shoulder_R: { abd: 90, flex: -56 },
+    wrist_R: { ext: 103, pron: 90 },
+    shoulder_L: { abd: 150, flex: 20 },
+  },
   vasisthasana: {
     root: { yaw: 90, roll: -60, pitch: 4 },
     hip_L: { flex: 13 },
@@ -2933,6 +2950,15 @@ export const POSE_FIT = {
     balance: true,
     dir: [['thorax', [0, 1, 0], [0, 0, 1]], ['hip_R', [0, -1, 0], [0, 0, -1]], ['shoulder_L', [0, -1, 0], [0, -1, 0]], ['shoulder_R', [0, -1, 0], [0, -1, 0]]],
     params: ['root.pitch&hip_L.flex', 'hip_L.flex', 'hip_R.flex', 'ankle_L.dorsi', 'shoulder.flex', 'wrist.ext'],
+  },
+  camatkarasana: {
+    support: ['wrist_R', 'ankle_R', 'ankle_L'],
+    flat: ['wrist_R', 'ankle_L'],
+    balance: true,
+    above: [['shoulder_R', 'wrist_R']], // hand under the shoulder
+    rel: [['ankle_R', 'ankle_L', [-0.25, 0.3]]], // left foot planted behind the right leg
+    dir: [['thorax', [0, 0, 1], [0.45, 0.75, 0.5]]], // chest turned up toward the ceiling
+    params: ['root.roll', 'root.pitch', 'lumbar.flex', 'hip_R.flex', 'hip_R.abd', 'hip_L.flex', 'hip_L.abd', 'knee_L.flex', 'ankle_L.dorsi', 'ankle_R.dorsi', 'shoulder_R.abd', 'shoulder_R.flex', 'wrist_R.ext'],
   },
   vasisthasana: {
     support: ['wrist_R', 'ankle_R', 'ankle_L'],
