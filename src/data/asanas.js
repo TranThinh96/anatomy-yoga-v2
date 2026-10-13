@@ -1474,7 +1474,7 @@ export const ASANAS = [
     cautions: [
       'Đau cổ, thoát vị đĩa đệm cổ, loãng xương, bệnh về mắt (tăng nhãn áp, bong võng mạc), cao huyết áp, bệnh tim, thai kỳ: tránh.',
       'Không xoay đầu khi đang ở trong tư thế.',
-      'Mô hình: dạng tĩnh. Bộ giải lực chia trọng lượng giữa đầu và cẳng tay theo cách ít tốn sức khớp nhất – con số trên đầu KHÔNG phải mục tiêu tập; tập để cẳng tay và vai gánh phần lớn. Đai vai cứng nên phần nâng xương bả vai chưa có.',
+      'Mô hình: dạng tĩnh. Bộ giải lực chia trọng lượng giữa đầu và cẳng tay theo cách ít tốn sức khớp nhất – con số trên đầu KHÔNG phải mục tiêu tập; tập để cẳng tay và vai gánh phần lớn. Đai vai cứng nên phần nâng xương bả vai chưa có. Cổ trong mô hình gập ~30° để đỉnh đầu (không phải trán) chạm sàn – do hình học đầu của mô hình; khi tập, cổ giữ trục tự nhiên.',
     ],
   },
   {
