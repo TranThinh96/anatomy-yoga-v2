@@ -17,12 +17,12 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Đứng | 26 | 0 | 26 |
 | Gập người | 7 | 1 | 8 |
 | Ngửa sau | 15 | 2 | 17 |
-| Chống tay & thăng bằng tay | 15 | 4 | 19 |
+| Chống tay & thăng bằng tay | 16 | 3 | 19 |
 | Đảo ngược | 6 | 0 | 6 |
 | Ngồi (gồm Balasana) | 21 | 0 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **111** | **7** | **118** |
+| **Tổng** | **112** | **6** | **118** |
 
 (`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 13 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
@@ -138,7 +138,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `bakasana` | Bakasana | Con quạ | Crow | Nâng cao | P3 | `malasana` | ⚖ 🤝 gối tựa cánh tay trên |
 | ⬜ | `parsva_bakasana` | Parsva Bakasana | Con quạ nghiêng | Side Crow | Nâng cao | P3 | `parivrtta_utkatasana` | 🔁 ⚖ 🤝 |
 | ✅ | `tolasana` | Tolasana | Cái cân | Scale | Nâng cao | P3 | `padmasana` | 🤝 chân kiết già |
-| ⬜ | `lolasana` | Lolasana | Mặt dây chuyền | Pendant | Nâng cao | P3 | `vajrasana` | ⚖ |
+| ✅ | `lolasana` | Lolasana | Mặt dây chuyền | Pendant | Nâng cao | P3 | `vajrasana` | ⚖ |
 | ⬜ | `astavakrasana` | Astavakrasana | Tám góc | Eight-Angle | Nâng cao | P3 | `dandasana` | 🔁 ⚖ 🤝 |
 | ✅ | `pincha_mayurasana` | Pincha Mayurasana | Đứng cẳng tay (Lông công) | Forearm Stand | Nâng cao | P3 | `ardha_pincha_mayurasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
 | ✅ | `adho_mukha_vrksasana` | Adho Mukha Vrksasana | Trồng chuối | Handstand | Nâng cao | P3 | `adho_mukha_svanasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
@@ -293,10 +293,11 @@ Ký hiệu trong **Ghi chú**:
 - Trồng chuối, Đứng cẳng tay (P3): dạng tĩnh, bản mặt hướng vào tường (đi bộ chân lên tường từ Plank), mũi chân tựa tường gánh 2–4 % trọng lượng; app xếp ở nhóm Đảo ngược. Bản lưng hướng tường (đá chân lên) và bản tự do chưa có. Đứng cẳng tay: cổ ngửa ~45° để đầu không chạm sàn.
 - Đại bàng (P3): dạng tĩnh; đùi trái bắt chéo trên đùi phải, bàn chân trái móc sau bắp chân phải, khuỷu phải trên khuỷu trái – đặt sát, không truyền lực. Cơ trám / cơ thang không dài ra vì xương bả vai không dang.
 - Con quạ (P3): dạng tĩnh; gối đặt sát mặt sau cánh tay trên (không truyền lực – chân được giữ bằng cơ gập háng), trọng tâm chỉ trong chân đế ~0,5 cm. Cách tìm: cố định thân và chân (chậu nghiêng 85° để bàn chân rời sàn), chỉ fit vai / khuỷu / cổ tay với ràng buộc thăng bằng.
-- Xoạc dọc (P3): dạng tĩnh, bản kê gạch dựng cạnh dài (15 cm) dưới ụ ngồi chân trước, gối sau gập ~35° (gối và mu bàn chân chạm thảm). Bản xoạc sát sàn chưa có. Mặt dây chuyền (Lolasana) đã thử: để bàn chân rời sàn, bàn tay phải dựng trên đầu ngón – bỏ.
+- Xoạc dọc (P3): dạng tĩnh, bản kê gạch dựng cạnh dài (15 cm) dưới ụ ngồi chân trước, gối sau gập ~35° (gối và mu bàn chân chạm thảm). Bản xoạc sát sàn chưa có.
 - Kiết già (P3): dạng tĩnh; góc háng dựng từ hướng đùi / ống chân (gối gần sàn), bàn chân đặt sát trên đùi đối diện, không truyền lực.
 - Trồng chuối đầu (P3): dạng tĩnh, tay đan tam giác như bản chuẩn bị, đỉnh đầu chạm sàn. Bộ giải lực chia ~25 % trọng lượng lên đầu, ~52 % lên cẳng tay (cách ít tốn sức khớp nhất, không phải mục tiêu tập) – lưu ý ghi rõ. Cổ gập ~29° để đỉnh đầu (không phải trán) chạm sàn với hình học đầu của mô hình. Chưa có bản tựa tường.
 - Cái cân (P3): bản kê hai viên gạch nằm sát ngoài hông. Duỗi thẳng tay trên sàn chỉ nhấc mông ~3 cm (tay mô hình ngắn so với thân khi ngồi); trên gạch mông cách sàn ~12 cm, biên thăng bằng ~3 cm, hai tay chịu 50/50. Có bước ngồi ấn tay → nhấc.
+- Mặt dây chuyền (P3): bản kê hai viên gạch nằm cạnh gối, dạng tĩnh, cẳng chân song song (không bắt chéo). Bộ fit có thêm mục tiêu `lift` (giữ bộ phận cách sàn ≥ 4 cm) – không có nó bộ fit luôn hạ bàn chân xuống để đạt thăng bằng. Trên sàn: chỉ thăng bằng được khi chúi đầu thấp hơn hông → dùng gạch. Biên thăng bằng ~3 cm, bàn chân cách sàn ~4 cm.
 - Đã thử, chưa đạt: Cánh cung kéo tai (bộ fit gù lưng ~36° để bàn chân tới tai, chân phải rối), Anh hùng nằm có gạch + gối ôm (gối mô hình gập tối đa ~157° nên khi ngả lưng gối nhấc khỏi sàn 8–9 cm), Quạ nghiêng (cần xoay chậu ~90° so với ngực quanh trục cột sống – bộ fit chưa làm được).
 - Mô hình có thêm điểm tiếp xúc (build lại từ BodyParts3D 3.0): đỉnh vai (mỏm cùng vai), mỏm gai T2, mặt sau và mặt ngoài cánh tay trên, thái dương. Không thêm điểm ở C7 (nằm ngay khớp cổ – sẽ gánh lực mỗi khi lưng trên gánh). Cây cầu được fit lại (giờ tựa lưng trên + mặt sau cánh tay).
 - Trồng cây chuối vai, Cái cày: dạng tĩnh, kê chăn gấp dưới vai và cánh tay trên, đầu trên sàn ngoài mép chăn; đầu không chịu lực. Trồng cây chuối vai thân nghiêng ~25°.

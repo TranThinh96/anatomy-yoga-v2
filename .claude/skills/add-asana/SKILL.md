@@ -61,6 +61,7 @@ my_pose: {
                                          // `knee_L` = its joint centre + offset (m, rest-pose axes)
   balance: true,                         // COM ≥ 3 cm inside the base of support (kneeling, one leg,
                                          // folds with the hands down – hands don't auto-balance)
+  lift: ['ankle_L', 'ankle_R'],          // keep these ≥ 4 cm off the floor / props (arm balances)
 },
 ```
 
@@ -302,6 +303,7 @@ model has no passive tension and lacks some deep muscles – see README "Giới 
 | hands land far in front of the feet in a fold | `at` goal for the wrists + keep the spine out of `params` so it hinges at the hips |
 | fitter bends elbows / rounds the back to reach | remove those angles from `params`; they define the form |
 | COM behind the heels, all weight on the hands | `balance: true` (poses with hand contacts are not auto-balanced) |
+| arm balance: the fitter puts the feet down to meet `balance` | `lift: [feet, knees]`; if it then dives the head below the hips, add a `dir` for the chest, and try blocks under the hands (the model's arms are short: Tolasana, Lolasana) |
 | a wrist ends at 110–130° extension | add the hands to `flat`; the ROM limit is 95° |
 | `check` says a stretched muscle is not longer | the role is wrong for this shape – fix the role (or the pose), don't lower the threshold |
 | body stops for a moment at an intermediate pose | mark it `via: true` (and no `hold`) |

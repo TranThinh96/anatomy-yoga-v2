@@ -2289,6 +2289,24 @@ export const POSES = {
     elbow: { flex: 22 },
     wrist: { ext: 76, pron: 180 },
   },
+  // Pendant (Lolasana) with the hands on two blocks lying flat beside the knees: shins drawn up under
+  // the body (parallel, not crossed), arms straight, back rounded, knees and feet off the mat. On the
+  // floor the model's arms are too short to lift the feet with the weight over the hands.
+  lolasana: {
+    hip_L: { flex: 103, abd: -8 },
+    hip_R: { flex: 103, abd: -8 },
+    knee: { flex: 155 },
+    ankle: { dorsi: -45 },
+    root: { pitch: 32 },
+    lumbar: { flex: 17 },
+    thorax: { flex: 15 },
+    neck: { flex: -20 },
+    scapula: { elev: -5, protract: 15 },
+    shoulder_L: { flex: 28, abd: 20 },
+    shoulder_R: { flex: 28, abd: 20 },
+    elbow: { flex: 9 },
+    wrist: { ext: 96, pron: 180 },
+  },
   // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
   // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
   // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
@@ -2600,6 +2618,11 @@ export const POSE_PROPS = {
   tolasana_blocks_seat: [
     { type: 'block', stand: 'flat', at: [0.24, 0.07], yaw: 90 },
     { type: 'block', stand: 'flat', at: [-0.24, 0.07], yaw: 90 },
+  ],
+  // a block lying flat beside each knee, under the hands (Pendant)
+  lolasana: [
+    { type: 'block', stand: 'flat', at: [0.16, 0.18], yaw: 90 },
+    { type: 'block', stand: 'flat', at: [-0.16, 0.18], yaw: 90 },
   ],
   bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
   // a block on its long edge under the front-leg sit bone, along the leg
@@ -3669,6 +3692,15 @@ export const POSE_FIT = {
     onProp: ['wrist_L', 'wrist_R'],
     flat: ['wrist_L', 'wrist_R'],
     params: ['elbow.flex', 'shoulder_L.flex&shoulder_R.flex', 'wrist.ext'],
+  },
+  lolasana: {
+    support: ['wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    balance: true,
+    onProp: ['wrist_L', 'wrist_R'],
+    lift: ['ankle_L', 'ankle_R', 'knee_L', 'knee_R'],
+    dir: [['thorax', [0, 1, 0], [0, 0.7, 0.7]]], // chest leaning ~45° forward, head up
+    params: ['root.pitch', 'lumbar.flex', 'hip_L.flex&hip_R.flex', 'shoulder_L.flex&shoulder_R.flex', 'elbow.flex', 'wrist.ext'],
   },
   agnistambhasana: {
     support: ['pelvis', 'hip_R', 'ankle_R'],
