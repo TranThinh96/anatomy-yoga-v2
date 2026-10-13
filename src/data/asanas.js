@@ -1512,6 +1512,38 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'karnapidasana',
+    sanskrit: 'Karnapidasana',
+    vi: 'Tư thế Ép tai (kê chăn)',
+    en: 'Ear Pressure Pose (on a blanket)',
+    category: 'Đảo ngược',
+    level: 'Nâng cao',
+    steps: [{ pose: 'karnapidasana', hold: 3 }],
+    loop: 'static',
+    roles: {
+      contract: ['triceps_brachii', 'deltoid', 'rhomboids'],
+      stretch: ['erector_spinae', 'quadratus_lumborum', 'gluteus_maximus', 'trapezius', 'levator_scapulae'],
+      stabilize: ['rectus_abdominis', 'iliopsoas'],
+    },
+    joints: [
+      ['cervical_spine_joint', 'Cổ gập sâu (~90°) – kê chăn, cổ ngoài mép chăn'],
+      ['lumbar_spine_joint', 'Thắt lưng gập rất sâu – đây là tư thế gập cột sống tối đa'],
+      ['hip', 'Háng gập sâu, gối hạ xuống cạnh tai'],
+    ],
+    cues: [
+      'Vào từ Cái cày (vai và cánh tay trên trên chăn).',
+      'Gập gối, hạ gối xuống sàn cạnh hai tai; mu bàn chân trên sàn.',
+      'Tay đỡ lưng hoặc ôm sau gối; thở chậm.',
+      'Không ép gối vào tai, không quay đầu; ra theo đường cũ qua Cái cày.',
+    ],
+    benefits: ['Kéo giãn sâu cơ dựng sống và cơ mông', 'Tư thế đảo ngược kết thúc chuỗi vai'],
+    cautions: [
+      'Đau cổ, thoát vị đĩa đệm (cổ hoặc thắt lưng), loãng xương: tránh – tư thế gập cột sống tối đa.',
+      'Cao huyết áp, tăng nhãn áp, thai kỳ: tránh.',
+      'Mô hình: dạng tĩnh; gối chỉ đặt gần đầu, không truyền lực. Mô hình cần thắt lưng gập ~55° để gối gần sàn (gối vẫn cách sàn ~3 cm, mu bàn chân chạm sàn).',
+    ],
+  },
+  {
     id: 'salamba_sirsasana',
     sanskrit: 'Salamba Sirsasana',
     vi: 'Tư thế Trồng chuối đầu',

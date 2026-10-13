@@ -81,6 +81,7 @@ export const POSES = {
     hip: { flex: -13 },
     lumbar: { flex: 4 },
   },
+
   tabletop: {
     root: { pitch: 78 },
     hip: { flex: 83 },
@@ -1338,6 +1339,20 @@ export const POSES = {
     elbow: { flex: 102 },
     wrist: { ext: 30 },
   },
+  // Ear pressure (Karnapidasana) on a folded blanket: from Plow the knees bend down beside the ears, the
+  // shins and the tops of the feet on the mat (no knee–head force in the physics).
+  karnapidasana: {
+    root: { pitch: 118 },
+    hip: { flex: 127, abd: 2 },
+    knee: { flex: 93 },
+    ankle: { dorsi: -41 },
+    lumbar: { flex: 55 },
+    thorax: { flex: 20 },
+    neck: { flex: 95 },
+    shoulder: { flex: -70, abd: -19 },
+    elbow: { flex: 102 },
+    wrist: { ext: 30 },
+  },
   setu_bandha: {
     root: { pitch: -120 },
     hip: { flex: -10 },
@@ -2515,6 +2530,7 @@ export const POSE_PROPS = {
   // a folded blanket under the shoulders and upper arms, the head on the mat beyond its edge
   salamba_sarvangasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
   halasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
+  karnapidasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
   // the wall in front of the chest, the toes resting on it
@@ -2565,6 +2581,7 @@ export const POSE_FIT = {
   },
   dandasana: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['hip.flex', 'shoulder.flex', 'ankle.dorsi'] },
   prone: { support: ['pelvis', 'thorax', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'], params: ['root.pitch', 'hip.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex'] },
+
   tabletop: {
     support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'],
     flat: ['wrist_L', 'wrist_R'], // palms flat
@@ -2826,6 +2843,12 @@ export const POSE_FIT = {
     onProp: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R'],
     at: [['wrist_L', 'thorax', [0.08, 0.0, -0.1]], ['wrist_R', 'thorax', [-0.08, 0.0, -0.1]]], // hands on the back
     params: ['root.pitch', 'hip.flex', 'lumbar.flex', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
+  karnapidasana: {
+    support: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R', 'ankle_L', 'ankle_R'],
+    onProp: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R'],
+    at: [['wrist_L', 'thorax', [0.08, 0.0, -0.1]], ['wrist_R', 'thorax', [-0.08, 0.0, -0.1]]], // hands on the back
+    params: ['root.pitch', 'hip.flex', 'hip.abd', 'knee.flex', 'lumbar.flex', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
   },
   setu_bandha: {
     support: ['thorax', 'scapula_L|shoulder_L', 'scapula_R|shoulder_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
