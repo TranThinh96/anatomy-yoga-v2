@@ -2256,6 +2256,39 @@ export const POSES = {
     elbow_R: { flex: 8 },
     wrist: { pron: 90 },
   },
+  // Scale (Tolasana) with the hands on two blocks lying flat beside the hips: lotus legs, arms straight,
+  // shoulders pressed down, the pelvis and the knees lifted off the mat (the model's arms are too short
+  // for the hands-on-the-floor form). Legs as padmasana.
+  tolasana_blocks: {
+    hip_L: { flex: 106, abd: -113, rot: -9 },
+    knee_L: { flex: 142 },
+    ankle_L: { dorsi: -25 },
+    hip_R: { flex: 107, abd: -107, rot: -7 },
+    knee_R: { flex: 143 },
+    ankle_R: { dorsi: -25 },
+    root: { pitch: 1 },
+    lumbar: { flex: 5 },
+    scapula: { elev: -10 },
+    shoulder_L: { flex: 5, abd: 13 },
+    shoulder_R: { flex: 5, abd: 13 },
+    wrist: { ext: 88, pron: 180 },
+  },
+  // tolasana_blocks before the lift: sitting in lotus, the hands on the blocks, elbows bent.
+  tolasana_blocks_seat: {
+    hip_L: { flex: 106, abd: -113, rot: -9 },
+    knee_L: { flex: 142 },
+    ankle_L: { dorsi: -25 },
+    hip_R: { flex: 107, abd: -107, rot: -7 },
+    knee_R: { flex: 143 },
+    ankle_R: { dorsi: -25 },
+    root: { pitch: 1 },
+    lumbar: { flex: 5 },
+    scapula: { elev: -10 },
+    shoulder_L: { flex: -1, abd: 13 },
+    shoulder_R: { flex: -1, abd: 13 },
+    elbow: { flex: 22 },
+    wrist: { ext: 76, pron: 180 },
+  },
   // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
   // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
   // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
@@ -2559,6 +2592,15 @@ export const POSE_PROPS = {
     { type: 'touch', a: 'hip_R', b: 'knee_R', at: 0.5 },
   ],
   // the knees rest on the backs of the upper arms
+  // a block lying flat beside each hip, under the hands (Scale)
+  tolasana_blocks: [
+    { type: 'block', stand: 'flat', at: [0.24, 0.07], yaw: 90 },
+    { type: 'block', stand: 'flat', at: [-0.24, 0.07], yaw: 90 },
+  ],
+  tolasana_blocks_seat: [
+    { type: 'block', stand: 'flat', at: [0.24, 0.07], yaw: 90 },
+    { type: 'block', stand: 'flat', at: [-0.24, 0.07], yaw: 90 },
+  ],
   bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
@@ -3614,6 +3656,19 @@ export const POSE_FIT = {
     dir: [['thorax', [0, 1, 0], [0, 1, 0]]],
     at: [['wrist_L', 'knee_L', [0.0, 0.05, 0.08]], ['wrist_R', 'knee_R', [0.0, 0.05, 0.08]]], // hands resting on the knees
     params: ['root.roll', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
+  },
+  tolasana_blocks: {
+    support: ['wrist_L', 'wrist_R'],
+    onProp: ['wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    balance: true,
+    params: ['root.pitch', 'shoulder_L.flex&shoulder_R.flex', 'shoulder_L.abd&shoulder_R.abd', 'wrist.ext'],
+  },
+  tolasana_blocks_seat: {
+    support: ['hip_L', 'hip_R', 'wrist_L', 'wrist_R'],
+    onProp: ['wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    params: ['elbow.flex', 'shoulder_L.flex&shoulder_R.flex', 'wrist.ext'],
   },
   agnistambhasana: {
     support: ['pelvis', 'hip_R', 'ankle_R'],

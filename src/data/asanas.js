@@ -3161,6 +3161,42 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'tolasana',
+    sanskrit: 'Tolasana',
+    vi: 'Tư thế Cái cân (kê gạch)',
+    en: 'Scale Pose (on blocks)',
+    category: 'Thăng bằng tay',
+    level: 'Nâng cao',
+    steps: [
+      { pose: 'tolasana_blocks_seat', hold: 1.5 },
+      { pose: 'tolasana_blocks', anchor: ['wrist_L', 'wrist_R'], move: 1.6, hold: 2.5 },
+    ],
+    loop: 'pingpong',
+    roles: {
+      contract: ['triceps_brachii', 'latissimus_dorsi', 'pectoralis_major', 'serratus_anterior', 'forearm_flexors', 'rectus_abdominis', 'iliopsoas'],
+      stretch: [],
+      stabilize: ['trapezius', 'deltoid', 'erector_spinae'],
+    },
+    joints: [
+      ['wrist', 'Cổ tay ngửa ~90°, chịu toàn bộ trọng lượng'],
+      ['elbow', 'Khuỷu duỗi thẳng, đẩy tay xuống gạch'],
+      ['scapulothoracic', 'Xương bả vai hạ xuống – vai rời xa tai'],
+      ['hip', 'Chân giữ thế Kiết già, háng gập kéo gối lên'],
+    ],
+    cues: [
+      'Ngồi Kiết già (hoặc Bán kiết già, xếp bằng), đặt hai viên gạch nằm sát ngoài hông, lòng bàn tay úp trên gạch.',
+      'Ấn tay xuống, duỗi thẳng khuỷu, kéo vai xuống xa tai.',
+      'Hóp bụng, gập háng kéo gối lên và nhấc mông khỏi sàn; giữ vài hơi thở rồi hạ xuống nhẹ nhàng.',
+      'Chưa nhấc được: chỉ ấn tay và giữ vai hạ, mông vẫn trên sàn – vẫn luyện đúng nhóm cơ.',
+    ],
+    benefits: ['Tăng sức mạnh cánh tay, cổ tay và cơ bụng', 'Luyện hạ xương bả vai (cơ lưng rộng, cơ ngực lớn phần dưới)'],
+    cautions: [
+      'Chỉ làm bản Kiết già khi đã ngồi Kiết già thoải mái; đau gối: dùng chân bắt chéo đơn giản.',
+      'Chấn thương cổ tay, vai: tránh.',
+      'Mô hình: kê gạch vì tay mô hình ngắn so với thân khi ngồi – trên sàn thì duỗi thẳng tay chỉ nhấc mông được ~3 cm. Ở bước ngồi, cách chia lực tối thiểu nỗ lực khớp dồn phần lớn trọng lượng vào tay; thực tế người ngồi thả lỏng thì mông chịu gần hết.',
+    ],
+  },
+  {
     id: 'agnistambhasana',
     sanskrit: 'Agnistambhasana',
     vi: 'Tư thế Khúc củi',

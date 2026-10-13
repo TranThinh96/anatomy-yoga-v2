@@ -17,12 +17,12 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Đứng | 26 | 0 | 26 |
 | Gập người | 7 | 1 | 8 |
 | Ngửa sau | 15 | 2 | 17 |
-| Chống tay & thăng bằng tay | 14 | 5 | 19 |
+| Chống tay & thăng bằng tay | 15 | 4 | 19 |
 | Đảo ngược | 6 | 0 | 6 |
 | Ngồi (gồm Balasana) | 21 | 0 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **110** | **8** | **118** |
+| **Tổng** | **111** | **7** | **118** |
 
 (`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 13 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
@@ -137,7 +137,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `ardha_pincha_mayurasana` | Ardha Pincha Mayurasana | Cá heo | Dolphin | Trung bình | P2 | `forearm_plank` | |
 | ✅ | `bakasana` | Bakasana | Con quạ | Crow | Nâng cao | P3 | `malasana` | ⚖ 🤝 gối tựa cánh tay trên |
 | ⬜ | `parsva_bakasana` | Parsva Bakasana | Con quạ nghiêng | Side Crow | Nâng cao | P3 | `parivrtta_utkatasana` | 🔁 ⚖ 🤝 |
-| ⬜ | `tolasana` | Tolasana | Cái cân | Scale | Nâng cao | P3 | `padmasana` | 🤝 chân kiết già |
+| ✅ | `tolasana` | Tolasana | Cái cân | Scale | Nâng cao | P3 | `padmasana` | 🤝 chân kiết già |
 | ⬜ | `lolasana` | Lolasana | Mặt dây chuyền | Pendant | Nâng cao | P3 | `vajrasana` | ⚖ |
 | ⬜ | `astavakrasana` | Astavakrasana | Tám góc | Eight-Angle | Nâng cao | P3 | `dandasana` | 🔁 ⚖ 🤝 |
 | ✅ | `pincha_mayurasana` | Pincha Mayurasana | Đứng cẳng tay (Lông công) | Forearm Stand | Nâng cao | P3 | `ardha_pincha_mayurasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
@@ -208,12 +208,12 @@ Ký hiệu trong **Ghi chú**:
 
 | ✓ | Việc | Mở khoá | Ghi chú |
 |---|---|---|---|
-| ⬜ | Tiếp xúc thân – thân trong vật lý (tay–chân, gối–cánh tay, chân–đùi) | mọi tư thế 🤝 (≈ 30) | CLAUDE.md: thiếu tiếp xúc này cũng là nguồn sai số chính ở Balasana, Vrksasana, Paschimottanasana. Trước khi có: làm biến thể không bám hoặc đặt sát nhưng không truyền lực, ghi rõ giới hạn trong UI |
+| ✅ | Tiếp xúc thân – thân trong vật lý (tay–chân, gối–cánh tay, chân–đùi) | mọi tư thế 🤝 (≈ 30) | đã có: `{ type: 'touch', a, b, at? }` trong POSE_PROPS – lực ép không ma sát giữa hai đoạn (Con quạ, Em bé, Cái cây). Chưa dùng cho tay nắm chân (Paschimottanasana): cần lực kéo, không phải ép |
 | ✅ | Đạo cụ **dây** (strap) | Supta Padangusthasana, Dhanurasana, Natarajasana, Gomukhasana… | thêm loại prop mới; lực kéo dây cần mô hình riêng |
 | ✅ | Đạo cụ **ghế** | chân gác ghế, Halasana có ghế, tư thế ngồi ghế | chỉ mặt ghế là bề mặt đỡ; bắp chân chưa tựa được lên đạo cụ (điểm tiếp xúc bắp chân chỉ dùng cho tường) |
 | ✅ | Nhóm mới trong `CATEGORIES`: `Thăng bằng tay`, `Đảo ngược` | lọc danh sách gọn hơn | Tấm ván nghiêng → Thăng bằng tay, Gác chân lên tường → Đảo ngược |
 | ✅ | Mức `Nâng cao` trong `level` (`LEVELS`) | P3 | nhãn màu vàng trong danh sách; check-data kiểm tra mức hợp lệ |
-| ⬜ | Thêm contact vai trên / C7 / mặt sau cánh tay trên / thái dương | Trồng cây chuối vai, Cái cày, Luồn kim | đã kiểm tra: thiếu (chỉ có góc dưới xương bả vai, gáy, trán, đỉnh đầu) → thêm trong `tools/bp3d-build.mjs` rồi rebuild (cần bộ BodyParts3D), không sửa `body-model.gen.js` |
+| ✅ | Thêm contact vai trên / C7 / mặt sau cánh tay trên / thái dương | Trồng cây chuối vai, Cái cày, Luồn kim | đã kiểm tra: thiếu (chỉ có góc dưới xương bả vai, gáy, trán, đỉnh đầu) → đã thêm trong `tools/bp3d-build.mjs` và build lại (trừ C7: nằm ngay khớp cổ) |
 
 ## 4. Gợi ý thứ tự làm (theo đợt)
 
@@ -296,7 +296,8 @@ Ký hiệu trong **Ghi chú**:
 - Xoạc dọc (P3): dạng tĩnh, bản kê gạch dựng cạnh dài (15 cm) dưới ụ ngồi chân trước, gối sau gập ~35° (gối và mu bàn chân chạm thảm). Bản xoạc sát sàn chưa có. Mặt dây chuyền (Lolasana) đã thử: để bàn chân rời sàn, bàn tay phải dựng trên đầu ngón – bỏ.
 - Kiết già (P3): dạng tĩnh; góc háng dựng từ hướng đùi / ống chân (gối gần sàn), bàn chân đặt sát trên đùi đối diện, không truyền lực.
 - Trồng chuối đầu (P3): dạng tĩnh, tay đan tam giác như bản chuẩn bị, đỉnh đầu chạm sàn. Bộ giải lực chia ~25 % trọng lượng lên đầu, ~52 % lên cẳng tay (cách ít tốn sức khớp nhất, không phải mục tiêu tập) – lưu ý ghi rõ. Cổ gập ~29° để đỉnh đầu (không phải trán) chạm sàn với hình học đầu của mô hình. Chưa có bản tựa tường.
-- Đã thử, chưa đạt: Cánh cung kéo tai (bộ fit gù lưng ~36° để bàn chân tới tai, chân phải rối), Cái cân (để nhấc chậu và gối khỏi sàn, bàn tay phải dựng gần đứng như Mặt dây chuyền – tay mô hình ngắn so với thân khi ngồi), Anh hùng nằm có gạch + gối ôm (gối mô hình gập tối đa ~157° nên khi ngả lưng gối nhấc khỏi sàn 8–9 cm), Quạ nghiêng (cần xoay chậu ~90° so với ngực quanh trục cột sống – bộ fit chưa làm được).
+- Cái cân (P3): bản kê hai viên gạch nằm sát ngoài hông. Duỗi thẳng tay trên sàn chỉ nhấc mông ~3 cm (tay mô hình ngắn so với thân khi ngồi); trên gạch mông cách sàn ~12 cm, biên thăng bằng ~3 cm, hai tay chịu 50/50. Có bước ngồi ấn tay → nhấc.
+- Đã thử, chưa đạt: Cánh cung kéo tai (bộ fit gù lưng ~36° để bàn chân tới tai, chân phải rối), Anh hùng nằm có gạch + gối ôm (gối mô hình gập tối đa ~157° nên khi ngả lưng gối nhấc khỏi sàn 8–9 cm), Quạ nghiêng (cần xoay chậu ~90° so với ngực quanh trục cột sống – bộ fit chưa làm được).
 - Mô hình có thêm điểm tiếp xúc (build lại từ BodyParts3D 3.0): đỉnh vai (mỏm cùng vai), mỏm gai T2, mặt sau và mặt ngoài cánh tay trên, thái dương. Không thêm điểm ở C7 (nằm ngay khớp cổ – sẽ gánh lực mỗi khi lưng trên gánh). Cây cầu được fit lại (giờ tựa lưng trên + mặt sau cánh tay).
 - Trồng cây chuối vai, Cái cày: dạng tĩnh, kê chăn gấp dưới vai và cánh tay trên, đầu trên sàn ngoài mép chăn; đầu không chịu lực. Trồng cây chuối vai thân nghiêng ~25°.
 - Ép tai (P3): dạng tĩnh, kê chăn như Cái cày; thắt lưng gập ~55°, gối cách sàn ~3 cm, mu bàn chân chạm sàn; gối – đầu không truyền lực.
