@@ -1745,6 +1745,23 @@ export const POSES = {
     wrist: { pron: 90 },
     root: { pitch: 0 },
   },
+  // Splits (Hanumanasana), supported: left leg straight forward, right leg back with the knee and the
+  // top of the foot on the mat, a block on its long edge under the left sit bone and hamstring, pelvis
+  // square and upright, palms together at the chest.
+  hanumanasana: {
+    root: { pitch: 11 },
+    hip_L: { flex: 92 },
+    knee_L: { flex: 0 },
+    ankle_L: { dorsi: -12 },
+    hip_R: { flex: -47 },
+    knee_R: { flex: 35 },
+    ankle_R: { dorsi: -44 },
+    lumbar: { flex: -11 },
+    shoulder: { flex: 20, abd: 16, rot: -38 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
+
   // Head-to-knee (Janu Sirsasana): from janu_sirsasana_up the trunk folds from the hips over the
   // long left leg, chest turned toward it, hands resting on either side of the left shin.
   janu_sirsasana: {
@@ -2434,6 +2451,8 @@ export const POSE_PROPS = {
   // a chair facing the body, the lower legs on its seat
   viparita_karani_chair: [{ type: 'chair', at: [0, 0.3] }],
   // the wall a little beyond the buttocks (legs up the wall)
+  // a block on its long edge under the front-leg sit bone, along the leg
+  hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
   // the wall in front of the chest, the toes resting on it
   adho_mukha_vrksasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
   pincha_mayurasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
@@ -3225,6 +3244,16 @@ export const POSE_FIT = {
     at: [['wrist_L', 'pelvis', [0.1, 0.52, 0.33]], ['wrist_R', 'pelvis', [-0.02, 0.52, 0.33]]], // hands on the strap, short of the foot
     params: ['root.pitch', 'hip_L.flex', 'ankle_R.dorsi', 'knee_R.flex', 'hip_R.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
   },
+  hanumanasana: {
+    support: ['pelvis|hip_L', 'ankle_L', 'hip_R|knee_R', 'ankle_R'],
+    onProp: ['pelvis'],
+    balance: true,
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    dir: [['thorax', [0, 1, 0], [0, 1, 0]]], // trunk upright
+    params: ['root.pitch', 'hip_L.flex', 'hip_R.flex', 'knee_R.flex', 'ankle_L.dorsi', 'ankle_R.dorsi', 'lumbar.flex', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
+
+
   janu_sirsasana: {
     support: ['pelvis', 'ankle_L', 'hip_R|knee_R'],
     // hands resting on either side of the left shin (on the leg: not a support in the physics)

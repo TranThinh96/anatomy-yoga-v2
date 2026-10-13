@@ -19,12 +19,12 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngửa sau | 15 | 2 | 17 |
 | Chống tay & thăng bằng tay | 14 | 5 | 19 |
 | Đảo ngược | 2 | 4 | 6 |
-| Ngồi (gồm Balasana) | 18 | 3 | 21 |
+| Ngồi (gồm Balasana) | 19 | 2 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **103** | **15** | **118** |
+| **Tổng** | **104** | **14** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 10 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 11 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -174,7 +174,7 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `padmasana` | Padmasana | Kiết già (Hoa sen) | Lotus | Nâng cao | P3 | `ardha_padmasana` | 🤝 · xoay háng ngoài lớn, cảnh báo gối |
 | ✅ | `krounchasana` | Krounchasana | Con diệc | Heron | Nâng cao | P3 | `virasana` | 🔁 🤝 tay nắm chân → 🪢 dây |
 | ⬜ | `akarna_dhanurasana` | Akarna Dhanurasana | Cánh cung kéo tai | Archer Pose | Nâng cao | P3 | `dandasana` | 🔁 🤝 |
-| ⬜ | `hanumanasana` | Hanumanasana | Xoạc dọc | Splits | Nâng cao | P3 | `anjaneyasana` | 🔁 · biến thể gạch dưới hông 🧱 |
+| ✅ | `hanumanasana` | Hanumanasana | Xoạc dọc | Splits | Nâng cao | P3 | `anjaneyasana` | 🔁 · biến thể gạch dưới hông 🧱 |
 
 ### 2.7 Nằm (ngửa / sấp)
 
@@ -293,6 +293,7 @@ Ký hiệu trong **Ghi chú**:
 - Trồng chuối, Đứng cẳng tay (P3): dạng tĩnh, bản mặt hướng vào tường (đi bộ chân lên tường từ Plank), mũi chân tựa tường gánh 2–4 % trọng lượng; app xếp ở nhóm Đảo ngược. Bản lưng hướng tường (đá chân lên) và bản tự do chưa có. Đứng cẳng tay: cổ ngửa ~45° để đầu không chạm sàn.
 - Đại bàng (P3): dạng tĩnh; đùi trái bắt chéo trên đùi phải, bàn chân trái móc sau bắp chân phải, khuỷu phải trên khuỷu trái – đặt sát, không truyền lực. Cơ trám / cơ thang không dài ra vì xương bả vai không dang.
 - Con quạ (P3): dạng tĩnh; gối đặt sát mặt sau cánh tay trên (không truyền lực – chân được giữ bằng cơ gập háng), trọng tâm chỉ trong chân đế ~0,5 cm. Cách tìm: cố định thân và chân (chậu nghiêng 85° để bàn chân rời sàn), chỉ fit vai / khuỷu / cổ tay với ràng buộc thăng bằng.
+- Xoạc dọc (P3): dạng tĩnh, bản kê gạch dựng cạnh dài (15 cm) dưới ụ ngồi chân trước, gối sau gập ~35° (gối và mu bàn chân chạm thảm). Bản xoạc sát sàn chưa có. Mặt dây chuyền (Lolasana) đã thử: để bàn chân rời sàn, bàn tay phải dựng trên đầu ngón – bỏ.
 - ⛔ Bánh xe (`urdhva_dhanurasana`): đã thử – đai vai mô hình cứng (bả vai không xoay lên, không nâng) nên vai không thể nằm trên cổ tay. Để bàn tay áp sàn, bộ fit phải đẩy cổ tay ngửa ~120°, cột sống ngực ngửa ~45° hoặc háng duỗi ~45° – đều vượt tầm thật, dạy sai. Cần mô hình hoá xoay lên của xương bả vai trước.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
