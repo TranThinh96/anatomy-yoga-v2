@@ -464,6 +464,21 @@ export const POSES = {
   // hips sunk low between the knees, trunk leaning slightly forward and long, palms together at the
   // chest with the elbows inside the knees (the elbow-on-knee press is a contact the physics lacks).
   // Hip angles built from where the feet and knees go.
+  // Crow (Bakasana): hands shoulder-width on the mat, elbows bent, the knees resting on the backs of the
+  // upper arms near the armpits, feet lifted, hips high, back rounded, gaze forward (no knee–arm force in
+  // the physics: the hands carry everything).
+  bakasana: {
+    root: { pitch: 85 },
+    hip: { flex: 150, abd: -15, rot: 0 },
+    knee: { flex: 145 },
+    ankle: { dorsi: -40 },
+    lumbar: { flex: 20 },
+    thorax: { flex: 15 },
+    neck: { flex: -33 },
+    shoulder: { flex: 46, abd: 5 },
+    elbow: { flex: 65 },
+    wrist: { ext: 109, pron: 180 },
+  },
   malasana: {
     root: { pitch: 42 },
     hip: { flex: 145, abd: -42, rot: 30 },
@@ -3079,6 +3094,13 @@ export const POSE_FIT = {
     params: [],
   },
 
+  bakasana: {
+    support: ['wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    balance: true,
+    rel: [['wrist_R', 'wrist_L', [0.3, 0]]],
+    params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
+  },
   malasana: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
