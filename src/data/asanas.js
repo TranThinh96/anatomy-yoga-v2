@@ -504,13 +504,13 @@ export const ASANAS = [
     loop: 'static',
     roles: {
       contract: ['vastus_lateralis_R', 'vastus_medialis_R', 'rectus_femoris_R', 'gluteus_maximus_R', 'adductors_L', 'deltoid'],
-      stretch: ['gluteus_medius_L', 'piriformis_L', 'tfl_itb_L', 'infraspinatus'],
+      stretch: ['gluteus_medius_L', 'piriformis_L', 'tfl_itb_L', 'rhomboids', 'trapezius', 'infraspinatus'],
       stabilize: ['gluteus_medius_R', 'tibialis_anterior_R', 'soleus_R', 'erector_spinae', 'rectus_abdominis'],
     },
     joints: [
       ['hip', 'Háng trên (trái): gập + khép + xoay trong; háng trụ gập như Cái ghế'],
       ['knee', 'Gối trụ gập; gối trên quấn qua đùi trụ'],
-      ['scapulothoracic', 'Xương bả vai dang rộng (kéo giãn giữa hai bả vai) – mô hình chưa có'],
+      ['scapulothoracic', 'Xương bả vai dang (đưa ra trước) – kéo giãn vùng giữa hai bả vai'],
       ['glenohumeral', 'Vai khép chéo trước ngực, khuỷu chồng khuỷu'],
     ],
     cues: [
@@ -525,7 +525,7 @@ export const ASANAS = [
       'Đau gối: không móc bàn chân sau bắp chân – để mũi chân chạm sàn.',
       'Đau vai: hai tay ôm vai đối diện thay vì quấn.',
       'Mất thăng bằng: tựa lưng vào tường.',
-      'Mô hình: dạng tĩnh; chân quấn chân và tay quấn tay chỉ đặt sát, không truyền lực. Đai vai cứng nên xương bả vai không dang – cơ trám và cơ thang không dài ra trong mô hình dù người thật cảm nhận giãn ở giữa hai bả vai.',
+      'Mô hình: dạng tĩnh; chân quấn chân và tay quấn tay chỉ đặt sát, không truyền lực. Xương bả vai đưa ra trước 15° (cơ trám dài thêm ~23 %); mô hình chưa có động tác xoay lên / xoay xuống của xương bả vai.',
     ],
   },
   {
@@ -1405,7 +1405,7 @@ export const ASANAS = [
       'Cao huyết áp, tăng nhãn áp, bệnh tim, thai kỳ: tránh.',
       'Chấn thương cổ tay, vai: tránh; tập Chó úp mặt và Cá heo trước.',
       'Người mới: tập với giáo viên, có người đỡ.',
-      'Mô hình: dạng tĩnh, bản mặt hướng vào tường (mũi chân tựa nhẹ – tường không có ma sát); bản lưng hướng tường (đá chân lên, gót chạm tường) chưa có. Đai vai cứng nên phần đẩy sàn của xương bả vai chưa có.',
+      'Mô hình: dạng tĩnh, bản mặt hướng vào tường (mũi chân tựa nhẹ – tường không có ma sát); bản lưng hướng tường (đá chân lên, gót chạm tường) chưa có. Mô hình chưa có động tác xoay lên của xương bả vai (chỉ có nâng / đưa ra trước), nên phần đẩy sàn của bả vai chưa đầy đủ.',
     ],
   },
   {
@@ -1440,7 +1440,7 @@ export const ASANAS = [
       'Cao huyết áp, tăng nhãn áp, bệnh tim, thai kỳ: tránh.',
       'Chấn thương vai, cổ: tránh; tập Cá heo trước.',
       'Vai chưa gập đủ 180°: lưng sẽ võng để bù – tập Cá heo và mở vai trước.',
-      'Mô hình: dạng tĩnh, bản mặt hướng vào tường (mũi chân tựa nhẹ, tường không có ma sát); cổ ngửa ~45° để đầu không chạm sàn; đai vai cứng.',
+      'Mô hình: dạng tĩnh, bản mặt hướng vào tường (mũi chân tựa nhẹ, tường không có ma sát); cổ ngửa ~45° để đầu không chạm sàn, mô hình chưa có động tác xoay lên của xương bả vai.',
     ],
   },
   {
@@ -1475,7 +1475,7 @@ export const ASANAS = [
       'Đau cổ, thoát vị đĩa đệm cổ, loãng xương: tránh – thay bằng Gác chân lên tường.',
       'Cao huyết áp, tăng nhãn áp, bong võng mạc, thai kỳ, đang hành kinh (theo nhiều trường phái): tránh hoặc hỏi ý kiến chuyên môn.',
       'Không bao giờ tập không chăn trên sàn cứng: cổ bị ép gập hơn và đè xuống sàn.',
-      'Mô hình: dạng tĩnh. Thân nghiêng ~25° (chậu ra sau vai) như phần lớn người tập; thân thẳng đứng cần gập cổ nhiều hơn. Bộ giải lực dồn ~60 % lên lưng trên (mỏm gai T2) và ~40 % lên đỉnh vai; đầu không chịu lực. Đai vai cứng nên phần khép và nâng xương bả vai chưa có.',
+      'Mô hình: dạng tĩnh. Thân nghiêng ~25° (chậu ra sau vai) như phần lớn người tập; thân thẳng đứng cần gập cổ nhiều hơn. Bộ giải lực dồn ~60 % lên lưng trên (mỏm gai T2) và ~40 % lên đỉnh vai; đầu không chịu lực. Mô hình chưa có động tác xoay xuống của xương bả vai.',
     ],
   },
   {
@@ -1574,7 +1574,7 @@ export const ASANAS = [
     cautions: [
       'Đau cổ, thoát vị đĩa đệm cổ, loãng xương, bệnh về mắt (tăng nhãn áp, bong võng mạc), cao huyết áp, bệnh tim, thai kỳ: tránh.',
       'Không xoay đầu khi đang ở trong tư thế.',
-      'Mô hình: dạng tĩnh. Bộ giải lực chia trọng lượng giữa đầu và cẳng tay theo cách ít tốn sức khớp nhất – con số trên đầu KHÔNG phải mục tiêu tập; tập để cẳng tay và vai gánh phần lớn. Đai vai cứng nên phần nâng xương bả vai chưa có. Cổ trong mô hình gập ~30° để đỉnh đầu (không phải trán) chạm sàn – do hình học đầu của mô hình; khi tập, cổ giữ trục tự nhiên.',
+      'Mô hình: dạng tĩnh. Bộ giải lực chia trọng lượng giữa đầu và cẳng tay theo cách ít tốn sức khớp nhất – con số trên đầu KHÔNG phải mục tiêu tập; tập để cẳng tay và vai gánh phần lớn. Mô hình chưa có động tác xoay lên của xương bả vai. Cổ trong mô hình gập ~30° để đỉnh đầu (không phải trán) chạm sàn – do hình học đầu của mô hình; khi tập, cổ giữ trục tự nhiên.',
     ],
   },
   {
@@ -2073,7 +2073,7 @@ export const ASANAS = [
     cautions: [
       'Chấn thương cổ tay, vai (rách chóp xoay, trật khớp vai): tránh.',
       'Đau thắt lưng: giữ biên độ ngửa nhỏ, hoặc tập Plank nghiêng.',
-      'Mô hình: tư thế tĩnh (chưa có chuyển động lật từ Chó ba chân); đai vai cứng nên tải lên vai tay trụ chỉ là ước lượng.',
+      'Mô hình: tư thế tĩnh (chưa có chuyển động lật từ Chó ba chân); mô hình chưa có động tác xoay của xương bả vai nên tải lên vai tay trụ chỉ là ước lượng.',
     ],
   },
   {
@@ -2411,6 +2411,40 @@ export const ASANAS = [
       'Đau gối sau: kê chăn gấp dưới gối.',
       'Đau thắt lưng: không võng lưng để hạ hông.',
       'Mô hình: dạng tĩnh, bản kê một viên gạch dựng cạnh dài (15 cm) dưới ụ ngồi chân trước; gối sau gập ~35° để gối và mu bàn chân cùng chạm thảm. Bản xoạc sát sàn chưa có.',
+    ],
+  },
+  {
+    id: 'parsva_balasana',
+    sanskrit: 'Parsva Balasana',
+    vi: 'Tư thế Luồn kim',
+    en: 'Thread the Needle',
+    category: 'Ngồi & nằm',
+    level: 'Cơ bản',
+    steps: [{ pose: 'parsva_balasana', hold: 3 }],
+    loop: 'static',
+    roles: {
+      contract: ['external_oblique_L'],
+      stretch: ['rhomboids_R', 'trapezius_R', 'infraspinatus_R'],
+      stabilize: ['gluteus_medius', 'erector_spinae'],
+    },
+    joints: [
+      ['thoracic_spine_joint', 'Xoay cột sống ngực (~40°)'],
+      ['scapulothoracic', 'Xương bả vai bên luồn đưa ra trước nhiều – kéo giãn giữa bả vai và vai sau'],
+      ['glenohumeral', 'Vai bên luồn khép ngang qua thân'],
+      ['hip', 'Hông giữ ngay trên gối'],
+    ],
+    cues: [
+      'Từ tư thế bàn, hông ngay trên gối; hít vào mở tay phải lên trần.',
+      'Thở ra luồn tay phải dưới ngực sang trái, lòng bàn tay ngửa; hạ vai phải và thái dương phải xuống thảm.',
+      'Tay trái chống sàn phía trước (hoặc vươn dài); hông không lệch sang bên.',
+      'Kê gối / chăn dưới đầu nếu thái dương chưa tới sàn; không dồn trọng lượng lên cổ.',
+      'Đổi bên.',
+    ],
+    benefits: ['Kéo giãn vai sau và vùng giữa hai bả vai', 'Xoay nhẹ cột sống ngực'],
+    cautions: [
+      'Đau vai, đau cổ: luồn tay ít hơn, kê gối dưới đầu.',
+      'Đau gối: kê chăn dưới gối.',
+      'Mô hình: dạng tĩnh; xương bả vai phải đưa ra trước ~40° để vai chạm thảm (mô hình chưa có động tác xoay của xương bả vai). Bộ giải lực dồn ~27 % lên vai – cánh tay phải và ~12 % lên đầu.',
     ],
   },
   {

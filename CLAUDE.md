@@ -91,8 +91,9 @@ Data files:
   length, Thelen 2003 passive curve up to the textbook range end) was tried and made results worse
   (muscles pinned at 90–100 % went from 5 to 9–14 across the 33 poses): the dominant errors in
   stretch poses come from body-to-body contacts (then missing; thigh on calves in Balasana and foot on
-  thigh in Vrksasana are modelled now, hands on feet in Paschimottanasana is not) and from the rigid
-  shoulder girdle.
+  thigh in Vrksasana are modelled now, hands on feet in Paschimottanasana is not) and from the missing
+  scapular upward / downward rotation (the girdle only elevates / protracts about the SC joint: use
+  `scapula: { elev, protract }` in a pose when the shoulder blades move – Eagle protracts 15°).
   Passive tension needs per-muscle optimal fibre / tendon slack lengths from the literature first.
 - Props are real supports, not decoration: a pose lists them in `POSE_PROPS` (pose frame: pelvis at
   x = z = 0), everything measures clearance to the floor *or a prop* (`rig.clearance`, never `p.y - c.r`),

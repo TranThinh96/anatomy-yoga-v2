@@ -82,6 +82,25 @@ export const POSES = {
     lumbar: { flex: 4 },
   },
 
+  // Thread the needle (Parsva Balasana): from tabletop, hips over the knees, the right arm threaded under
+  // the chest to the left, palm up, the back of the right shoulder and the right side of the head on the
+  // mat, the left hand on the mat in front, the chest turned toward the left.
+  parsva_balasana: {
+    root: { pitch: 123, roll: 1 },
+    hip: { flex: 128 },
+    knee: { flex: 90 },
+    ankle: { dorsi: -70 },
+    lumbar: { flex: 5, rot: 15 },
+    thorax: { flex: 5, rot: 39, side: 14 },
+    neck: { rot: 30, side: -15 },
+    scapula_R: { protract: 40, elev: -5 },
+    shoulder_L: { flex: 160, abd: 5 },
+    elbow_L: { flex: 10 },
+    wrist_L: { ext: 77, pron: 180 },
+    shoulder_R: { flex: 108, abd: 22 },
+    elbow_R: { flex: 5 },
+    wrist_R: { pron: 0 },
+  },
   tabletop: {
     root: { pitch: 78 },
     hip: { flex: 83 },
@@ -89,7 +108,7 @@ export const POSES = {
     ankle: { dorsi: -70 },
     shoulder: { flex: 75 },
     wrist: { ext: 101, pron: 180 },
-    neck: { flex: -10 },
+    neck: { rot: 30, side: -15 },
     head: { flex: -10 },
   },
   kneeling: {
@@ -185,16 +204,17 @@ export const POSES = {
   // foot hooked behind the right calf; the arms crossed in front of the chest, right elbow over the
   // left, forearms up and wrapped (no limb-on-limb force in the physics).
   garudasana: {
-    root: { pitch: 14 },
-    hip_R: { flex: 62 },
+    root: { pitch: 12 },
+    hip_R: { flex: 60 },
     knee_R: { flex: 68 },
     ankle_R: { dorsi: 23 },
-    hip_L: { flex: 81, abd: -12, rot: -28 },
+    hip_L: { flex: 79, abd: -13, rot: -28 },
     knee_L: { flex: 101 },
-    ankle_L: { dorsi: -15 },
+    ankle_L: { dorsi: -13 },
     lumbar: { flex: -5 },
-    shoulder_L: { flex: 86, abd: 6, rot: -29 },
-    shoulder_R: { flex: 91, abd: 3, rot: -25 },
+    scapula: { protract: 15 },
+    shoulder_L: { flex: 84, abd: 6, rot: -19 },
+    shoulder_R: { flex: 90, abd: 2, rot: -14 },
     elbow_L: { flex: 95 },
     elbow_R: { flex: 95 },
     wrist: { pron: 0 },
@@ -2591,6 +2611,12 @@ export const POSE_FIT = {
   dandasana: { support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['hip.flex', 'shoulder.flex', 'ankle.dorsi'] },
   prone: { support: ['pelvis', 'thorax', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'], params: ['root.pitch', 'hip.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex'] },
 
+  parsva_balasana: {
+    support: ['hip_L|knee_L', 'hip_R|knee_R', 'wrist_L', 'shoulder_R', 'head'],
+    flat: ['wrist_L'],
+    above: [['hip_L', 'knee_L'], ['hip_R', 'knee_R']], // hips stay over the knees
+    params: ['root.pitch&hip.flex', 'root.roll', 'thorax.side', 'thorax.rot', 'neck.rot', 'scapula_R.protract', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.flex', 'shoulder_R.abd'],
+  },
   tabletop: {
     support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'],
     flat: ['wrist_L', 'wrist_R'], // palms flat
