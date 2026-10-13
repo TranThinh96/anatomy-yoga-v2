@@ -2160,6 +2160,24 @@ export const POSES = {
     elbow_R: { flex: 8 },
     wrist: { pron: 90 },
   },
+  // Lotus (Padmasana): each foot resting on top of the opposite thigh near the hip crease (left shin on
+  // top), knees toward the mat, trunk upright, hands on the knees (no foot–thigh or shin–shin force in the
+  // physics). Hip angles built from the thigh and shin directions.
+  padmasana: {
+    hip_L: { flex: 106, abd: -113, rot: -9 },
+    knee_L: { flex: 142 },
+    ankle_L: { dorsi: -25 },
+    hip_R: { flex: 107, abd: -107, rot: -7 },
+    knee_R: { flex: 143 },
+    ankle_R: { dorsi: -25 },
+    root: { pitch: 5, roll: 1 },
+    lumbar: { flex: -5 },
+    shoulder_L: { flex: 36, abd: 2 },
+    shoulder_R: { flex: 36, abd: 1 },
+    elbow_L: { flex: 8 },
+    elbow_R: { flex: 8 },
+    wrist: { pron: 90 },
+  },
   // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
   // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
   // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
@@ -3465,6 +3483,12 @@ export const POSE_FIT = {
     dir: [['thorax', [0, 1, 0], [0, 1, 0]]], // trunk upright over the tilted pelvis
     at: [['wrist_L', 'pelvis', [0.15, 0.13, 0.38]], ['wrist_R', 'pelvis', [-0.22, 0.06, 0.36]]], // hands resting on the knees
     params: ['root.roll', 'hip_R.flex', 'hip_R.rot', 'knee_R.flex', 'ankle_R.dorsi', 'lumbar.side', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
+  },
+  padmasana: {
+    support: ['pelvis', 'hip_L', 'hip_R'],
+    dir: [['thorax', [0, 1, 0], [0, 1, 0]]],
+    at: [['wrist_L', 'knee_L', [0.0, 0.05, 0.08]], ['wrist_R', 'knee_R', [0.0, 0.05, 0.08]]], // hands resting on the knees
+    params: ['root.roll', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_R.flex', 'shoulder_R.abd'],
   },
   agnistambhasana: {
     support: ['pelvis', 'hip_R', 'ankle_R'],

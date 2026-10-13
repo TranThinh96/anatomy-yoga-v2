@@ -2961,6 +2961,38 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'padmasana',
+    sanskrit: 'Padmasana',
+    vi: 'Tư thế Kiết già (Hoa sen)',
+    en: 'Lotus',
+    category: 'Ngồi & nằm',
+    level: 'Nâng cao',
+    steps: [{ pose: 'padmasana', hold: 3 }],
+    loop: 'static',
+    roles: {
+      contract: ['erector_spinae'],
+      stretch: ['gluteus_medius', 'piriformis', 'adductors'],
+      stabilize: ['rectus_abdominis'],
+    },
+    joints: [
+      ['hip', 'Gập + dạng + xoay ngoài rất lớn ở cả hai háng – nguồn chuyển động chính'],
+      ['knee', 'Gối gập sâu, chỉ là bản lề – không được xoắn'],
+      ['ankle', 'Bàn chân duỗi, mu bàn chân tựa đùi đối diện'],
+    ],
+    cues: [
+      'Chỉ vào Kiết già khi Bán kiết già đã thoải mái cả hai bên, không đau gối.',
+      'Ôm cẳng chân phải, xoay cả đùi ra ngoài từ khớp háng, đặt bàn chân lên đùi trái gần nếp háng; rồi đến chân trái lên đùi phải.',
+      'Hai gối hướng xuống sàn, ngồi đều trên hai ụ ngồi, lưng dài; tay đặt trên gối.',
+      'Ra khỏi tư thế từ từ, gỡ chân trên trước; đổi chân trên ở lần sau.',
+    ],
+    benefits: ['Tư thế ngồi thiền rất vững khi háng đủ linh hoạt'],
+    cautions: [
+      'Đau gối (nhất là mặt trong gối): dừng ngay – háng không đủ xoay ngoài nên gối bị xoắn. Ngồi Bán kiết già hoặc xếp bằng.',
+      'Không dùng tay ép gối xuống sàn, không cố giữ lâu khi chân tê.',
+      'Mô hình: dạng tĩnh; bàn chân chỉ đặt sát trên đùi, không truyền lực; hai cẳng chân bắt chéo có thể chạm vào nhau trên hình.',
+    ],
+  },
+  {
     id: 'agnistambhasana',
     sanskrit: 'Agnistambhasana',
     vi: 'Tư thế Khúc củi',
