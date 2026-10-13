@@ -1312,11 +1312,11 @@ export const POSES = {
     root: { pitch: -120 },
     hip: { flex: -10 },
     knee: { flex: 109 },
-    ankle: { dorsi: -7 },
+    ankle: { dorsi: -13 },
     lumbar: { flex: -10 },
     thorax: { flex: 12 },
     neck: { flex: 45 },
-    shoulder: { flex: -31, abd: 6 },
+    shoulder: { flex: -33, abd: 6 },
     wrist: { pron: 90 },
   },
 
@@ -2781,7 +2781,7 @@ export const POSE_FIT = {
   bhujangasana: { support: ['pelvis', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']], params: ['elbow.flex', 'shoulder.flex', 'ankle.dorsi', 'thorax.flex', 'lumbar.flex'] },
   prone_hands: { support: ['lumbar', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['shoulder.flex', 'elbow.flex', 'ankle.dorsi', 'root.pitch&hip.flex', 'lumbar.flex'] },
   setu_bandha: {
-    support: ['scapula_L', 'scapula_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    support: ['thorax', 'scapula_L|shoulder_L', 'scapula_R|shoulder_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
     flat: ['ankle_L', 'ankle_R'],
     above: [['knee_L', 'ankle_L'], ['knee_R', 'ankle_R']], // knees stacked over the ankles
     // upper back and shoulders on the mat, arms alongside the body, palms down
