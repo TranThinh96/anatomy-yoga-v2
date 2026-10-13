@@ -1308,6 +1308,36 @@ export const POSES = {
     neck: { flex: -10 },
     shoulder: { flex: -60, abd: 15 },
   },
+  // Supported shoulder stand (Salamba Sarvangasana) on a folded blanket: the tops of the shoulders, the
+  // upper back and the backs of the upper arms on the blanket, the head on the mat beyond its edge (the
+  // neck clear of the mat), legs vertical, hands on the back. The trunk leans ~25° off vertical with the
+  // pelvis behind the shoulders (as most students hold it; a vertical trunk needs more neck flexion).
+  salamba_sarvangasana: {
+    root: { pitch: 159 },
+    hip: { flex: -21 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -20 },
+    lumbar: { flex: 19 },
+    thorax: { flex: 23 },
+    neck: { flex: 95 },
+    shoulder: { flex: -67, abd: -19 },
+    elbow: { flex: 101 },
+    wrist: { ext: 30 },
+  },
+  // Plow (Halasana) on a folded blanket: as in the shoulder stand, then the straight legs lowered over the
+  // head until the toes rest on the mat behind it; hands on the back.
+  halasana: {
+    root: { pitch: 155 },
+    hip: { flex: 100 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -3 },
+    lumbar: { flex: 23 },
+    thorax: { flex: 20 },
+    neck: { flex: 95 },
+    shoulder: { flex: -68, abd: -19 },
+    elbow: { flex: 102 },
+    wrist: { ext: 30 },
+  },
   setu_bandha: {
     root: { pitch: -120 },
     hip: { flex: -10 },
@@ -2482,6 +2512,9 @@ export const POSE_PROPS = {
   // a chair facing the body, the lower legs on its seat
   viparita_karani_chair: [{ type: 'chair', at: [0, 0.3] }],
   // the wall a little beyond the buttocks (legs up the wall)
+  // a folded blanket under the shoulders and upper arms, the head on the mat beyond its edge
+  salamba_sarvangasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
+  halasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
   // the wall in front of the chest, the toes resting on it
@@ -2780,6 +2813,20 @@ export const POSE_FIT = {
   ustrasana: { support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'], balance: true, params: ['ankle.dorsi', 'root.pitch&hip.flex', 'knee.flex'] },
   bhujangasana: { support: ['pelvis', 'wrist_L', 'wrist_R', 'ankle_L', 'ankle_R'], above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']], params: ['elbow.flex', 'shoulder.flex', 'ankle.dorsi', 'thorax.flex', 'lumbar.flex'] },
   prone_hands: { support: ['lumbar', 'thorax', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['shoulder.flex', 'elbow.flex', 'ankle.dorsi', 'root.pitch&hip.flex', 'lumbar.flex'] },
+  salamba_sarvangasana: {
+    support: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R'],
+    onProp: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R'],
+    balance: true,
+    dir: [['hip_L', [0, -1, 0], [0, 1, 0]], ['hip_R', [0, -1, 0], [0, 1, 0]]], // legs vertical
+    at: [['wrist_L', 'thorax', [0.08, 0.0, -0.1]], ['wrist_R', 'thorax', [-0.08, 0.0, -0.1]]], // hands on the back
+    params: ['root.pitch', 'hip.flex', 'lumbar.flex', 'thorax.flex', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
+  halasana: {
+    support: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R', 'ankle_L', 'ankle_R'],
+    onProp: ['scapula_L', 'scapula_R', 'shoulder_L', 'shoulder_R'],
+    at: [['wrist_L', 'thorax', [0.08, 0.0, -0.1]], ['wrist_R', 'thorax', [-0.08, 0.0, -0.1]]], // hands on the back
+    params: ['root.pitch', 'hip.flex', 'lumbar.flex', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
   setu_bandha: {
     support: ['thorax', 'scapula_L|shoulder_L', 'scapula_R|shoulder_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
     flat: ['ankle_L', 'ankle_R'],
