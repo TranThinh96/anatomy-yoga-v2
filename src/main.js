@@ -905,7 +905,7 @@ function renderPhysicsLive() {
         (g) =>
           `<div class="bar-row"><span>${esc(g.label)}${g.shear >= 3 ? ` <small class="shear" title="Lực ngang (ma sát) tính theo % trọng lượng">↔ ${Math.round(g.shear)}%</small>` : ''}</span><span class="bar"><i style="width:${Math.min(g.pct, 100)}%;background:var(--stabilize)"></i></span><b>${Math.round(g.pct)}%</b></div>`,
       )
-      .join('') + strapRows(r);
+      .join('') + strapRows(r) + touchRows(r);
   $('#ph-loads').innerHTML = r.joints
     .filter((j) => j.total >= 3 && j.demands.length)
     .slice(0, 8)
@@ -994,18 +994,38 @@ function strapRows(r) {
   return `<div class="bar-row" title="Lực kéo của dây giữa tay và bàn chân (tổng các nhánh dây)"><span>Dây tập (kéo tay ↔ chân)</span><span class="bar"><i style="width:${Math.min(pct, 100)}%;background:#4f9a7a"></i></span><b>${Math.round(T)} N</b></div>`;
 }
 
+const SEG_VI = {
+  hip: 'đùi', knee: 'cẳng chân', ankle: 'bàn chân', shoulder: 'cánh tay trên', elbow: 'cẳng tay', wrist: 'bàn tay',
+  pelvis: 'chậu', lumbar: 'bụng / lưng dưới', thorax: 'ngực / lưng', head: 'đầu',
+};
+const segVi = (seg) => `${SEG_VI[seg.replace(/_[LR]$/, '')] || seg}${seg.endsWith('_L') ? ' trái' : seg.endsWith('_R') ? ' phải' : ''}`;
+
+/** Push between two body parts (body-to-body contacts), under the support rows. */
+function touchRows(r) {
+  return (r.touches || [])
+    .map((t) => {
+      const pct = (t.T / r.W) * 100;
+      return `<div class="bar-row" title="Lực ép giữa hai phần cơ thể (không tính ma sát)"><span>${esc(segVi(t.segA))} tì ${esc(segVi(t.segB))}</span><span class="bar"><i style="width:${Math.min(pct, 100)}%;background:#b5835a"></i></span><b>${Math.round(t.T)} N</b></div>`;
+    })
+    .join('');
+}
+
 /** The props of the current sequence ("2 gạch tập, tường"), with the model's limits. */
 function propsNote() {
   if (anim.env.empty) return '';
   const count = new Map();
-  for (const p of anim.env.props) count.set(p.type, (count.get(p.type) || 0) + 1);
+  for (const p of anim.env.props) if (p.type !== 'touch') count.set(p.type, (count.get(p.type) || 0) + 1);
+  const touch = anim.env.touches.length
+    ? '<p class="hint"><b>Tiếp xúc thân – thân:</b> phần cơ thể tì lên nhau (vd. gối lên cánh tay) được tính là một lực ép vuông góc, chọn cùng lực sàn sao cho các khớp tốn ít sức nhất; không tính ma sát giữa da và da, mô mềm coi như cứng.</p>'
+    : '';
+  if (!count.size) return touch;
   const list = [...count].map(([t, n]) => (n > 1 ? `${n} ${PROP_NAMES[t]}` : PROP_NAMES[t])).join(', ');
   const wall = count.has('wall') ? ' Tường chỉ đẩy vuông góc với mặt tường (không tính ma sát giữa lưng / chân và tường).' : '';
   const strap = count.has('strap')
     ? ' Dây tập là một lực kéo giữa tay và bàn chân, chọn cùng lực sàn sao cho các khớp tốn ít sức nhất (dây không giãn, không tính ma sát dây trên bàn chân).'
     : '';
   const chair = count.has('chair') ? ' Ghế: chỉ mặt ghế đỡ cơ thể; mô hình chưa có điểm tựa bắp chân lên đạo cụ nên gót chân tựa trên mặt ghế.' : '';
-  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}${strap}${chair}</p>`;
+  return `<p class="hint"><b>Đạo cụ:</b> ${esc(list)}. Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.${wall}${strap}${chair}</p>${touch}`;
 }
 
 /** Static analysis of each variant of the current asana, as an HTML table. */

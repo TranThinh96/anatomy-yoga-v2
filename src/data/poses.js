@@ -470,13 +470,13 @@ export const POSES = {
   // the physics: the hands carry everything).
   bakasana: {
     root: { pitch: 85 },
-    hip: { flex: 150, abd: -15, rot: 0 },
+    hip: { flex: 150, abd: -25, rot: 0 },
     knee: { flex: 145 },
     ankle: { dorsi: -40 },
     lumbar: { flex: 20 },
     thorax: { flex: 15 },
     neck: { flex: -33 },
-    shoulder: { flex: 46, abd: 5 },
+    shoulder: { flex: 46, abd: 0 },
     elbow: { flex: 65 },
     wrist: { ext: 109, pron: 180 },
   },
@@ -2531,6 +2531,15 @@ export const POSE_PROPS = {
   salamba_sarvangasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
   halasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
   karnapidasana: [{ type: 'blanket', at: [0, 0.13], yaw: 0 }],
+  // the sole of the lifted foot presses the inner standing thigh
+  vrksasana: [{ type: 'touch', a: 'ankle_L', b: 'hip_R', at: 0.4 }],
+  // the thighs rest on the calves, the belly on the thighs
+  balasana: [
+    { type: 'touch', a: 'hip_L', b: 'knee_L', at: 0.5 },
+    { type: 'touch', a: 'hip_R', b: 'knee_R', at: 0.5 },
+  ],
+  // the knees rest on the backs of the upper arms
+  bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
   // the wall in front of the chest, the toes resting on it

@@ -1641,7 +1641,7 @@ export const ASANAS = [
     cautions: [
       'Chấn thương cổ tay, vai: tránh.',
       'Thai kỳ, cao huyết áp: tránh.',
-      'Mô hình: dạng tĩnh; gối chỉ đặt sát cánh tay trên, không truyền lực – trong thực tế gối tì vào tay giúp giữ chân, mô hình thay bằng lực cơ gập háng. Trọng tâm vừa đủ nằm trong chân đế hai bàn tay (~0,5 cm) – thăng bằng rất hẹp, đúng như cảm giác khi tập.',
+      'Mô hình: dạng tĩnh; gối tì lên mặt sau – ngoài cánh tay trên là một lực ép (mỗi gối ~150 N), không tính ma sát da – da (thực tế ma sát giúp giữ chân). Trọng tâm vừa đủ nằm trong chân đế hai bàn tay (~0,3 cm) – thăng bằng rất hẹp, đúng như cảm giác khi tập.',
     ],
   },
   {

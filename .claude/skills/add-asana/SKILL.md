@@ -171,7 +171,7 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
 
-## 4b. Props (wall, block, bolster, blanket, chair, strap)
+## 4b. Props (wall, block, bolster, blanket, chair, strap) and body-to-body contacts
 
 Props are supports in the physics, so a supported variant shows its real load change. List them in
 `POSE_PROPS[pose]` in the pose's own frame (pelvis at x = z = 0, floor y = 0, facing +Z, left +X):
@@ -187,6 +187,12 @@ viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal p
 - A strap: `{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }` (no `at`: it is held
   by the body). It pulls the palm(s) toward the ball of the foot and back, never pushes; the physics card
   shows its tension. It only changes joint moments, so the pose still needs its floor supports.
+- A body-to-body contact: `{ type: 'touch', a: 'hip_L', b: 'shoulder_L', at? }` – segment a rests on b
+  (knee on the upper arm in Crow, thigh on calf in Child's pose `at: 0.5`, foot on thigh in Tree). A
+  frictionless push between the two segments' capsules, only while they are within 3 cm; the physics card
+  lists it. Place a so it lies on the side of b the push comes from (the knees *outside and above* the
+  upper arms in Crow – with the thigh inside the arm the push would pull the leg down and comes out 0).
+  Without it, limbs resting on limbs carry no force: say so in the cautions.
 - A chair: `{ type: 'chair', at: [x, z], yaw }` – only the seat (42 × 40 cm, top 45 cm high) is a surface;
   the backrest stands on the seat's +v edge (yaw 0: the far side in +Z). The back-of-calf points lean on
   walls only, so lower legs on a chair rest on the heels (`viparita_karani_chair`).

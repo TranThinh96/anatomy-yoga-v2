@@ -72,6 +72,12 @@ const GROUP_OF_SEG = {
 const SIDE_VI = { 1: ' trái', '-1': ' phải', 0: '' };
 
 const TOUCH = 0.02; // a contact closer than 2 cm to the floor (or a prop) counts as support
+// Body-to-body contacts (POSE_PROPS { type: 'touch', a, b }): each segment is a capsule around the
+// line between its de Leva endpoints; these are rough soft-tissue radii (m) of the model, measured on
+// its surface, not from a source. Two segments push on each other only while their capsules are
+// within TOUCH_GAP of touching.
+const CAPSULE_R = { hip: 0.07, knee: 0.05, ankle: 0.035, shoulder: 0.045, elbow: 0.035, wrist: 0.025, pelvis: 0.11, lumbar: 0.1, thorax: 0.11, head: 0.08 };
+const TOUCH_GAP = 0.03;
 const UP = new THREE.Vector3(0, 1, 0);
 // relative willingness of each body part to carry weight (see solveSupport / solveContacts)
 const SUPPORT_WEIGHT = {
@@ -98,6 +104,39 @@ export function convexHull(pts) {
   upper.pop();
   lower.pop();
   return lower.concat(upper);
+}
+
+/** Closest points between segments p1–q1 and p2–q2 (Ericson, Real-Time Collision Detection 5.1.9). */
+export function closestPoints(p1, q1, p2, q2) {
+  const d1 = q1.clone().sub(p1);
+  const d2 = q2.clone().sub(p2);
+  const r = p1.clone().sub(p2);
+  const a = d1.dot(d1);
+  const e = d2.dot(d2);
+  const f = d2.dot(r);
+  let s = 0;
+  let t = 0;
+  const clamp = (v) => Math.min(1, Math.max(0, v));
+  if (a < 1e-12 && e < 1e-12) return [p1.clone(), p2.clone()];
+  if (a < 1e-12) t = clamp(f / e);
+  else {
+    const c = d1.dot(r);
+    if (e < 1e-12) s = clamp(-c / a);
+    else {
+      const b = d1.dot(d2);
+      const den = a * e - b * b;
+      s = den > 1e-12 ? clamp((b * f - c * e) / den) : 0;
+      t = (b * s + f) / e;
+      if (t < 0) {
+        t = 0;
+        s = clamp(-c / a);
+      } else if (t > 1) {
+        t = 1;
+        s = clamp((b - c) / a);
+      }
+    }
+  }
+  return [p1.clone().addScaledVector(d1, s), p2.clone().addScaledVector(d2, t)];
 }
 
 function distToSegment(q, a, b) {
@@ -238,15 +277,18 @@ function contactBasis(n) {
  * Equality-constrained least squares, solved through its KKT system.
  *   points: [{p, w}], rows: [{J, sub: Set(pointIndex), segs: Set(segment), grav: Vector3, c}]
  * `ties` are straps: a tension T ≥ 0 between two body points, a (on segment segA) pulled toward b
- * (on segB) and b toward a. Internal to the body, they do not enter the equilibrium of the whole
- * body, only the joint moments, and they are chosen with the floor forces (least joint effort).
+ * (on segB) and b toward a – or, with a unit normal `u`, body-to-body contacts: a push T ≥ 0 on a
+ * along u and on b along −u (no friction). Internal to the body, they do not enter the equilibrium
+ * of the whole body, only the joint moments, and they are chosen with the floor forces (least joint
+ * effort).
  * Returns [[Fx, Fy, Fz]] per point (with .tension = [T] per tie), or null if no pushing forces can
  * balance the body.
  */
 export function solveContacts(points, com, W, rows, friction = true, ties = []) {
   let active = points.map((_, i) => i);
   // unit direction of each tie (a → b) and whether it may still pull (T < 0 drops it)
-  const tieU = ties.map((s) => s.b.clone().sub(s.a).normalize());
+  // a strap pulls a toward b; a body contact pushes a along its normal u (away from b)
+  const tieU = ties.map((s) => (s.u ? s.u.clone() : s.b.clone().sub(s.a).normalize()));
   let tieOn = ties.map(() => true);
   const dof = friction ? 3 : 1;
   // force components in each contact's own frame: 0, 2 = along the surface, 1 = along its normal
@@ -435,6 +477,12 @@ export class Physics {
       }
     }
     this.setSubject({ mass, sex });
+    // capsule axis of each segment (rest-local endpoints) for body-to-body contacts
+    this.capsule = {};
+    for (const sg of this.segments) {
+      const r = CAPSULE_R[baseOf(sg.seg)];
+      if (r) this.capsule[sg.seg] = { a: sg.prox.clone().sub(rig.rest[sg.seg]), b: sg.dist.clone().sub(rig.rest[sg.seg]), r };
+    }
     // subtree (segment names distal to each joint, the joint included)
     this.subtree = {};
     for (const name in rig.joints) {
@@ -495,6 +543,32 @@ export class Physics {
     return out;
   }
 
+  /**
+   * Body-to-body contacts of the current pose (env touches whose capsules are within TOUCH_GAP):
+   * [{ a, b, segA, segB, u, touch: true }] – a = b = the contact point, u = the push on segment a.
+   */
+  touches() {
+    const out = [];
+    for (const t of this.rig.env.touches || []) {
+      const A = this.capsule[t.a];
+      const B = this.capsule[t.b];
+      if (!A || !B) continue;
+      const w = (seg, v) => this.rig.worldPoint(seg, v, new THREE.Vector3());
+      const a0 = w(t.a, A.a);
+      const a1 = w(t.a, A.b);
+      // `at`: where along a (0 = proximal end, 1 = distal) it rests – needed for neighbouring segments
+      // (thigh on calf), whose axes meet at the joint
+      const [pa, pb] = t.at == null ? closestPoints(a0, a1, w(t.b, B.a), w(t.b, B.b)) : closestPoints(a0.clone().lerp(a1, t.at), a0.clone().lerp(a1, t.at), w(t.b, B.a), w(t.b, B.b));
+      const d = pa.distanceTo(pb);
+      if (d - A.r - B.r > TOUCH_GAP || d < 1e-6) continue;
+      const u = pa.clone().sub(pb).multiplyScalar(1 / d);
+      // the contact point: halfway between the two surfaces along the line of centres
+      const p = pb.clone().addScaledVector(u, (d - A.r + B.r) / 2);
+      out.push({ a: p, b: p.clone(), segA: t.a, segB: t.b, u, touch: true });
+    }
+    return out;
+  }
+
   /** Full static analysis of the current rig pose. */
   compute() {
     const rig = this.rig;
@@ -526,6 +600,8 @@ export class Physics {
     // straps: one strand (tie) per hand, from the palm to the ball of the foot
     const ties = [];
     for (const s of rig.env.straps || []) for (const st of strapStrands(rig, s)) ties.push({ a: st.a, b: st.b, segA: st.hand, segB: s.foot });
+    // body-to-body contacts (a knee on the upper arm, a foot on the thigh): pushes, chosen the same way
+    ties.push(...this.touches());
     // floor forces: equilibrium with the least joint effort; if the centre of mass is not
     // over the supports (between two poses) fall back to vertical forces near the COM
     // over the base of support – or held by a wall even when it is not (sitting back against it)
@@ -533,7 +609,7 @@ export class Physics {
     const F3 = margin > 0 || leaning ? solveContacts(contacts, com, W, rows, this.friction, ties) : null;
     ties.forEach((s, i) => {
       s.T = F3?.tension[i] || 0;
-      s.F = s.b.clone().sub(s.a).normalize().multiplyScalar(s.T); // the pull on the hand
+      s.F = (s.u ? s.u.clone() : s.b.clone().sub(s.a).normalize()).multiplyScalar(s.T); // the pull on the hand / push on a
     });
     if (F3) {
       contacts.forEach((c, i) => {
@@ -635,7 +711,7 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos, straps: ties };
+    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos, straps: ties.filter((t) => !t.touch), touches: ties.filter((t) => t.touch) };
   }
 
   /**

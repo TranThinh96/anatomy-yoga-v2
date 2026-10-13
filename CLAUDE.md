@@ -73,7 +73,7 @@ Data files:
   Never fill in values from memory – leave them out and say so.
 - The "Hoạt động" (muscle activation) colour mode and the activation list are **experimental**. They were checked
   against measured EMG (`src/data/emg.js`, `node tools/check-emg.mjs --verbose`) and do NOT agree: rank correlation
-  0.23 / −0.38 / 0.27 over 3 studies of standing poses, mostly far below the EMG (static optimisation has no
+  0.19 / −0.44 / 0.34 over 3 studies of standing poses, mostly far below the EMG (static optimisation has no
   co-contraction for joint stiffness and balance). Keep the "thử nghiệm" labels and "Vai trò" (literature roles)
   as the default colour mode. When the muscle model changes, re-run check-emg and update the numbers quoted in
   README and in the activation note (main.js). New EMG values: copy from a paper's table, never read off a figure.
@@ -90,8 +90,9 @@ Data files:
 - Passive muscle tension is deliberately NOT modelled. A ROM-based version (slack at standing
   length, Thelen 2003 passive curve up to the textbook range end) was tried and made results worse
   (muscles pinned at 90–100 % went from 5 to 9–14 across the 33 poses): the dominant errors in
-  stretch poses come from body-to-body contacts the physics lacks (thigh on calves in Balasana, foot
-  on thigh in Vrksasana, hands on feet in Paschimottanasana) and from the rigid shoulder girdle.
+  stretch poses come from body-to-body contacts (then missing; thigh on calves in Balasana and foot on
+  thigh in Vrksasana are modelled now, hands on feet in Paschimottanasana is not) and from the rigid
+  shoulder girdle.
   Passive tension needs per-muscle optimal fibre / tendon slack lengths from the literature first.
 - Props are real supports, not decoration: a pose lists them in `POSE_PROPS` (pose frame: pelvis at
   x = z = 0), everything measures clearance to the floor *or a prop* (`rig.clearance`, never `p.y - c.r`),
@@ -105,6 +106,11 @@ Data files:
   A chair (`{ type: 'chair', at, yaw }`) is a surface only at its seat (45 cm); the calf points rest on
   walls only, so legs on a chair rest on the heels.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
+  A body-to-body contact (`{ type: 'touch', a, b, at? }` in POSE_PROPS: segment a rests on b, `at` =
+  where along a) is a frictionless push between two segment capsules (axis between the de Leva
+  endpoints, rough radii CAPSULE_R in physics.js), active only while the capsules are within 3 cm; like a
+  strap it is internal (joint moments only) and chosen with the floor forces. Use `at` for neighbouring
+  segments (thigh on calf), whose axes meet at the joint.
   A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
   and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive
