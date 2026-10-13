@@ -180,6 +180,24 @@ export const POSES = {
     elbow: { flex: 103 },
     wrist: { ext: 70 },
   },
+  // Eagle (Garudasana): sitting into the right leg, the left thigh crossed over the right, the left
+  // foot hooked behind the right calf; the arms crossed in front of the chest, right elbow over the
+  // left, forearms up and wrapped (no limb-on-limb force in the physics).
+  garudasana: {
+    root: { pitch: 14 },
+    hip_R: { flex: 62 },
+    knee_R: { flex: 68 },
+    ankle_R: { dorsi: 23 },
+    hip_L: { flex: 81, abd: -12, rot: -28 },
+    knee_L: { flex: 101 },
+    ankle_L: { dorsi: -15 },
+    lumbar: { flex: -5 },
+    shoulder_L: { flex: 86, abd: 6, rot: -29 },
+    shoulder_R: { flex: 91, abd: 3, rot: -25 },
+    elbow_L: { flex: 95 },
+    elbow_R: { flex: 95 },
+    wrist: { pron: 0 },
+  },
   utkatasana: {
     root: { pitch: 38 },
     hip: { flex: 95 },
@@ -2419,6 +2437,19 @@ export const POSE_FIT = {
     // feet where they are in utkatasana_wall, so they stay put as the body slides down
     rel: [['pelvis', 'ankle_L', [0.08, 0.32]]],
     params: ['root.pitch&-ankle.dorsi', 'root.pitch&-lumbar.flex', 'hip.flex', 'ankle.dorsi', 'thorax.flex'],
+  },
+  garudasana: {
+    support: ['ankle_R'],
+    flat: ['ankle_R'],
+    balance: true,
+    at: [
+      ['knee_L', 'hip_R', [-0.02, -0.3, 0.11]], // left thigh crossed over the right
+      ['ankle_L', 'knee_R', [-0.05, -0.2, -0.09]], // left foot hooked behind the right calf
+      ['elbow_R', 'thorax', [0.01, 0.22, 0.34]], // right elbow on top of the left, elbows at shoulder height
+      ['elbow_L', 'thorax', [-0.01, 0.17, 0.32]],
+    ],
+    dir: [['thorax', [0, 1, 0], [0, 0.97, 0.25]], ['elbow_L', [0, -1, 0], [0, 1, 0]], ['elbow_R', [0, -1, 0], [0, 1, 0]]],
+    params: ['root.pitch&hip_R.flex&hip_L.flex', 'hip_R.flex', 'knee_R.flex', 'ankle_R.dorsi', 'hip_L.flex', 'hip_L.abd', 'hip_L.rot', 'knee_L.flex', 'ankle_L.dorsi', 'shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot'],
   },
   utkatasana_wall: {
     support: ['ankle_L', 'ankle_R'],

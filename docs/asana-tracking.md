@@ -14,7 +14,7 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
-| Đứng | 25 | 1 | 26 |
+| Đứng | 26 | 0 | 26 |
 | Gập người | 7 | 1 | 8 |
 | Ngửa sau | 15 | 2 | 17 |
 | Chống tay & thăng bằng tay | 13 | 6 | 19 |
@@ -22,9 +22,9 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Ngồi (gồm Balasana) | 18 | 3 | 21 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **101** | **17** | **118** |
+| **Tổng** | **102** | **16** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 8 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 9 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -93,7 +93,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `parivrtta_utkatasana` | Parivrtta Utkatasana | Cái ghế vặn xoắn | Revolved Chair | Trung bình | P2 | `utkatasana` | 🔁 🤝 khuỷu móc đùi → biến thể tay chắp, không móc |
 | ✅ | `skandasana` | Skandasana | Lunge ngang | Side Lunge | Trung bình | P2 | `utkata_konasana` | 🔁 |
 | ✅ | `utthita_hasta_padangusthasana` | Utthita Hasta Padangusthasana | Tay nắm ngón chân cái | Extended Hand-to-Big-Toe | Trung bình | P2 | `tadasana` | 🔁 ⚖ 🤝 → biến thể 🪢 dây / chân gác ghế hoặc tường 🧱 |
-| ⬜ | `garudasana` | Garudasana | Đại bàng | Eagle Pose | Trung bình | P3 | `utkatasana` | 🔁 ⚖ 🤝 tay quấn tay, chân quấn chân |
+| ✅ | `garudasana` | Garudasana | Đại bàng | Eagle Pose | Trung bình | P3 | `utkatasana` | 🔁 ⚖ 🤝 tay quấn tay, chân quấn chân |
 | ✅ | `natarajasana` | Natarajasana | Vũ công | Dancer Pose | Trung bình | P3 | `tadasana` | 🔁 ⚖ 🤝 tay nắm bàn chân → biến thể 🪢 dây |
 
 ### 2.2 Gập người
@@ -291,6 +291,7 @@ Ký hiệu trong **Ghi chú**:
 - Bán kiết già (P3): dạng tĩnh; bàn chân trái đặt sát trên đùi phải (không truyền lực), gối trái cách sàn ~12 cm. Chậu hơi nghiêng (roll 8°) để đùi và bàn chân phải cùng chạm sàn, thắt lưng nghiêng bù cho thân thẳng.
 - Chào mặt trăng (P3): bản rút gọn – Núi → tay lên → nghiêng trái / phải → Nữ thần → Lunge ngang trái / phải → Núi (thêm `parsva_tadasana_R`, `skandasana_R` đối xứng). Chưa có Tam giác, Gập người chân trước, Lunge thấp vì dùng thế chân khác (đổi thế chân giữa chừng cần nhiều bước). Khi bước rộng chân, trọng tâm không dồn sang chân trụ (như các mục bước chân khác của app).
 - Trồng chuối, Đứng cẳng tay (P3): dạng tĩnh, bản mặt hướng vào tường (đi bộ chân lên tường từ Plank), mũi chân tựa tường gánh 2–4 % trọng lượng; app xếp ở nhóm Đảo ngược. Bản lưng hướng tường (đá chân lên) và bản tự do chưa có. Đứng cẳng tay: cổ ngửa ~45° để đầu không chạm sàn.
+- Đại bàng (P3): dạng tĩnh; đùi trái bắt chéo trên đùi phải, bàn chân trái móc sau bắp chân phải, khuỷu phải trên khuỷu trái – đặt sát, không truyền lực. Cơ trám / cơ thang không dài ra vì xương bả vai không dang.
 - ⛔ Bánh xe (`urdhva_dhanurasana`): đã thử – đai vai mô hình cứng (bả vai không xoay lên, không nâng) nên vai không thể nằm trên cổ tay. Để bàn tay áp sàn, bộ fit phải đẩy cổ tay ngửa ~120°, cột sống ngực ngửa ~45° hoặc háng duỗi ~45° – đều vượt tầm thật, dạy sai. Cần mô hình hoá xoay lên của xương bả vai trước.
 - ⛔ Trồng cây chuối vai, Cái cày: mô hình chỉ có điểm tiếp xúc ở góc dưới xương bả vai và sau đầu – không có ở đỉnh vai / C7 / mặt sau cánh tay trên, nên thân không đỡ được trên vai và đầu sẽ gánh phần lớn trọng lượng (dạy sai đúng điều an toàn quan trọng nhất). Cần thêm contact trong `tools/bp3d-build.mjs` và build lại mô hình (cùng việc với Luồn kim).
 
