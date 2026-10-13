@@ -1047,6 +1047,19 @@ export const POSES = {
   // Headstand prep (Salamba Sirsasana preparation): forearms down with the hands clasped (a triangle,
   // elbows shoulder-width), the crown of the head on the mat just in front of the hands; legs
   // straight, feet walked in so the hips rise over the shoulders.
+  // Supported headstand (Salamba Sirsasana I): forearms in a tripod with the hands clasped as in the
+  // prep, crown of the head on the mat cupped by the hands, body upside down and long, legs together.
+  salamba_sirsasana: {
+    root: { pitch: 185 },
+    hip: { flex: 5 },
+    knee: { flex: 0 },
+    ankle: { dorsi: -20 },
+    lumbar: { flex: -3 },
+    shoulder: { flex: 158, abd: 13, rot: 35 },
+    elbow: { flex: 100 },
+    wrist: { pron: 90 },
+    neck: { flex: 29 },
+  },
   sirsasana_prep: {
     root: { pitch: 153 },
     hip: { flex: 113 },
@@ -3023,6 +3036,13 @@ export const POSE_FIT = {
     // upper arms near vertical (elbows under the shoulders), so the head hangs clear of the mat
     dir: [['shoulder_L', [0, -1, 0], [0, -1, 0.15]], ['shoulder_R', [0, -1, 0], [0, -1, 0.15]]],
     params: ['root.pitch&shoulder.flex', 'shoulder.flex', 'hip.flex', 'knee.flex', 'ankle.dorsi', 'elbow.flex'],
+  },
+  salamba_sirsasana: {
+    support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'head'],
+    balance: true,
+    rel: [['wrist_L', 'wrist_R', [-0.06, 0]]], // hands clasped
+    dir: [['hip_L', [0, -1, 0], [0, 1, 0]]], // legs vertical
+    params: ['root.pitch&shoulder.flex', 'root.pitch', 'shoulder.flex', 'shoulder.abd', 'elbow.flex', 'neck.flex', 'hip.flex'],
   },
   sirsasana_prep: {
     support: ['elbow_L', 'elbow_R', 'wrist_L', 'wrist_R', 'head', 'ankle_L', 'ankle_R'],
