@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { SEGMENTS, GRAVITY } from '../data/anthropometry.js';
 import { baseOf, sideOf } from './rig.js';
+import { strapStrands } from './props.js';
 
 // Joints for which the static load (net joint moment) is reported, and what a
 // positive / negative component means anatomically. `flexSign` converts the
@@ -71,6 +72,12 @@ const GROUP_OF_SEG = {
 const SIDE_VI = { 1: ' trái', '-1': ' phải', 0: '' };
 
 const TOUCH = 0.02; // a contact closer than 2 cm to the floor (or a prop) counts as support
+// Body-to-body contacts (POSE_PROPS { type: 'touch', a, b }): each segment is a capsule around the
+// line between its de Leva endpoints; these are rough soft-tissue radii (m) of the model, measured on
+// its surface, not from a source. Two segments push on each other only while their capsules are
+// within TOUCH_GAP of touching.
+const CAPSULE_R = { hip: 0.07, knee: 0.05, ankle: 0.035, shoulder: 0.045, elbow: 0.035, wrist: 0.025, pelvis: 0.11, lumbar: 0.1, thorax: 0.11, head: 0.08 };
+const TOUCH_GAP = 0.03;
 const UP = new THREE.Vector3(0, 1, 0);
 // relative willingness of each body part to carry weight (see solveSupport / solveContacts)
 const SUPPORT_WEIGHT = {
@@ -97,6 +104,39 @@ export function convexHull(pts) {
   upper.pop();
   lower.pop();
   return lower.concat(upper);
+}
+
+/** Closest points between segments p1–q1 and p2–q2 (Ericson, Real-Time Collision Detection 5.1.9). */
+export function closestPoints(p1, q1, p2, q2) {
+  const d1 = q1.clone().sub(p1);
+  const d2 = q2.clone().sub(p2);
+  const r = p1.clone().sub(p2);
+  const a = d1.dot(d1);
+  const e = d2.dot(d2);
+  const f = d2.dot(r);
+  let s = 0;
+  let t = 0;
+  const clamp = (v) => Math.min(1, Math.max(0, v));
+  if (a < 1e-12 && e < 1e-12) return [p1.clone(), p2.clone()];
+  if (a < 1e-12) t = clamp(f / e);
+  else {
+    const c = d1.dot(r);
+    if (e < 1e-12) s = clamp(-c / a);
+    else {
+      const b = d1.dot(d2);
+      const den = a * e - b * b;
+      s = den > 1e-12 ? clamp((b * f - c * e) / den) : 0;
+      t = (b * s + f) / e;
+      if (t < 0) {
+        t = 0;
+        s = clamp(-c / a);
+      } else if (t > 1) {
+        t = 1;
+        s = clamp((b - c) / a);
+      }
+    }
+  }
+  return [p1.clone().addScaledVector(d1, s), p2.clone().addScaledVector(d2, t)];
 }
 
 function distToSegment(q, a, b) {
@@ -235,11 +275,21 @@ function contactBasis(n) {
  * the same segment. Forces may only push (Fy ≥ 0, active set) and, with `friction`, have
  * horizontal parts within the friction cone |Fh| ≤ μ·Fy (penalised, then scaled together).
  * Equality-constrained least squares, solved through its KKT system.
- *   points: [{p, w}], rows: [{J, sub: Set(pointIndex), grav: Vector3, c}]
- * Returns [[Fx, Fy, Fz]] per point, or null if no pushing forces can balance the body.
+ *   points: [{p, w}], rows: [{J, sub: Set(pointIndex), segs: Set(segment), grav: Vector3, c}]
+ * `ties` are straps: a tension T ≥ 0 between two body points, a (on segment segA) pulled toward b
+ * (on segB) and b toward a – or, with a unit normal `u`, body-to-body contacts: a push T ≥ 0 on a
+ * along u and on b along −u (no friction). Internal to the body, they do not enter the equilibrium
+ * of the whole body, only the joint moments, and they are chosen with the floor forces (least joint
+ * effort).
+ * Returns [[Fx, Fy, Fz]] per point (with .tension = [T] per tie), or null if no pushing forces can
+ * balance the body.
  */
-export function solveContacts(points, com, W, rows, friction = true) {
+export function solveContacts(points, com, W, rows, friction = true, ties = []) {
   let active = points.map((_, i) => i);
+  // unit direction of each tie (a → b) and whether it may still pull (T < 0 drops it)
+  // a strap pulls a toward b; a body contact pushes a along its normal u (away from b)
+  const tieU = ties.map((s) => (s.u ? s.u.clone() : s.b.clone().sub(s.a).normalize()));
+  let tieOn = ties.map(() => true);
   const dof = friction ? 3 : 1;
   // force components in each contact's own frame: 0, 2 = along the surface, 1 = along its normal
   const comp = friction ? [0, 1, 2] : [1];
@@ -253,8 +303,11 @@ export function solveContacts(points, com, W, rows, friction = true) {
   // clothing on a wall), so its tangential forces are penalised away from the start
   const pen = points.map((pt) => (pt.wall ? 1e9 : 1));
   const LAMBDA = 0.1 / (W * W);
-  for (let iter = 0; iter < 3 * points.length + 12 && active.length; iter++) {
-    const n = active.length * dof;
+  for (let iter = 0; iter < 3 * points.length + 12 + ties.length && active.length; iter++) {
+    const nc = active.length * dof;
+    const tieIdx = [];
+    tieOn.forEach((on, i) => on && tieIdx.push(i));
+    const n = nc + tieIdx.length;
     const H = Array.from({ length: n }, () => new Array(n).fill(0));
     const g = new Array(n).fill(0);
     // joint effort: Σ |grav + Σ r × F|² / c²
@@ -269,6 +322,22 @@ export function solveContacts(points, com, W, rows, friction = true) {
           const cf = k === 0 ? [0, -r.z, r.y] : k === 1 ? [r.z, 0, -r.x] : [-r.y, r.x, 0];
           comp.forEach((_, j) => (a[col * dof + j] = dotAxis(cf, pi, j) / row.c));
           any = true;
+        });
+        // a strap pulls its hand end along +u and its foot end along −u
+        tieIdx.forEach((ti, q) => {
+          const s = ties[ti];
+          const u = tieU[ti];
+          let v = 0;
+          for (const [p, sign, seg] of [[s.a, 1, s.segA], [s.b, -1, s.segB]]) {
+            if (!row.segs?.has(seg)) continue;
+            const r = p.clone().sub(row.J);
+            const m = k === 0 ? r.y * u.z - r.z * u.y : k === 1 ? r.z * u.x - r.x * u.z : r.x * u.y - r.y * u.x;
+            v += sign * m;
+          }
+          if (v) {
+            a[nc + q] = v / row.c;
+            any = true;
+          }
         });
         if (!any) continue;
         const b0 = row.grav.getComponent(k) / row.c;
@@ -286,6 +355,7 @@ export function solveContacts(points, com, W, rows, friction = true) {
         H[col * dof + j][col * dof + j] += (LAMBDA * cap) / w;
       });
     });
+    tieIdx.forEach((_, q) => (H[nc + q][nc + q] += LAMBDA));
     // equilibrium: ΣF = (0, W, 0), Σ (p − com) × F = 0
     const C = [];
     const d = [];
@@ -342,6 +412,12 @@ export function solveContacts(points, com, W, rows, friction = true) {
       active = active.filter((i) => i !== worst);
       continue;
     }
+    // a strap only pulls: drop one that would have to push and re-solve
+    const pushing = tieIdx.findIndex((_, q) => x[nc + q] < -1e-6 * W);
+    if (pushing >= 0) {
+      tieOn = tieOn.map((on, i) => on && i !== tieIdx[pushing]);
+      continue;
+    }
     // friction cone: penalise sliding contacts and re-solve
     let slide = false;
     if (friction) {
@@ -370,10 +446,15 @@ export function solveContacts(points, com, W, rows, friction = true) {
       }
     }
     // back to the world frame
-    return loc.map((f, pi) => {
+    const out = loc.map((f, pi) => {
       const b = basis[pi];
       return [0, 1, 2].map((c) => f[0] * b[0][c] + f[1] * b[1][c] + f[2] * b[2][c]);
     });
+    out.tension = ties.map((_, i) => {
+      const q = tieIdx.indexOf(i);
+      return q >= 0 ? Math.max(x[nc + q], 0) : 0;
+    });
+    return out;
   }
   return null;
 }
@@ -396,6 +477,12 @@ export class Physics {
       }
     }
     this.setSubject({ mass, sex });
+    // capsule axis of each segment (rest-local endpoints) for body-to-body contacts
+    this.capsule = {};
+    for (const sg of this.segments) {
+      const r = CAPSULE_R[baseOf(sg.seg)];
+      if (r) this.capsule[sg.seg] = { a: sg.prox.clone().sub(rig.rest[sg.seg]), b: sg.dist.clone().sub(rig.rest[sg.seg]), r };
+    }
     // subtree (segment names distal to each joint, the joint included)
     this.subtree = {};
     for (const name in rig.joints) {
@@ -456,6 +543,32 @@ export class Physics {
     return out;
   }
 
+  /**
+   * Body-to-body contacts of the current pose (env touches whose capsules are within TOUCH_GAP):
+   * [{ a, b, segA, segB, u, touch: true }] – a = b = the contact point, u = the push on segment a.
+   */
+  touches() {
+    const out = [];
+    for (const t of this.rig.env.touches || []) {
+      const A = this.capsule[t.a];
+      const B = this.capsule[t.b];
+      if (!A || !B) continue;
+      const w = (seg, v) => this.rig.worldPoint(seg, v, new THREE.Vector3());
+      const a0 = w(t.a, A.a);
+      const a1 = w(t.a, A.b);
+      // `at`: where along a (0 = proximal end, 1 = distal) it rests – needed for neighbouring segments
+      // (thigh on calf), whose axes meet at the joint
+      const [pa, pb] = t.at == null ? closestPoints(a0, a1, w(t.b, B.a), w(t.b, B.b)) : closestPoints(a0.clone().lerp(a1, t.at), a0.clone().lerp(a1, t.at), w(t.b, B.a), w(t.b, B.b));
+      const d = pa.distanceTo(pb);
+      if (d - A.r - B.r > TOUCH_GAP || d < 1e-6) continue;
+      const u = pa.clone().sub(pb).multiplyScalar(1 / d);
+      // the contact point: halfway between the two surfaces along the line of centres
+      const p = pb.clone().addScaledVector(u, (d - A.r + B.r) / 2);
+      out.push({ a: p, b: p.clone(), segA: t.a, segB: t.b, u, touch: true });
+    }
+    return out;
+  }
+
   /** Full static analysis of the current rig pose. */
   compute() {
     const rig = this.rig;
@@ -482,13 +595,22 @@ export class Physics {
       });
       const subPts = new Set();
       contacts.forEach((c, i) => sub.has(c.seg) && subPts.add(i));
-      rows.push({ name, J, sub: subPts, grav, c: STRENGTH[baseOf(name)] || 100 });
+      rows.push({ name, J, sub: subPts, segs: sub, grav, c: STRENGTH[baseOf(name)] || 100 });
     }
+    // straps: one strand (tie) per hand, from the palm to the ball of the foot
+    const ties = [];
+    for (const s of rig.env.straps || []) for (const st of strapStrands(rig, s)) ties.push({ a: st.a, b: st.b, segA: st.hand, segB: s.foot });
+    // body-to-body contacts (a knee on the upper arm, a foot on the thigh): pushes, chosen the same way
+    ties.push(...this.touches());
     // floor forces: equilibrium with the least joint effort; if the centre of mass is not
     // over the supports (between two poses) fall back to vertical forces near the COM
     // over the base of support – or held by a wall even when it is not (sitting back against it)
     const leaning = contacts.some((c) => c.wall);
-    const F3 = margin > 0 || leaning ? solveContacts(contacts, com, W, rows, this.friction) : null;
+    const F3 = margin > 0 || leaning ? solveContacts(contacts, com, W, rows, this.friction, ties) : null;
+    ties.forEach((s, i) => {
+      s.T = F3?.tension[i] || 0;
+      s.F = (s.u ? s.u.clone() : s.b.clone().sub(s.a).normalize()).multiplyScalar(s.T); // the pull on the hand / push on a
+    });
     if (F3) {
       contacts.forEach((c, i) => {
         c.f = F3[i][1];
@@ -548,6 +670,11 @@ export class Physics {
         r.subVectors(c.p, J);
         M.add(tmp.crossVectors(r, c.F));
       }
+      for (const s of ties) {
+        if (!s.T) continue;
+        if (sub.has(s.segA)) M.add(tmp.crossVectors(r.subVectors(s.a, J), s.F));
+        if (sub.has(s.segB)) M.add(tmp.crossVectors(r.subVectors(s.b, J), s.F.clone().negate()));
+      }
       // the muscles must supply the opposite moment
       const Mm = M.clone().negate();
       moments[name] = Mm;
@@ -584,7 +711,7 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos };
+    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos, straps: ties.filter((t) => !t.touch), touches: ties.filter((t) => t.touch) };
   }
 
   /**

@@ -33,7 +33,8 @@ rig.js           forward-kinematics skeleton (THREE.Group per joint, rest frames
   → realMuscles.js  real BodyParts3D muscle surfaces, linear-blend skinned to the rig; anatomy mode only
                  (display only – lengths, moment arms and forces always come from the tubes)
   → physics.js   COM, base of support, floor forces (least joint effort, friction cone), joint moments, auto-balance
-props.js         floor + props (wall, block, bolster, folded blanket) as an Env on the rig: clearance, contact normals
+props.js         floor + props (wall, block, bolster, folded blanket, chair, strap) as an Env on the rig: clearance, contact normals;
+                 a strap is a pull between a palm and the ball of a foot (solved with the floor forces)
   → muscleForces.js  moment arms (virtual work) + static optimisation → activation, contraction type
 animator.js      quaternion slerp between poses (a spline through `via` poses), anchors (feet/hands stay put),
                  floor correction, stepping feet lifted (_liftSteps); balances each pose once (cached)
@@ -45,7 +46,7 @@ tools/           build-model, fit-poses, check-* (run by npm run check), shot.mj
 Data files:
 - `poses.js` – `POSES` (joint angles in degrees), `POSE_PROPS` (props a pose rests on, pose frame) and
   `POSE_FIT` (floor contacts + fitter goals).
-- `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants.
+- `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants; `CATEGORIES`, `LEVELS`.
 - `topics.js` – workshop topics (e.g. anterior pelvic tilt): a reference and a condition pose compared on
   the model, muscles coloured by length relative to the reference; `shorter` / `longer` muscles are
   verified by `npm run check`. Condition poses live in the "Postural deviations" section of `poses.js`.
@@ -72,7 +73,7 @@ Data files:
   Never fill in values from memory – leave them out and say so.
 - The "Hoạt động" (muscle activation) colour mode and the activation list are **experimental**. They were checked
   against measured EMG (`src/data/emg.js`, `node tools/check-emg.mjs --verbose`) and do NOT agree: rank correlation
-  0.23 / −0.38 / 0.27 over 3 studies of standing poses, mostly far below the EMG (static optimisation has no
+  0.19 / −0.44 / 0.34 over 3 studies of standing poses, mostly far below the EMG (static optimisation has no
   co-contraction for joint stiffness and balance). Keep the "thử nghiệm" labels and "Vai trò" (literature roles)
   as the default colour mode. When the muscle model changes, re-run check-emg and update the numbers quoted in
   README and in the activation note (main.js). New EMG values: copy from a paper's table, never read off a figure.
@@ -89,8 +90,10 @@ Data files:
 - Passive muscle tension is deliberately NOT modelled. A ROM-based version (slack at standing
   length, Thelen 2003 passive curve up to the textbook range end) was tried and made results worse
   (muscles pinned at 90–100 % went from 5 to 9–14 across the 33 poses): the dominant errors in
-  stretch poses come from body-to-body contacts the physics lacks (thigh on calves in Balasana, foot
-  on thigh in Vrksasana, hands on feet in Paschimottanasana) and from the rigid shoulder girdle.
+  stretch poses come from body-to-body contacts (then missing; thigh on calves in Balasana and foot on
+  thigh in Vrksasana are modelled now, hands on feet in Paschimottanasana is not) and from the missing
+  scapular upward / downward rotation (the girdle only elevates / protracts about the SC joint: use
+  `scapula: { elev, protract }` in a pose when the shoulder blades move – Eagle protracts 15°).
   Passive tension needs per-muscle optimal fibre / tendon slack lengths from the literature first.
 - Props are real supports, not decoration: a pose lists them in `POSE_PROPS` (pose frame: pelvis at
   x = z = 0), everything measures clearance to the floor *or a prop* (`rig.clearance`, never `p.y - c.r`),
@@ -99,7 +102,16 @@ Data files:
   so put a prop in only after the body part is clear of where it goes (Setu Bandha: hips up, then the block).
   While moving, only the segments that rest on a prop in the step's poses may rest on props (Env.segs);
   the others meet the floor only.
+  A strap (`{ type: 'strap', hands: [...], foot }`) is not a surface: a tension T ≥ 0 between body points,
+  internal to the body (joint moments only), chosen with the floor forces by solveContacts.
+  A chair (`{ type: 'chair', at, yaw }`) is a surface only at its seat (45 cm); the calf points rest on
+  walls only, so legs on a chair rest on the heels.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.
+  A body-to-body contact (`{ type: 'touch', a, b, at? }` in POSE_PROPS: segment a rests on b, `at` =
+  where along a) is a frictionless push between two segment capsules (axis between the de Leva
+  endpoints, rough radii CAPSULE_R in physics.js), active only while the capsules are within 3 cm; like a
+  strap it is internal (joint moments only) and chosen with the floor forces. Use `at` for neighbouring
+  segments (thigh on calf), whose axes meet at the joint.
   A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
   and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive

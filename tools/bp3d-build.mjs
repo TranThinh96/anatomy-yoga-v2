@@ -594,6 +594,14 @@ const contactsRaw = [
   ['head', argmin(P('occipital bone'), (p) => p.z), 0.006, false], // back of head
   ['head', argmax(P('frontal bone'), (p) => p.z * 2 + p.y), 0.006, false], // forehead
   ['head', argmax(P('left parietal bone'), (p) => p.y), 0.006, false], // crown
+  // shoulder stand, plow, thread the needle: the body rests on the tops of the shoulders, the upper
+  // thoracic spinous processes, the backs and sides of the upper arms and the side of the head. No
+  // point on C7: it lies at the neck joint, so it would carry weight whenever the upper back does.
+  ['scapula', argmax(P('left scapula'), (p) => p.y + p.x * 0.5), 0.012, true], // top of the shoulder (acromion)
+  ['thorax', argmin(P('second thoracic vertebra'), (p) => p.z), 0.008, false], // T2 spinous process
+  ['shoulder', argmin(atY(muscleVerts('long head of left triceps brachii'), (J.shoulder.y + J.elbow.y) / 2, 0.03), (p) => p.z), 0.0, true], // back of the upper arm
+  ['shoulder', argmax(atY(muscleVerts('acromial part of left deltoid'), J.shoulder.y - 0.08, 0.03), (p) => p.x), 0.0, true], // side of the upper arm (deltoid)
+  ['head', argmax(P('left temporal bone'), (p) => p.x), 0.006, true], // side of the head (temple / above the ear)
 ];
 const contacts = contactsRaw.map(([seg, p, r, mirror, only]) => {
   const q = X(p, seg);

@@ -61,6 +61,7 @@ my_pose: {
                                          // `knee_L` = its joint centre + offset (m, rest-pose axes)
   balance: true,                         // COM ≥ 3 cm inside the base of support (kneeling, one leg,
                                          // folds with the hands down – hands don't auto-balance)
+  lift: ['ankle_L', 'ankle_R'],          // keep these ≥ 4 cm off the floor / props (arm balances)
 },
 ```
 
@@ -114,7 +115,7 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   vi: 'Tư thế Kéo giãn một bên',
   en: 'Intense Side Stretch',
   category: 'Gập người',          // one of CATEGORIES (not 'Tất cả')
-  level: 'Cơ bản',                // 'Cơ bản' | 'Trung bình'
+  level: 'Cơ bản',                // one of LEVELS: 'Cơ bản' | 'Trung bình' | 'Nâng cao'
   steps: [{ pose: 'tadasana' }, { pose: 'my_pose', anchor: ['ankle_R'], move: 2.2 }],
   loop: 'pingpong',               // 'static' (one pose), 'pingpong' (in and out), 'cycle' (sequence)
   variants: [{ label: 'Tay chạm khối', pose: 'my_pose_blocks' }], // optional, replaces the last step's pose
@@ -171,7 +172,7 @@ Gaps should end near 0.0 for every support. If not, add or change params rather 
   to borrow that asana's roles for the step.
 - New pose ids used only as a variant still need a `POSE_FIT` entry and fitting.
 
-## 4b. Props (wall, block, bolster, blanket)
+## 4b. Props (wall, block, bolster, blanket, chair, strap) and body-to-body contacts
 
 Props are supports in the physics, so a supported variant shows its real load change. List them in
 `POSE_PROPS[pose]` in the pose's own frame (pelvis at x = z = 0, floor y = 0, facing +Z, left +X):
@@ -184,6 +185,18 @@ supta_baddha_konasana_blocks: [
 viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal points to the body
 ```
 
+- A strap: `{ type: 'strap', hands: ['wrist_L', 'wrist_R'], foot: 'ankle_L' }` (no `at`: it is held
+  by the body). It pulls the palm(s) toward the ball of the foot and back, never pushes; the physics card
+  shows its tension. It only changes joint moments, so the pose still needs its floor supports.
+- A body-to-body contact: `{ type: 'touch', a: 'hip_L', b: 'shoulder_L', at? }` – segment a rests on b
+  (knee on the upper arm in Crow, thigh on calf in Child's pose `at: 0.5`, foot on thigh in Tree). A
+  frictionless push between the two segments' capsules, only while they are within 3 cm; the physics card
+  lists it. Place a so it lies on the side of b the push comes from (the knees *outside and above* the
+  upper arms in Crow – with the thigh inside the arm the push would pull the leg down and comes out 0).
+  Without it, limbs resting on limbs carry no force: say so in the cautions.
+- A chair: `{ type: 'chair', at: [x, z], yaw }` – only the seat (42 × 40 cm, top 45 cm high) is a surface;
+  the backrest stands on the seat's +v edge (yaw 0: the far side in +Z). The back-of-calf points lean on
+  walls only, so lower legs on a chair rest on the heels (`viparita_karani_chair`).
 - Measure first where the body part is (`rig.worldPoint` of its contacts in the plain pose) and put the
   prop under it at that height; fit with the part in `support` (or `wall: [...]` for a wall, `onProp:
   [...]` when it must rest on the prop and not on the floor beside it).
@@ -208,6 +221,12 @@ viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal p
   top rests on the mat (it bent the ankles of the supported child's pose 60° the wrong way).
 - With the hips flexed past ~100°, hip `rot` swings the knee sideways and `abd` barely does
   (Euler order): open the knees wide with `rot` (Balasana with knees wide: rot 35).
+- Hip (and shoulder) Euler order is ZYX: `abd` is the outermost angle. So `root.pitch&hip.flex` keeps
+  the legs still only when `abd` and `rot` are 0; folding over abducted or rotated legs (Prasarita,
+  Parsvottanasana, Janu Sirsasana) needs the hip angles recomputed for the new pelvis pitch
+  (pelvis⁻¹ · old world thigh rotation, decomposed as ZYX) – otherwise the legs cross or lift.
+- For an awkward limb (Janu Sirsasana's bent leg) build the hip angles from the thigh direction and
+  the kneecap direction (a rotation basis decomposed as ZYX), then let the fitter refine them.
 
 ## 5. Check
 
@@ -284,6 +303,7 @@ model has no passive tension and lacks some deep muscles – see README "Giới 
 | hands land far in front of the feet in a fold | `at` goal for the wrists + keep the spine out of `params` so it hinges at the hips |
 | fitter bends elbows / rounds the back to reach | remove those angles from `params`; they define the form |
 | COM behind the heels, all weight on the hands | `balance: true` (poses with hand contacts are not auto-balanced) |
+| arm balance: the fitter puts the feet down to meet `balance` | `lift: [feet, knees]`; if it then dives the head below the hips, add a `dir` for the chest, and try blocks under the hands (the model's arms are short: Tolasana, Lolasana) |
 | a wrist ends at 110–130° extension | add the hands to `flat`; the ROM limit is 95° |
 | `check` says a stretched muscle is not longer | the role is wrong for this shape – fix the role (or the pose), don't lower the threshold |
 | body stops for a moment at an intermediate pose | mark it `via: true` (and no `hold`) |

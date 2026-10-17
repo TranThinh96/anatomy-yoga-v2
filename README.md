@@ -56,6 +56,13 @@ Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh 
   tường chuyển việc sang cơ đùi trước). Tường chỉ đẩy vuông góc (không tính ma sát – chưa có nguồn số liệu);
   khi lưng tựa tường, trọng tâm có thể nằm ngoài bàn chân mà vẫn cân bằng.
   Đạo cụ trong mô hình là bề mặt cứng, cố định; gối ôm, chăn thật mềm và lún hơn.
+  **Dây tập** (Nằm ngửa kéo chân) là một lực kéo giữa lòng bàn tay và ức bàn chân, chỉ kéo (không đẩy),
+  không giãn, không tính ma sát dây trên bàn chân; lực căng được chọn cùng lực sàn sao cho các khớp tốn ít
+  sức nhất. Với chân nâng gần thẳng đứng, mô-men của chân nhỏ nên dây chỉ gánh vài N (háng 12 → 9 N·m).
+  **Tiếp xúc thân – thân** (đùi tì bắp chân trong Tư thế em bé, bàn chân ép đùi trong Cái cây, gối tì cánh tay
+  trong Con quạ) là một lực ép vuông góc giữa hai phần cơ thể, chọn cùng lực sàn như dây tập: mỗi đoạn cơ thể
+  là một ống tròn quanh trục của nó (bán kính ước lượng trên mô hình, không từ nguồn), không tính ma sát da – da,
+  mô mềm coi như cứng. Tư thế em bé: tải gối 37 → 13 N·m; Con quạ: mỗi gối ép ~150 N lên cánh tay.
 - Nhập **cân nặng** và **tỷ lệ cơ thể nam/nữ**; bật/tắt **ma sát với thảm**.
 
 Phương pháp:
@@ -67,6 +74,8 @@ Phương pháp:
    điểm tựa, nên tư thế nằm gần như không cần cơ. Điểm tựa chỉ được đẩy (tập hoạt động), lực ngang trong
    nón ma sát μ = 0,8 — bình phương tối thiểu có ràng buộc, giải bằng hệ KKT. Mỗi điểm tiếp xúc có hệ trục
    riêng (pháp tuyến bề mặt): sàn và mặt trên đạo cụ đỡ theo phương đứng, tường đỡ theo phương ngang.
+   Dây tập là lực nội tại (không vào cân bằng toàn thân, chỉ vào mô-men khớp), là ẩn số thêm T ≥ 0 của
+   cùng bài toán.
 5. Mô-men khớp: tĩnh học ngược trên phần cơ thể phía xa khớp (trọng lực + lực sàn).
 
 ### Mức hoạt động cơ & kiểu co (mô hình · thử nghiệm)
@@ -121,8 +130,8 @@ hay số đo lâm sàng.
   hạng); cơ bụng chân, gân kheo, rộng ngoài, mông nhỡ trong Ghế, Cây và Chiến binh II.
 
 `node tools/check-emg.mjs --verbose` so từng giá trị với mô hình (trung bình các bó của cơ, hoặc đúng bó khi bài đo riêng
-một đầu cơ). Kết quả hiện tại: hệ số tương quan thứ hạng 0,23 (Liu), −0,38 (Lehecka), 0,27 (Wang); với Liu, mô hình thấp
-hơn EMG quá 1 độ lệch chuẩn ở 25/30 giá trị. Mô hình tối ưu tĩnh chọn cách ít tốn sức nhất, nên bỏ qua việc co nhiều cơ
+một đầu cơ). Kết quả hiện tại: hệ số tương quan thứ hạng 0,19 (Liu), −0,44 (Lehecka), 0,34 (Wang); với Liu, mô hình thấp
+hơn EMG quá 1 độ lệch chuẩn ở 24/30 giá trị. Mô hình tối ưu tĩnh chọn cách ít tốn sức nhất, nên bỏ qua việc co nhiều cơ
 cùng lúc để giữ vững khớp và thăng bằng: cơ đùi trước của chân trụ trong tư thế Cây gần như 0 % trong mô hình nhưng đo được
 khoảng 30 %MVC; chân sau của Chiến binh I/II cũng vậy. Vì vậy mức hoạt động vẫn ghi **thử nghiệm**. Khi chọn một cơ có số
 liệu ở tư thế đang giữ, thẻ cơ hiển thị EMG đo được bên cạnh số của mô hình, kèm nguồn.

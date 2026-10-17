@@ -104,12 +104,22 @@ const wdir = (seg, v) => new THREE.Vector3(...v).transformDirection(rig.joints[s
 //          seg's joint centre + offset (m, rest-pose axes of seg) – a hand on the shin, a foot
 //          against the inner thigh, the sit bones on the heels
 //   balance: centre of mass at least 3 cm inside the base of support
+//   lift:  segments held at least LIFT clear of the floor and props (feet off the mat in an arm
+//          balance: without it the balance goal is met by putting them down)
+const LIFT = 0.04;
 function goals(fit) {
   let e = 0;
   if (fit.balance) {
     const com = physics.centerOfMass();
     const margin = signedMargin({ x: com.x, z: com.z }, convexHull(physics.touchingContacts()));
     if (margin < 0.03) e += ((0.03 - Math.max(margin, -0.5)) * 100) ** 2 * 3;
+  }
+  for (const seg of fit.lift || []) {
+    for (const c of rig.contacts) {
+      if (c.seg !== seg) continue;
+      const h = rig.clearance(c, rig.worldPoint(c.seg, c.local));
+      if (h < LIFT) e += ((LIFT - h) * 100) ** 2 * 3;
+    }
   }
   for (const seg of fit.flat || []) {
     for (const c of rig.contacts) if (c.seg === seg) e += (rig.clearance(c, rig.worldPoint(c.seg, c.local)) * 100) ** 2 * 0.3;

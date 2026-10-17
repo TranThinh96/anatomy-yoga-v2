@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// Yoga props the body can rest on: the floor plus blocks, bolsters, folded blankets and a wall.
+// Yoga props the body can rest on: the floor plus blocks, bolsters, folded blankets, a chair and a wall.
 // A pose lists its props in POSE_PROPS (src/data/poses.js) in the pose's own frame: metres, the
 // pelvis of the grounded pose at x = z = 0 (its rest x/z), floor at y = 0, body facing +Z, the
 // model's left +X. Sizes are common retail sizes, not from a standard.
@@ -8,15 +8,25 @@ import * as THREE from 'three';
 //   { type: 'blanket', at: [x, z], yaw?, y? }            folded blanket
 //   { type: 'bolster', at: [x, z], yaw? }                round bolster lying on the floor
 //   { type: 'wall', at: [x, z], normal: [nx, nz] }       vertical plane; normal points to the body
+//   { type: 'chair', at: [x, z], yaw? }                  folding chair: only its seat is a surface;
+//                                                         the backrest stands on the seat's +v edge
+//   { type: 'strap', hands: ['wrist_L'], foot: 'ankle_L' } a strap from the hand(s) around the ball of
+//                                                         the foot: it only pulls (a tension between
+//                                                         two body points, not a surface), see Physics
+//   { type: 'touch', a: 'knee_L', b: 'shoulder_L', at? } body-to-body contact: segment a rests on b
+//                                                         (a push between them, no friction), see Physics;
+//                                                         at = where along a (0 proximal … 1 distal)
 // yaw (degrees) turns a prop about the vertical axis; at yaw 0 its long side runs along X.
 export const PROP_SIZES = {
   // block 23 × 15 × 7.5 cm, standing on its broad face (flat), long edge (side) or end
   block: { flat: [0.23, 0.075, 0.15], side: [0.23, 0.15, 0.075], end: [0.075, 0.23, 0.15] },
   blanket: [0.5, 0.06, 0.35],
   bolster: { length: 0.65, radius: 0.11 },
+  // seat 42 × 4 × 40 cm, its top 45 cm above the floor
+  chair: { seat: [0.42, 0.04, 0.4], height: 0.45 },
 };
 
-export const PROP_NAMES = { block: 'gạch tập', blanket: 'chăn gấp', bolster: 'gối ôm', wall: 'tường' };
+export const PROP_NAMES = { block: 'gạch tập', blanket: 'chăn gấp', bolster: 'gối ôm', wall: 'tường', strap: 'dây tập', chair: 'ghế' };
 
 const UP = new THREE.Vector3(0, 1, 0);
 // A point counts as over a prop (and may rest on it) unless it is more than this far below its top:
@@ -25,6 +35,8 @@ const SINK = 0.04;
 
 /** One prop resolved into world geometry (offset: the x/z shift of the pose frame). */
 function resolve(prop, offset = { x: 0, z: 0 }) {
+  if (prop.type === 'strap') return { ...prop, kind: 'strap' };
+  if (prop.type === 'touch') return { ...prop, kind: 'touch' };
   const yaw = ((prop.yaw || 0) * Math.PI) / 180;
   const c = new THREE.Vector3(prop.at[0] + offset.x, prop.y || 0, prop.at[1] + offset.z);
   const u = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)); // long axis
@@ -36,6 +48,10 @@ function resolve(prop, offset = { x: 0, z: 0 }) {
   if (prop.type === 'bolster') {
     const { length, radius } = PROP_SIZES.bolster;
     return { ...prop, kind: 'cyl', c: c.setY(c.y + radius), u, length, radius };
+  }
+  if (prop.type === 'chair') {
+    const { seat, height } = PROP_SIZES.chair;
+    return { ...prop, kind: 'box', c: c.setY(c.y + height - seat[1]), u, v, size: seat };
   }
   const size = prop.type === 'block' ? PROP_SIZES.block[prop.stand || 'flat'] : PROP_SIZES.blanket;
   return { ...prop, kind: 'box', c, u, v, size };
@@ -59,6 +75,16 @@ export class Env {
 
   get empty() {
     return !this.props.length;
+  }
+
+  /** Body-to-body contacts (pushes between two segments), not surfaces. */
+  get touches() {
+    return this.props.filter((p) => p.kind === 'touch');
+  }
+
+  /** The straps (tensions between body points), not surfaces. */
+  get straps() {
+    return this.props.filter((p) => p.kind === 'strap');
   }
 
   /**
@@ -128,6 +154,58 @@ export class Env {
 
 export const NO_PROPS = new Env();
 
+/**
+ * Where a strap holds the body, in the rig's current pose: the middle of each hand's palm and the
+ * ball of the foot (the mean of the hand's contact points / of the foot's points in front of the
+ * ankle). Returns [{ hand, a, b }]: one strand per hand, from a (hand) to b (foot), world space.
+ */
+export function strapStrands(rig, strap) {
+  const mean = (seg, keep = () => true) => {
+    const pts = rig.contacts.filter((c) => c.seg === seg && keep(c));
+    const out = new THREE.Vector3();
+    for (const c of pts) out.add(rig.worldPoint(seg, c.local, new THREE.Vector3()));
+    return out.multiplyScalar(1 / Math.max(pts.length, 1));
+  };
+  const b = mean(strap.foot, (c) => c.local.z > 0.08);
+  return strap.hands.map((hand) => ({ hand, a: mean(hand), b }));
+}
+
+/** Moves the strap meshes of a props group (propMeshes) to the rig's current pose. */
+export function updateStraps(group, rig) {
+  if (!group) return;
+  const d = new THREE.Vector3();
+  for (const m of group.children) {
+    const s = m.userData.strap;
+    if (!s) continue;
+    const st = strapStrands(rig, s)[m.userData.strand];
+    d.subVectors(st.b, st.a);
+    const len = d.length();
+    m.position.copy(st.a).addScaledVector(d, 0.5);
+    m.scale.set(1, Math.max(len, 1e-3), 1);
+    if (len > 1e-6) m.quaternion.setFromUnitVectors(UP, d.multiplyScalar(1 / len));
+  }
+}
+
+/** A folding chair: seat, four legs and a backrest on the seat's +v edge (only the seat is a surface). */
+function chairMesh(p, mat) {
+  const g = new THREE.Group();
+  const [w, t, d] = p.size;
+  const top = p.c.y + t;
+  const add = (geo, x, y, z) => {
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(x, y, z);
+    m.castShadow = true;
+    m.receiveShadow = true;
+    g.add(m);
+  };
+  add(new THREE.BoxGeometry(w, t, d), 0, p.c.y + t / 2, 0);
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(new THREE.BoxGeometry(0.025, p.c.y, 0.025), (sx * (w - 0.03)) / 2, p.c.y / 2, (sz * (d - 0.03)) / 2);
+  add(new THREE.BoxGeometry(w, 0.38, 0.025), 0, top + 0.19, (d - 0.025) / 2);
+  g.position.set(p.c.x, 0, p.c.z);
+  g.rotation.y = Math.atan2(-p.u.z, p.u.x);
+  return g;
+}
+
 /** Builds the meshes of an Env (for the viewer and the thumbnails). */
 export function propMeshes(env) {
   const group = new THREE.Group();
@@ -136,7 +214,24 @@ export function propMeshes(env) {
   const cloth = new THREE.MeshStandardMaterial({ color: 0xc58f63, roughness: 0.95 });
   const blanket = new THREE.MeshStandardMaterial({ color: 0x7b9ec2, roughness: 0.95 });
   const wall = new THREE.MeshStandardMaterial({ color: 0xd9d4cc, roughness: 1, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+  const webbing = new THREE.MeshStandardMaterial({ color: 0x4f9a7a, roughness: 0.8 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0x6f7780, roughness: 0.5, metalness: 0.4 });
   for (const p of env.props) {
+    if (p.kind === 'touch') continue;
+    if (p.kind === 'strap') {
+      // one strand per hand, a unit-length band stretched and placed by updateStraps
+      p.hands.forEach((_, i) => {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1, 0.004), webbing);
+        m.userData = { strap: p, strand: i };
+        m.castShadow = true;
+        group.add(m);
+      });
+      continue;
+    }
+    if (p.type === 'chair') {
+      group.add(chairMesh(p, steel));
+      continue;
+    }
     let m;
     if (p.kind === 'box') {
       m = new THREE.Mesh(new THREE.BoxGeometry(...p.size), p.type === 'blanket' ? blanket : foam);

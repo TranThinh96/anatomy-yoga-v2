@@ -275,6 +275,13 @@ export class Animator {
       for (const k of from) for (const seg of restingOn.get(k) || []) segs.add(seg);
       for (const k of from) {
         for (const p of POSE_PROPS[k.pose] || []) {
+          // a strap is held by the body, not placed on the floor
+          if (p.type === 'strap' || p.type === 'touch') {
+            const key = p.type === 'strap' ? `strap|${p.hands.join(',')}|${p.foot}` : `touch|${p.a}|${p.b}`;
+            if (!keys.has(key)) props.push(p);
+            keys.add(key);
+            continue;
+          }
           const at = [p.at[0] + k.offset.x - center.x, p.at[1] + k.offset.z - center.z];
           const key = `${p.type}|${p.stand || ''}|${p.yaw || 0}|${p.y || 0}|${at.map((v) => Math.round(v * 50)).join(',')}`;
           if (keys.has(key)) continue;
