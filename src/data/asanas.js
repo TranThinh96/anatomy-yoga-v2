@@ -3230,6 +3230,37 @@ export const ASANAS = [
     ],
   },
   {
+    id: 'akarna_dhanurasana',
+    sanskrit: 'Akarna Dhanurasana',
+    vi: 'Tư thế Cánh cung kéo tai (tay giữ gối)',
+    en: 'Archer Pose (hand on the knee)',
+    category: 'Ngồi & nằm',
+    level: 'Nâng cao',
+    steps: [{ pose: 'akarna_dhanurasana', hold: 3 }],
+    loop: 'static',
+    roles: {
+      contract: ['iliopsoas', 'biceps_brachii', 'deltoid', 'rhomboids', 'erector_spinae'],
+      stretch: ['hamstrings', 'gluteus_maximus', 'adductors'],
+      stabilize: ['rectus_abdominis', 'external_oblique'],
+    },
+    joints: [
+      ['hip', 'Háng phải gập + dạng + xoay ngoài lớn; háng trái gập, chân duỗi'],
+      ['knee', 'Gối phải gập, hướng ra ngoài'],
+      ['glenohumeral', 'Vai phải kéo cùi chỏ lên cao ra sau như kéo dây cung'],
+    ],
+    cues: [
+      'Ngồi Dandasana, lưng dài; tay trái đặt lên gối trái (bản đầy đủ: nắm ngón chân cái trái).',
+      'Giữ chân trái duỗi trên sàn; gập gối phải, tay phải nắm bàn chân phải kéo lên về phía tai phải, cùi chỏ phải mở ra ngoài, lên cao như kéo dây cung.',
+      'Ngồi đều trên hai ụ ngồi, lưng dài, ngực mở; không gù lưng để đưa chân tới tai.',
+      'Chưa tới tai: kéo bàn chân về ngực, hoặc dùng dây tập ở chân duỗi.',
+    ],
+    benefits: ['Mở háng và gân kheo', 'Tăng sức mạnh vai và cánh tay kéo'],
+    cautions: [
+      'Đau gối, chấn thương háng / thắt lưng: tránh hoặc chỉ kéo bàn chân tới ngực.',
+      'Mô hình: dạng tĩnh, bản tay trái giữ gối – để nắm ngón chân, thân mô hình phải cúi ~40° và trọng tâm rơi ra ngoài ụ ngồi. Ngực nghiêng trái ~6° để giữ trọng tâm trên hai ụ ngồi (chân phải nâng kéo trọng tâm sang phải). Tay nắm bàn chân chỉ đặt sát, không truyền lực. Góc háng phải dựng từ hướng đùi / ống chân: số đo dạng / xoay của háng ở đây là góc Euler, đọc không trực quan.',
+    ],
+  },
+  {
     id: 'agnistambhasana',
     sanskrit: 'Agnistambhasana',
     vi: 'Tư thế Khúc củi',

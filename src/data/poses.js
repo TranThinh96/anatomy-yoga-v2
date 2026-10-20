@@ -2307,6 +2307,26 @@ export const POSES = {
     elbow: { flex: 9 },
     wrist: { ext: 96, pron: 180 },
   },
+  // Archer (Akarna Dhanurasana): seated, the left leg straight on the mat with the left hand holding its
+  // big toe, the right foot drawn up beside the right ear by the right hand, knee out to the side,
+  // right elbow up and back like drawing a bow; trunk leaning forward ~40°. Right leg angles built from
+  // the thigh and shin directions (ankle beside the ear) – large Euler abd / rot as in padmasana.
+  akarna_dhanurasana: {
+    root: { pitch: 10 },
+    lumbar: { flex: 10 },
+    hip_L: { flex: 101, abd: 39 },
+    ankle_L: { dorsi: 41 },
+    hip_R: { flex: 75, abd: -147, rot: -70 },
+    knee_R: { flex: 68 },
+    ankle_R: { dorsi: -10 },
+    neck: { flex: -5 },
+    shoulder_L: { flex: 23, abd: -26 },
+    shoulder_R: { flex: 82, abd: 3, rot: 59 },
+    elbow_R: { flex: 119 },
+    wrist: { pron: 90 },
+    elbow_L: { flex: 29 },
+    thorax: { side: 6 },
+  },
   // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
   // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
   // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
@@ -3701,6 +3721,14 @@ export const POSE_FIT = {
     lift: ['ankle_L', 'ankle_R', 'knee_L', 'knee_R'],
     dir: [['thorax', [0, 1, 0], [0, 0.7, 0.7]]], // chest leaning ~45° forward, head up
     params: ['root.pitch', 'lumbar.flex', 'hip_L.flex&hip_R.flex', 'shoulder_L.flex&shoulder_R.flex', 'elbow.flex', 'wrist.ext'],
+  },
+  akarna_dhanurasana: {
+    support: ['pelvis', 'hip_L', 'ankle_L'],
+    at: [['wrist_L', 'hip_L', [0, -0.33, 0.09]], ['wrist_R', 'ankle_R', [0.03, 0.0, 0.1]]], // left hand on the knee; right foot in the hand
+    balance: true,
+    lift: ['wrist_L'],
+    rel: [['pelvis', 'ankle_L', [0.02, 0.78]]], // straight leg reaching forward near the midline
+    params: ['hip_L.abd', 'hip_L.flex', 'ankle_L.dorsi', 'shoulder_L.flex', 'shoulder_L.abd', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'elbow_R.flex'],
   },
   agnistambhasana: {
     support: ['pelvis', 'hip_R', 'ankle_R'],
