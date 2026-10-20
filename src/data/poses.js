@@ -950,6 +950,22 @@ export const POSES = {
     elbow: { flex: 2 },
     wrist: { pron: 160 },
   },
+  // Supported Reclining Hero (Supta Virasana): virasana_block reclined onto a bolster lying along the
+  // mat behind the block, its head end raised on a block; the thighs keep their place on the mat
+  // (hip angles rebuilt from virasana_block's thigh and shin directions for the reclined pelvis), arms
+  // resting on the floor.
+  supta_virasana_bolster: {
+    root: { pitch: -74 },
+    hip: { flex: -10, abd: -5, rot: -24 },
+    knee: { flex: 157 },
+    ankle: { dorsi: -40 },
+    lumbar: { flex: 20 },
+    thorax: { flex: -20 },
+    neck: { flex: 10 },
+    shoulder: { flex: -25, abd: 14 },
+    elbow: { flex: 1 },
+    wrist: { pron: 90 },
+  },
   // Three-legged dog: Downward Dog with the left leg lifted in line with the trunk, hips level.
   eka_pada_adho_mukha_svanasana: {
     root: { pitch: 132 },
@@ -2564,6 +2580,13 @@ export const POSE_PROPS = {
   ],
   // a block lying flat under the sit bones, between the feet
   virasana_block: [{ type: 'block', stand: 'side', at: [0, -0.02], yaw: 90 }],
+  // the same block under the sit bones, a bolster along the mat behind it under the back, its head
+  // end raised on a block on its long edge (supported reclining hero)
+  supta_virasana_bolster: [
+    { type: 'block', stand: 'side', at: [0, -0.02], yaw: 90 },
+    { type: 'bolster', at: [0, -0.46], yaw: 90, tilt: 21 },
+    { type: 'block', stand: 'end', at: [0, -0.72] },
+  ],
   // a bolster along the right side of the mat under the knees (supine twist)
   supta_matsyendrasana: [{ type: 'bolster', at: [-0.4, 0.2], yaw: 90 }],
   // a block on its end beside each heel, under the hands (camel)
@@ -3437,6 +3460,11 @@ export const POSE_FIT = {
     above: [['hip_L', 'knee_L'], ['hip_R', 'knee_R']], // hips stay over the knees
     rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
     params: ['root.pitch&hip.flex', 'hip.flex', 'lumbar.flex', 'thorax.flex', 'neck.flex', 'shoulder.flex', 'wrist.ext'],
+  },
+  supta_virasana_bolster: {
+    support: ['pelvis', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R', 'thorax', 'head', 'wrist_L', 'wrist_R'],
+    onProp: ['pelvis', 'thorax', 'head'],
+    params: ['ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
   },
   virasana_block: {
     support: ['pelvis', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'],
