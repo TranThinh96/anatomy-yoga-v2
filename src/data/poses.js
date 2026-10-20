@@ -1896,6 +1896,21 @@ export const POSES = {
     shoulder: { flex: 92, abd: 0 },
     wrist: { ext: 65, pron: 180 },
   },
+  // Tortoise with bent knees (Kurmasana, the usual modification): feet wide and flat-heeled on the mat,
+  // knees bent and lifted, the trunk folded forward between the thighs, the arms threaded under the
+  // knees reaching out to the sides, palms down; the backs of the knees rest on the upper arms.
+  kurmasana_bent: {
+    root: { pitch: 20 },
+    hip: { flex: 116, abd: 54, rot: 32 },
+    knee: { flex: 74 },
+    ankle: { dorsi: 3 },
+    lumbar: { flex: 46 },
+    thorax: { flex: 20 },
+    neck: { flex: -20 },
+    shoulder: { flex: 24, abd: 62, rot: 27 },
+    wrist: { ext: 9, pron: 180 },
+    elbow: { flex: -2 },
+  },
   // The steps into Ardha Matsyendrasana: right knee drawn up with the foot flat on its own side,
   // the foot lifted over the left shin (via), then planted outside the left knee, trunk still facing
   // forward, hands beside the hips. Going straight from Dandasana swept the foot through the left leg.
@@ -2667,6 +2682,8 @@ export const POSE_PROPS = {
     { type: 'block', stand: 'flat', at: [0.16, 0.18], yaw: 90 },
     { type: 'block', stand: 'flat', at: [-0.16, 0.18], yaw: 90 },
   ],
+  // the backs of the knees resting on the upper arms (tortoise)
+  kurmasana_bent: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L', at: 0.9 }, { type: 'touch', a: 'hip_R', b: 'shoulder_R', at: 0.9 }],
   bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
@@ -3522,6 +3539,13 @@ export const POSE_FIT = {
     // hands resting on the thighs (on the legs: no support), so they reach forward from above the mat
     at: [['wrist_L', 'hip_L', [0, -0.25, 0.09]], ['wrist_R', 'hip_R', [0, -0.25, 0.09]]],
     params: ['hip.rot', 'shoulder.flex', 'shoulder.abd', 'elbow.flex', 'ankle.dorsi'],
+  },
+  kurmasana_bent: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['pelvis', 'ankle_L', [0.38, 0.55]], ['pelvis', 'ankle_R', [-0.38, 0.55]]], // heels wide and forward
+    dir: [['thorax', [0, 1, 0], [0, 0.35, 0.94]], ['shoulder_L', [0, -1, 0], [0.95, -0.1, -0.3]], ['shoulder_R', [0, -1, 0], [-0.95, -0.1, -0.3]]],
+    params: ['root.pitch', 'hip.flex', 'hip.abd', 'hip.rot', 'knee.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'wrist.ext'],
   },
   upavistha_konasana: {
     support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
