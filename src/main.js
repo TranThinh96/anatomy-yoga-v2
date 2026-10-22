@@ -1166,10 +1166,12 @@ function loadTopic(id) {
   const [ref, cond] = t.compare;
   state.topicRef = muscleLengthsIn(ref.pose);
   const condLen = muscleLengthsIn(cond.pose);
+  // one entry per muscle, or per muscle and side for a one-sided condition (`sided`: key id_L / id_R)
   const byId = new Map();
   for (const m of body.muscleSystem.muscles) {
-    if (!byId.has(m.id)) byId.set(m.id, []);
-    byId.get(m.id).push(condLen.get(m) / state.topicRef.get(m) - 1);
+    const key = t.sided ? `${m.id}_${m.side}` : m.id;
+    if (!byId.has(key)) byId.set(key, []);
+    byId.get(key).push(condLen.get(m) / state.topicRef.get(m) - 1);
   }
   state.topicChange = [...byId].map(([mid, list]) => ({ id: mid, change: list.reduce((a, b) => a + b, 0) / list.length }));
   anim.setSequence(
@@ -1226,8 +1228,9 @@ function renderTopicInfo() {
   const tags = (list, cls) =>
     list
       .map((c) => {
-        const active = sel && sel.id === c.id;
-        return `<button class="tag ${cls}${active ? ' active' : ''}" data-muscle="${c.id}">${esc(MUSCLES[c.id]?.name || c.id)}<span class="len" data-topic-len="${c.id}"></span></button>`;
+        const { id, side } = splitSide(c.id);
+        const active = sel && sel.id === id && (!side || sel.side === side);
+        return `<button class="tag ${cls}${active ? ' active' : ''}" data-muscle="${c.id}">${esc(MUSCLES[id]?.name || id)}${side ? ` <small>(${side === 'L' ? 'T' : 'P'})</small>` : ''}<span class="len" data-topic-len="${c.id}"></span></button>`;
       })
       .join('') || '<span class="empty-note">—</span>';
   const shorter = state.topicChange.filter((c) => c.change <= -TOPIC_MIN_CHANGE).sort((a, b) => a.change - b.change);
@@ -1283,7 +1286,10 @@ function updateTopicNumbers(force = false) {
   const now = performance.now();
   if (!force && now - lastTopicUpdate < 150) return;
   lastTopicUpdate = now;
-  for (const el of $$('[data-topic-len]')) el.textContent = fmtPct(topicLengthPct(el.dataset.topicLen));
+  for (const el of $$('[data-topic-len]')) {
+    const { id, side } = splitSide(el.dataset.topicLen);
+    el.textContent = fmtPct(topicLengthPct(id, side));
+  }
   const sel = state.selection;
   const selLen = $('#topic-sel-len');
   if (sel && selLen) selLen.textContent = fmtPct(topicLengthPct(sel.id, sel.side));

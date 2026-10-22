@@ -202,8 +202,10 @@ for (const [joint, key, angles, list] of RANGES) {
   for (const t of TOPICS) {
     const ref = lengths(t.compare[0].pose);
     const cur = lengths(t.compare[1].pose);
-    const change = (id) => {
-      const list = system.muscles.filter((x) => x.id === id);
+    const change = (key) => {
+      // `id_L` / `id_R`: one side only (sided topics)
+      const m = key.match(/^(.*?)(?:_(L|R))?$/);
+      const list = system.muscles.filter((x) => x.id === m[1] && (!m[2] || x.side === m[2]));
       return list.reduce((acc, x) => acc + cur.get(x) / ref.get(x), 0) / list.length - 1;
     };
     for (const id of t.shorter || []) {

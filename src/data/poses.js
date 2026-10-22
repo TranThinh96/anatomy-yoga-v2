@@ -2434,6 +2434,21 @@ export const POSES = {
   // by 25° so the eyes stay level (net head orientation unchanged).
   thoracic_kyphosis: { ...ARMS_DOWN, thorax: { flex: 15 }, scapula: { protract: 15 }, neck: { flex: 10 }, head: { flex: -25 } },
 
+  // Standing with the weight on the right leg, "hanging" on the right hip (illustrative): the pelvis
+  // drops 6° on the left (root roll), so the right hip adducts and the left hip abducts to keep the
+  // thighs vertical; the left knee softens; the lumbar spine bends 6° to the right so the trunk stays
+  // upright. Fitted so both feet stay on the floor.
+  hip_hang_right: {
+    ...ARMS_DOWN,
+    root: { roll: 6 },
+    hip_L: { abd: 6, flex: 8 },
+    hip_R: { abd: -6 },
+    knee_L: { flex: 26 },
+    ankle_L: { dorsi: 12 },
+    lumbar: { side: -6 },
+    ankle_R: { dorsi: -4 },
+  },
+
   // ---------------- Variants (for load comparison) ----------------
   phalakasana_knees: {
     root: { pitch: 51 },
@@ -3334,6 +3349,11 @@ export const POSE_FIT = {
     balance: true,
     rel: [['wrist_R', 'wrist_L', [0.3, 0]]],
     params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
+  },
+  hip_hang_right: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_R'],
+    params: ['knee_L.flex', 'ankle_L.dorsi', 'ankle_R.dorsi'],
   },
   malasana: {
     support: ['ankle_L', 'ankle_R'],
