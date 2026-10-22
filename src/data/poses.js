@@ -2426,6 +2426,13 @@ export const POSES = {
   // Illustrative 10° of extra anterior pelvic tilt: the pelvis tips forward, the hips flex by the
   // same amount so the thighs stay vertical, the lumbar spine extends so the trunk stays upright.
   anterior_pelvic_tilt: { ...ARMS_DOWN, root: { pitch: 10 }, hip: { flex: 10 }, lumbar: { flex: -10 } },
+  // The mirror image: 10° of posterior pelvic tilt (flat lower back). The hips extend so the thighs
+  // stay vertical, the lumbar spine flexes so the trunk stays upright.
+  posterior_pelvic_tilt: { ...ARMS_DOWN, root: { pitch: -10 }, hip: { flex: -10 }, lumbar: { flex: 10 } },
+  // Rounded upper back with the shoulder blades and head forward (illustrative): the thoracic spine
+  // flexes 15°, the scapulae protract 15°, the lower neck flexes 10° and the head extends on the neck
+  // by 25° so the eyes stay level (net head orientation unchanged).
+  thoracic_kyphosis: { ...ARMS_DOWN, thorax: { flex: 15 }, scapula: { protract: 15 }, neck: { flex: 10 }, head: { flex: -25 } },
 
   // ---------------- Variants (for load comparison) ----------------
   phalakasana_knees: {
