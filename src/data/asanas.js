@@ -1087,7 +1087,11 @@ export const ASANAS = [
     en: 'Triangle Pose',
     category: 'Đứng',
     level: 'Cơ bản',
-    steps: [{ pose: 'tadasana' }, { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4 }],
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'trikonasana_stance', anchor: ['ankle_R'], move: 1.8, hold: 0.4 },
+      { pose: 'trikonasana', anchor: FEET, move: 1.8 },
+    ],
     loop: 'pingpong',
     variants: [
       {
@@ -1097,7 +1101,8 @@ export const ASANAS = [
         pose: 'trikonasana_block',
         steps: [
           { pose: 'tadasana' },
-          { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4, hold: 0.6 },
+          { pose: 'trikonasana_stance', anchor: ['ankle_R'], move: 1.8, hold: 0.4 },
+          { pose: 'trikonasana', anchor: FEET, move: 1.8, hold: 0.6 },
           { pose: 'trikonasana_block_reach', anchor: FEET, move: 0.9, via: true },
           { pose: 'trikonasana_block_above', anchor: FEET, move: 1.0, via: true },
           { pose: 'trikonasana_block', anchor: FEET, move: 0.6 },

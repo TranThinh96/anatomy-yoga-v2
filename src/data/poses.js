@@ -690,6 +690,17 @@ export const POSES = {
     neck: { rot: 0 },
     wrist_L: { ext: 45 },
   },
+  // On the way into Triangle: the stance already wide (feet where they are in Trikonasana), trunk
+  // upright, arms out to the sides – then the trunk tips over the front leg and the lower hand comes
+  // down to the shin.
+  trikonasana_stance: {
+    hip_L: { abd: 32, rot: 82 },
+    hip_R: { abd: 28, rot: -16 },
+    ankle_L: { dorsi: -32 },
+    ankle_R: { dorsi: 6 },
+    neck: { rot: -20 },
+    shoulder: { abd: 90, rot: -90 },
+  },
   trikonasana: {
     root: { roll: 42 },
     hip_L: { abd: 83, rot: 90 },
@@ -2962,6 +2973,16 @@ export const POSE_FIT = {
       ['hip_L', [0, -1, 0], [0, -1, 0]], // standing leg vertical, hip over the foot
     ],
     params: ['root.roll&-hip_L.abd', 'hip_L.abd', 'hip_L.rot', 'hip_R.abd', 'ankle_L.dorsi', 'shoulder_L.abd', 'shoulder_R.abd', 'wrist_L.ext'],
+  },
+  trikonasana_stance: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    rel: [['ankle_L', 'ankle_R', [-0.9, 0]]],
+    dir: [
+      ['ankle_L', [0, 0, 1], [1, 0, 0]],
+      ['ankle_R', [0, 0, 1], [0.3, 0, 1]],
+    ],
+    params: ['hip_L.abd', 'hip_R.abd', 'hip_L.rot', 'hip_R.rot', 'ankle_L.dorsi', 'ankle_R.dorsi'],
   },
   trikonasana: {
     support: ['ankle_L', 'ankle_R'],
