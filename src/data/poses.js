@@ -3350,11 +3350,6 @@ export const POSE_FIT = {
     rel: [['wrist_R', 'wrist_L', [0.3, 0]]],
     params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
   },
-  hip_hang_right: {
-    support: ['ankle_L', 'ankle_R'],
-    flat: ['ankle_R'],
-    params: ['knee_L.flex', 'ankle_L.dorsi', 'ankle_R.dorsi'],
-  },
   malasana: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
@@ -3789,5 +3784,10 @@ export const POSE_FIT = {
     flat: ['wrist_L', 'wrist_R'],
     above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']],
     params: ['root.pitch', 'shoulder.flex', 'ankle.dorsi'],
+  },
+  hip_hang_right: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_R'],
+    params: ['knee_L.flex', 'ankle_L.dorsi', 'ankle_R.dorsi'],
   },
 };
