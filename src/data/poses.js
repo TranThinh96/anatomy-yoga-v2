@@ -950,6 +950,22 @@ export const POSES = {
     elbow: { flex: 2 },
     wrist: { pron: 160 },
   },
+  // Supported Reclining Hero (Supta Virasana): virasana_block reclined onto a bolster lying along the
+  // mat behind the block, its head end raised on a block; the thighs keep their place on the mat
+  // (hip angles rebuilt from virasana_block's thigh and shin directions for the reclined pelvis), arms
+  // resting on the floor.
+  supta_virasana_bolster: {
+    root: { pitch: -74 },
+    hip: { flex: -10, abd: -5, rot: -24 },
+    knee: { flex: 157 },
+    ankle: { dorsi: -40 },
+    lumbar: { flex: 20 },
+    thorax: { flex: -20 },
+    neck: { flex: 10 },
+    shoulder: { flex: -25, abd: 14 },
+    elbow: { flex: 1 },
+    wrist: { pron: 90 },
+  },
   // Three-legged dog: Downward Dog with the left leg lifted in line with the trunk, hips level.
   eka_pada_adho_mukha_svanasana: {
     root: { pitch: 132 },
@@ -1880,6 +1896,21 @@ export const POSES = {
     shoulder: { flex: 92, abd: 0 },
     wrist: { ext: 65, pron: 180 },
   },
+  // Tortoise with bent knees (Kurmasana, the usual modification): feet wide and flat-heeled on the mat,
+  // knees bent and lifted, the trunk folded forward between the thighs, the arms threaded under the
+  // knees reaching out to the sides, palms down; the backs of the knees rest on the upper arms.
+  kurmasana_bent: {
+    root: { pitch: 20 },
+    hip: { flex: 116, abd: 54, rot: 32 },
+    knee: { flex: 74 },
+    ankle: { dorsi: 3 },
+    lumbar: { flex: 46 },
+    thorax: { flex: 20 },
+    neck: { flex: -20 },
+    shoulder: { flex: 24, abd: 62, rot: 27 },
+    wrist: { ext: 9, pron: 180 },
+    elbow: { flex: -2 },
+  },
   // The steps into Ardha Matsyendrasana: right knee drawn up with the foot flat on its own side,
   // the foot lifted over the left shin (via), then planted outside the left knee, trunk still facing
   // forward, hands beside the hips. Going straight from Dandasana swept the foot through the left leg.
@@ -2307,6 +2338,26 @@ export const POSES = {
     elbow: { flex: 9 },
     wrist: { ext: 96, pron: 180 },
   },
+  // Archer (Akarna Dhanurasana): seated, the left leg straight on the mat with the left hand holding its
+  // big toe, the right foot drawn up beside the right ear by the right hand, knee out to the side,
+  // right elbow up and back like drawing a bow; trunk leaning forward ~40°. Right leg angles built from
+  // the thigh and shin directions (ankle beside the ear) – large Euler abd / rot as in padmasana.
+  akarna_dhanurasana: {
+    root: { pitch: 10 },
+    lumbar: { flex: 10 },
+    hip_L: { flex: 101, abd: 39 },
+    ankle_L: { dorsi: 41 },
+    hip_R: { flex: 75, abd: -147, rot: -70 },
+    knee_R: { flex: 68 },
+    ankle_R: { dorsi: -10 },
+    neck: { flex: -5 },
+    shoulder_L: { flex: 23, abd: -26 },
+    shoulder_R: { flex: 82, abd: 3, rot: 59 },
+    elbow_R: { flex: 119 },
+    wrist: { pron: 90 },
+    elbow_L: { flex: 29 },
+    thorax: { side: 6 },
+  },
   // Fire log (Agnistambhasana): the shins stacked parallel to the front of the mat, the right shin on
   // the floor with its ankle under the left knee, the left shin on top with its ankle on the right knee
   // (no shin–shin force in the physics). Hip angles built from the thigh and shin directions.
@@ -2544,6 +2595,13 @@ export const POSE_PROPS = {
   ],
   // a block lying flat under the sit bones, between the feet
   virasana_block: [{ type: 'block', stand: 'side', at: [0, -0.02], yaw: 90 }],
+  // the same block under the sit bones, a bolster along the mat behind it under the back, its head
+  // end raised on a block on its long edge (supported reclining hero)
+  supta_virasana_bolster: [
+    { type: 'block', stand: 'side', at: [0, -0.02], yaw: 90 },
+    { type: 'bolster', at: [0, -0.46], yaw: 90, tilt: 21 },
+    { type: 'block', stand: 'end', at: [0, -0.72] },
+  ],
   // a bolster along the right side of the mat under the knees (supine twist)
   supta_matsyendrasana: [{ type: 'bolster', at: [-0.4, 0.2], yaw: 90 }],
   // a block on its end beside each heel, under the hands (camel)
@@ -2624,6 +2682,8 @@ export const POSE_PROPS = {
     { type: 'block', stand: 'flat', at: [0.16, 0.18], yaw: 90 },
     { type: 'block', stand: 'flat', at: [-0.16, 0.18], yaw: 90 },
   ],
+  // the backs of the knees resting on the upper arms (tortoise)
+  kurmasana_bent: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L', at: 0.9 }, { type: 'touch', a: 'hip_R', b: 'shoulder_R', at: 0.9 }],
   bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
@@ -3418,6 +3478,11 @@ export const POSE_FIT = {
     rel: [['wrist_R', 'wrist_L', [0.33, 0]]],
     params: ['root.pitch&hip.flex', 'hip.flex', 'lumbar.flex', 'thorax.flex', 'neck.flex', 'shoulder.flex', 'wrist.ext'],
   },
+  supta_virasana_bolster: {
+    support: ['pelvis', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R', 'thorax', 'head', 'wrist_L', 'wrist_R'],
+    onProp: ['pelvis', 'thorax', 'head'],
+    params: ['ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
+  },
   virasana_block: {
     support: ['pelvis', 'hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R'],
     onProp: ['pelvis'],
@@ -3474,6 +3539,13 @@ export const POSE_FIT = {
     // hands resting on the thighs (on the legs: no support), so they reach forward from above the mat
     at: [['wrist_L', 'hip_L', [0, -0.25, 0.09]], ['wrist_R', 'hip_R', [0, -0.25, 0.09]]],
     params: ['hip.rot', 'shoulder.flex', 'shoulder.abd', 'elbow.flex', 'ankle.dorsi'],
+  },
+  kurmasana_bent: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    rel: [['pelvis', 'ankle_L', [0.38, 0.55]], ['pelvis', 'ankle_R', [-0.38, 0.55]]], // heels wide and forward
+    dir: [['thorax', [0, 1, 0], [0, 0.35, 0.94]], ['shoulder_L', [0, -1, 0], [0.95, -0.1, -0.3]], ['shoulder_R', [0, -1, 0], [-0.95, -0.1, -0.3]]],
+    params: ['root.pitch', 'hip.flex', 'hip.abd', 'hip.rot', 'knee.flex', 'ankle.dorsi', 'lumbar.flex', 'thorax.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'wrist.ext'],
   },
   upavistha_konasana: {
     support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],
@@ -3701,6 +3773,14 @@ export const POSE_FIT = {
     lift: ['ankle_L', 'ankle_R', 'knee_L', 'knee_R'],
     dir: [['thorax', [0, 1, 0], [0, 0.7, 0.7]]], // chest leaning ~45° forward, head up
     params: ['root.pitch', 'lumbar.flex', 'hip_L.flex&hip_R.flex', 'shoulder_L.flex&shoulder_R.flex', 'elbow.flex', 'wrist.ext'],
+  },
+  akarna_dhanurasana: {
+    support: ['pelvis', 'hip_L', 'ankle_L'],
+    at: [['wrist_L', 'hip_L', [0, -0.33, 0.09]], ['wrist_R', 'ankle_R', [0.03, 0.0, 0.1]]], // left hand on the knee; right foot in the hand
+    balance: true,
+    lift: ['wrist_L'],
+    rel: [['pelvis', 'ankle_L', [0.02, 0.78]]], // straight leg reaching forward near the midline
+    params: ['hip_L.abd', 'hip_L.flex', 'ankle_L.dorsi', 'shoulder_L.flex', 'shoulder_L.abd', 'elbow_L.flex', 'shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'elbow_R.flex'],
   },
   agnistambhasana: {
     support: ['pelvis', 'hip_R', 'ankle_R'],

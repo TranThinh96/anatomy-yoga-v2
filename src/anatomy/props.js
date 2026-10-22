@@ -6,7 +6,9 @@ import * as THREE from 'three';
 // model's left +X. Sizes are common retail sizes, not from a standard.
 //   { type: 'block', at: [x, z], yaw?, stand?: 'flat' | 'side' | 'end', y? }
 //   { type: 'blanket', at: [x, z], yaw?, y? }            folded blanket
-//   { type: 'bolster', at: [x, z], yaw? }                round bolster lying on the floor
+//   { type: 'bolster', at: [x, z], yaw?, tilt?, y? }     round bolster lying on the floor; tilt (degrees)
+//                                                         raises its +long-axis end (the other end stays
+//                                                         down, e.g. one end propped on a block)
 //   { type: 'wall', at: [x, z], normal: [nx, nz] }       vertical plane; normal points to the body
 //   { type: 'chair', at: [x, z], yaw? }                  folding chair: only its seat is a surface;
 //                                                         the backrest stands on the seat's +v edge
@@ -47,7 +49,11 @@ function resolve(prop, offset = { x: 0, z: 0 }) {
   }
   if (prop.type === 'bolster') {
     const { length, radius } = PROP_SIZES.bolster;
-    return { ...prop, kind: 'cyl', c: c.setY(c.y + radius), u, length, radius };
+    const t = ((prop.tilt || 0) * Math.PI) / 180;
+    const ut = new THREE.Vector3(u.x * Math.cos(t), Math.sin(t), u.z * Math.cos(t)); // axis, raised end along +u
+    // the lower end rests at y: its axis point is a radius above the base, the centre half a length higher
+    c.y += radius * Math.cos(t) + (length / 2) * Math.sin(t);
+    return { ...prop, kind: 'cyl', c, u: ut, uh: u, tilt: t, length, radius };
   }
   if (prop.type === 'chair') {
     const { seat, height } = PROP_SIZES.chair;
@@ -110,18 +116,20 @@ export class Env {
       } else if (p.kind === 'cyl') {
         const dx = x - p.c.x;
         const dz = z - p.c.z;
-        const a = dx * p.u.x + dz * p.u.z; // along the axis
-        const d = -dx * p.u.z + dz * p.u.x; // across it
+        const ct = Math.cos(p.tilt);
+        const st = Math.sin(p.tilt);
+        const a = (dx * p.uh.x + dz * p.uh.z) / ct; // along the axis (tilted: the horizontal run / cos)
+        const d = -dx * p.uh.z + dz * p.uh.x; // across it
         const R = p.radius + r;
         if (Math.abs(a) <= p.length / 2 && Math.abs(d) < R) {
           const h = Math.sqrt(R * R - d * d);
-          const y = p.c.y + h;
+          // a vertical cut through a tilted cylinder is an ellipse with vertical half-axis R / cos(tilt)
+          const y = p.c.y + a * st + h / ct;
           if (y > out.y && y0 > y - SINK) {
             out.y = y;
-            // radial normal: across the axis and up
-            const nx = (d / R) * -p.u.z;
-            const nz = (d / R) * p.u.x;
-            out.n = new THREE.Vector3(nx, h / R, nz).normalize();
+            // radial normal: across the axis plus the axis-normal direction in the vertical plane
+            const w = new THREE.Vector3(-p.uh.x * st, ct, -p.uh.z * st);
+            out.n = new THREE.Vector3(-p.uh.z, 0, p.uh.x).multiplyScalar(d / R).addScaledVector(w, h / R).normalize();
           }
         }
       }
