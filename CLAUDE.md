@@ -49,7 +49,8 @@ Data files:
 - `asanas.js` – asana entries: steps, anchors, muscle roles, cues, benefits, cautions, variants; `CATEGORIES`, `LEVELS`.
 - `topics.js` – workshop topics (e.g. anterior pelvic tilt): a reference and a condition pose compared on
   the model, muscles coloured by length relative to the reference; `shorter` / `longer` muscles are
-  verified by `npm run check`. Condition poses live in the "Postural deviations" section of `poses.js`.
+  verified by `npm run check`. A one-sided condition (`sided: true`, e.g. hip_hang) lists each side and names
+  muscles with `_L` / `_R`. Condition poses live in the "Postural deviations" section of `poses.js`.
 - `muscles.js`, `bones.js`, `joints.js` – Vietnamese anatomy text, keyed by id.
 - `muscle-strength.js` – max isometric force per fibre bundle, with literature sources.
 - `emg.js` – measured surface EMG in yoga poses (per study, pose, side, muscle / fibre), from paper tables.

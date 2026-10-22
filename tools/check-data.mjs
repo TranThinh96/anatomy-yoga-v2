@@ -132,7 +132,12 @@ for (const t of TOPICS) {
     if (!c.label) fail(`${where}: compare pose without label`);
     usedPoses.add(c.pose);
   }
-  for (const k of [...(t.shorter || []), ...(t.longer || [])]) if (!MUSCLES[k]) fail(`${where}: unknown muscle "${k}"`);
+  for (const k of [...(t.shorter || []), ...(t.longer || [])]) {
+    const m = k.match(/^(.*?)(_(L|R))?$/);
+    if (!MUSCLES[m[1]]) fail(`${where}: unknown muscle "${k}"`);
+    if (m[2] && !t.sided) fail(`${where}: "${k}" names a side but the topic is not \`sided\``);
+    if (!m[2] && t.sided) fail(`${where}: "${k}" needs a side (_L / _R) in a \`sided\` topic`);
+  }
   for (const j of t.joints || []) if (!JOINTS[j]) fail(`${where}: unknown joint "${j}"`);
   for (const b of t.bones || []) if (!BONES[b]) fail(`${where}: unknown bone "${b}"`);
   for (const [id] of t.asanas || []) if (!ASANAS.some((a) => a.id === id)) fail(`${where}: unknown asana "${id}"`);

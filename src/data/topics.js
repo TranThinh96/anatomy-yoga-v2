@@ -3,6 +3,8 @@
 // their length in the condition pose relative to the reference pose.
 // shorter / longer: muscles the text says shorten / lengthen – `npm run check` fails when the
 // model does not agree (tools/check-muscles.mjs).
+// sided: a one-sided condition – the length lists show each side separately and shorter / longer
+// name muscles with _L / _R (the model's own left / right).
 // joints / bones: ids from joints.js / bones.js that are highlighted on the model.
 // asanas: related asanas (ids from asanas.js) with a note on why they belong to the topic.
 
@@ -234,6 +236,82 @@ export const TOPICS = [
       'Cột sống ngực là một khớp duy nhất và lồng ngực cứng; xương bả vai chỉ nâng – hạ và đưa ra trước – sau quanh khớp ức đòn, chưa xoay lên – xuống.',
       'Cơ chỉ được mô tả bằng độ dài; mô hình không có sức căng thụ động và không đo sức mạnh cơ.',
       'Chưa có các cơ gập cổ sâu, cơ dưới chẩm và cơ nhiều chân.',
+    ],
+  },
+  {
+    id: 'hip_hang',
+    title: 'Đứng dồn một chân (trễ hông)',
+    en: 'Hanging on one hip – lateral pelvic tilt in standing',
+    area: 'Tư thế · Khung chậu & hông (một bên)',
+    sided: true,
+    compare: [
+      { pose: 'tadasana', label: 'Đứng đều hai chân' },
+      { pose: 'hip_hang_right', label: 'Dồn chân phải, hông trái trễ' },
+    ],
+    view: [0.2, 0.1, 1],
+    joints: ['hip', 'lumbar_spine_joint', 'sacroiliac'],
+    bones: ['pelvis', 'femur', 'lumbar_spine'],
+    shorter: ['quadratus_lumborum_R', 'external_oblique_R', 'adductors_R'],
+    longer: ['gluteus_medius_R', 'quadratus_lumborum_L', 'external_oblique_L'],
+    intro:
+      'Khi đứng lâu, nhiều người dồn trọng lượng lên một chân và "treo" người trên hông chân đó: khung chậu phía chân kia trễ xuống, hông chân trụ đẩy ra ngoài, gối chân nghỉ chùng. Để thân vẫn thẳng, cột sống thắt lưng nghiêng ngược lại về phía chân trụ. Đây là tư thế nghỉ rất tự nhiên – điều đáng quan tâm là khi nó luôn ở cùng một bên, hoặc đi kèm đau.',
+    sections: [
+      {
+        title: 'Mô hình 3D cho thấy gì',
+        items: [
+          'Khung chậu bên trái trễ xuống 6°, gối trái chùng, thắt lưng nghiêng phải 6° – con số chỉ để minh hoạ. Danh sách độ dài cơ ở đây tách riêng bên trái (T) và bên phải (P).',
+          'Bên chân trụ (phải): khớp háng khép lại – cơ mông nhỡ và cơ căng mạc đùi dài ra, nhóm cơ khép ngắn lại. Cơ thể "treo" trên các mô mềm ở mặt ngoài hông thay vì để cơ mông nhỡ giữ khung chậu ngang.',
+          'Thân: cơ vuông thắt lưng và cơ chéo bụng ngoài bên phải ngắn lại, bên trái dài ra.',
+          'Chân nghỉ (trái): gối và cổ chân gập nhẹ, nên các cơ quanh gối trái cũng đổi độ dài – đó là do gối chùng, không phải đặc điểm của tình trạng này.',
+          'Mô hình chỉ thấy độ dài cơ, không biết cơ nào yếu hay căng cứng.',
+        ],
+      },
+      {
+        title: 'Cần hiểu đúng',
+        items: [
+          'Đổi chân trụ qua lại khi đứng lâu là bình thường và còn có ích (thay đổi chỗ chịu tải). Thói quen luôn dồn một bên mới đáng để ý.',
+          'Khi đứng một chân, nếu khung chậu bên chân nhấc trễ xuống thay vì giữ ngang (dấu hiệu Trendelenburg), cơ dạng háng bên chân trụ có thể đang không giữ được khung chậu – nhưng đau, bệnh khớp háng hay thần kinh cũng gây ra dấu hiệu này; đó là việc của bác sĩ / chuyên viên vật lý trị liệu đánh giá.',
+          'Chân dài ngắn khác nhau hay vẹo cột sống cũng làm khung chậu lệch khi đứng: nhìn giống nhau nhưng nguyên nhân khác, cách tập khác.',
+          'Mối liên hệ giữa thói quen này và đau lưng / đau hông chưa rõ ràng; tránh gieo nỗi sợ về tư thế.',
+        ],
+      },
+      {
+        title: 'Quan sát trên lớp',
+        items: [
+          'Nhìn từ trước hoặc sau khi học viên đứng tự nhiên: hai mào chậu có ngang không, nếp eo hai bên, hông có đẩy ra một bên, chân nào chùng gối.',
+          'Trong các tư thế đứng một chân (Cây, Chiến binh III): khung chậu bên chân nhấc có trễ xuống hay nhô lên không, thân có nghiêng về phía chân trụ để bù không.',
+          'Hỏi thói quen: bế con bên hông nào, đeo túi vai nào, đứng làm việc lâu không.',
+        ],
+      },
+      {
+        title: 'Hướng tiếp cận yoga cân bằng – phục hồi',
+        items: [
+          'Nhận biết: đứng Tadasana, chuyển trọng lượng từ chân này sang chân kia thật chậm, cảm nhận khung chậu và hông chân trụ; tìm vị trí đứng đều hai chân.',
+          'Tư thế đứng một chân với khung chậu ngang (Cây có tay chạm tường nếu cần): cơ mông nhỡ bên chân trụ giữ khung chậu – ưu tiên chất lượng hơn thời gian giữ.',
+          'Tấm ván nghiêng (hạ gối dưới để nhẹ hơn): cơ dạng háng và cơ bên thân làm việc.',
+          'Kéo dài nhẹ hai bên thân (Nghiêng người đứng, tư thế Cánh cổng), làm cả hai bên, chú ý bên nào khác.',
+          'Mục tiêu là đứng linh hoạt, đổi chân trụ được, không phải giữ khung chậu bất động.',
+        ],
+      },
+    ],
+    asanas: [
+      ['tadasana', 'Đứng đều hai chân, cảm nhận khung chậu ngang'],
+      ['vrksasana', 'Cơ mông nhỡ bên chân trụ giữ khung chậu ngang'],
+      ['vasisthasana', 'Cơ dạng háng và cơ bên thân bên dưới làm việc'],
+      ['parsva_tadasana', 'Kéo dài hai bên thân khi đứng'],
+      ['parighasana', 'Kéo dài bên thân, cơ vuông thắt lưng'],
+    ],
+    cautions: [
+      'Đau hông, đau bẹn, đi khập khiễng, khung chậu trễ rõ khi đứng một chân: khuyên đi khám bác sĩ / chuyên viên vật lý trị liệu trước khi tập các tư thế một chân.',
+      'Chân dài ngắn khác nhau, vẹo cột sống: cần được đánh giá; không cố "kéo" khung chậu cho ngang bằng tư thế.',
+      'Đau vùng khớp mu hay khung chậu khi mang thai: tránh các tư thế dồn hết trọng lượng lên một chân và dang chân rộng; tập theo hướng dẫn yoga bầu.',
+      'Đau lan xuống chân, tê hoặc yếu chân: dừng tập và khuyên đi khám.',
+      'Không hứa hẹn yoga "chữa" được lệch khung chậu; yoga hỗ trợ nhận biết, vận động và thư giãn.',
+    ],
+    limits: [
+      'Một người mẫu nam cao 1,64 m, nửa phải là bản đối xứng của nửa trái – mô hình không có chân dài ngắn hay vẹo cột sống thật.',
+      'Độ trễ khung chậu được đặt tay (6°); bàn chân được khớp xuống sàn bằng gối và cổ chân trái.',
+      'Cơ chỉ được mô tả bằng độ dài; mô hình không có sức căng thụ động và không đo sức mạnh cơ. Chưa có cơ mông bé và các mô mềm mặt ngoài hông (dải chậu chày chỉ đi cùng cơ căng mạc đùi).',
     ],
   },
 ];
