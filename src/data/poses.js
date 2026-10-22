@@ -2023,6 +2023,41 @@ export const POSES = {
   // Half lord of the fishes, beginner form (bottom leg straight): from Dandasana the right foot is
   // planted outside the left knee, the trunk turns to the right, the left hand holds the outside of
   // the right knee, the right hand rests on the floor behind the pelvis.
+  // On the way into the seated twist: the left hand first raised high above the left hip ...
+  ardha_matsyendrasana_raise: {
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -33, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -29 },
+    lumbar: { flex: 2, rot: -5 },
+    thorax: { rot: -28 },
+    neck: { rot: -25 },
+    shoulder_L: { flex: 118, abd: -28, rot: -11 },
+    elbow_L: { flex: 141 },
+    shoulder_R: { flex: -24, abd: 6 },
+    wrist_R: { ext: 87 },
+    elbow_R: { flex: 16 },
+    root: { pitch: -6 },
+  },
+  // ... then carried over the right knee before it comes
+  // down on the outside of it (from beside the hip it cut through the right shin).
+  ardha_matsyendrasana_over: {
+    hip_L: { flex: 85 },
+    ankle_L: { dorsi: 1 },
+    hip_R: { flex: 125, abd: -33, rot: -29 },
+    knee_R: { flex: 117 },
+    ankle_R: { dorsi: -29 },
+    lumbar: { flex: 2, rot: -5 },
+    thorax: { rot: -28 },
+    neck: { rot: -25 },
+    shoulder_L: { flex: 29, abd: -22, rot: -16 },
+    elbow_L: { flex: 94 },
+    shoulder_R: { flex: -24, abd: 6 },
+    wrist_R: { ext: 87 },
+    elbow_R: { flex: 16 },
+    root: { pitch: -6 },
+  },
   ardha_matsyendrasana: {
     hip_L: { flex: 85 },
     ankle_L: { dorsi: 1 },
@@ -3890,5 +3925,18 @@ export const POSE_FIT = {
     flat: ['wrist_L', 'wrist_R'],
     above: [['shoulder_L', 'wrist_L'], ['shoulder_R', 'wrist_R']],
     params: ['root.pitch', 'shoulder.flex', 'ankle.dorsi'],
+  },
+  ardha_matsyendrasana_over: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_R'],
+    // the left hand ~18 cm above the right knee, a little outside it (pelvis axes ≈ world when sitting)
+    at: [['wrist_L', 'pelvis', [-0.1, 0.47, 0.27]]],
+    params: ['shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex'],
+  },
+  ardha_matsyendrasana_raise: {
+    support: ['pelvis', 'ankle_L', 'ankle_R', 'wrist_R'],
+    flat: ['ankle_R', 'wrist_R'],
+    at: [['wrist_L', 'pelvis', [0.2, 0.6, 0.1]]], // the left hand high above the left hip
+    params: ['shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex'],
   },
 };
