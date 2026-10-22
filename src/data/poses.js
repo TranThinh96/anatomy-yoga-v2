@@ -2356,7 +2356,7 @@ export const POSES = {
     lumbar: { flex: -5, rot: 8 },
     thorax: { rot: 35 },
     neck: { rot: 25 },
-    shoulder_R: { flex: 31, abd: -14, rot: 9 },
+    shoulder_R: { flex: 24, abd: -13, rot: 9 },
     elbow_R: { flex: 20 },
     wrist_R: { pron: 90 },
     shoulder_L: { flex: -17, abd: 8 },
@@ -2669,6 +2669,8 @@ export const POSE_PROPS = {
   gomukhasana: [{ type: 'touch', a: 'hip_R', b: 'hip_L' }],
   // left thigh resting on the right, left foot hooked behind the right calf
   garudasana: [{ type: 'touch', a: 'hip_L', b: 'hip_R' }, { type: 'touch', a: 'ankle_L', b: 'knee_R' }],
+  // right hand holding the outside of the left knee
+  parivrtta_sukhasana: [{ type: 'grip', a: 'wrist_R', b: 'hip_L' }],
   // left hand holding the inner left shin
   parivrtta_janu_sirsasana: [{ type: 'grip', a: 'wrist_L', b: 'knee_L' }],
 };
@@ -3762,7 +3764,7 @@ export const POSE_FIT = {
   parivrtta_sukhasana: {
     support: ['pelvis', 'hip_L', 'hip_R', 'wrist_L'],
     flat: ['wrist_L'],
-    at: [['wrist_R', 'knee_L', [0.0, 0.06, 0.08]]], // right hand on the left knee (no force)
+    at: [['wrist_R', 'knee_L', [0.03, 0.0, 0.02]]], // right hand holding the outside of the left knee
     rel: [['pelvis', 'wrist_L', [0.1, -0.25]]], // left hand behind the hips
     params: ['shoulder_R.flex', 'shoulder_R.abd', 'shoulder_R.rot', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'ankle.dorsi'],
   },
