@@ -500,6 +500,17 @@ export const POSES = {
     elbow: { flex: 65 },
     wrist: { ext: 109, pron: 180 },
   },
+  malasana: {
+    root: { pitch: 42 },
+    hip: { flex: 145, abd: -42, rot: 30 },
+    knee: { flex: 134 },
+    ankle: { dorsi: 44 },
+    lumbar: { flex: -27 },
+    thorax: { flex: -5 },
+    shoulder: { flex: 23, abd: 21, rot: -39 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+  },
   // On the way into Garland: standing, the left foot stepped out and turned out to where it rests in
   // the squat (the right foot still in Tadasana).
   malasana_step_L: {
@@ -515,17 +526,6 @@ export const POSES = {
     elbow: { flex: 103 },
     wrist: { ext: 70 },
     ankle: { dorsi: -6 },
-  },
-  malasana: {
-    root: { pitch: 42 },
-    hip: { flex: 145, abd: -42, rot: 30 },
-    knee: { flex: 134 },
-    ankle: { dorsi: 44 },
-    lumbar: { flex: -27 },
-    thorax: { flex: -5 },
-    shoulder: { flex: 23, abd: 21, rot: -39 },
-    elbow: { flex: 103 },
-    wrist: { ext: 70 },
   },
   utkata_konasana_stance: {
     ...ARMS_DOWN,
@@ -3361,6 +3361,13 @@ export const POSE_FIT = {
     rel: [['wrist_R', 'wrist_L', [0.3, 0]]],
     params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
   },
+  malasana: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    balance: true,
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    params: ['ankle.dorsi', 'root.pitch&-lumbar.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
+  },
   malasana_step_L: {
     support: ['ankle_L', 'ankle_R'],
     flat: ['ankle_L', 'ankle_R'],
@@ -3375,13 +3382,6 @@ export const POSE_FIT = {
     dir: [['ankle_L', [0, 0, 1], [0.76, 0, 0.65]], ['ankle_R', [0, 0, 1], [-0.76, 0, 0.65]]],
     at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
     params: ['hip.abd', 'hip.rot', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
-  },
-  malasana: {
-    support: ['ankle_L', 'ankle_R'],
-    flat: ['ankle_L', 'ankle_R'],
-    balance: true,
-    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
-    params: ['ankle.dorsi', 'root.pitch&-lumbar.flex', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
   },
   utkata_konasana_stance: {
     support: ['ankle_L', 'ankle_R'],
