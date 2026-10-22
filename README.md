@@ -26,7 +26,7 @@ chuyển động với các cơ được tác động được tô sáng theo th
 
 ### Chủ đề workshop
 - Tab **Chủ đề**: mỗi chủ đề so sánh một tư thế lệch với tư thế trung tính trên mô hình 3D, để giáo viên
-  giảng giải phẫu của một vấn đề cơ thể trong workshop / khoá học. Chủ đề đầu tiên: **Đổ chậu trước**.
+  giảng giải phẫu của một vấn đề cơ thể trong workshop / khoá học. Các chủ đề: **Đổ chậu trước**, **Đổ chậu sau (lưng phẳng)**, **Gù lưng trên – vai và đầu đưa ra trước**.
 - Chọn "trung tính", "tư thế lệch" hoặc "chuyển qua lại" (phím ← → / Space); cơ được tô màu theo độ dài
   so với tư thế trung tính (đỏ = ngắn lại, xanh = dài ra), xương liên quan được tô vàng.
 - Danh sách cơ ngắn lại / dài ra được tính trực tiếp từ mô hình; `npm run check` kiểm tra các cơ mà
