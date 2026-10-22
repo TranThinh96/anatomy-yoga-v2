@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
-import { Physics, convexHull, signedMargin } from '../src/anatomy/physics.js';
+import { Physics, convexHull, signedMargin, closestPoints } from '../src/anatomy/physics.js';
 import { poseToQuats, poseEnv } from '../src/anatomy/animator.js';
 import { POSES, POSE_FIT } from '../src/data/poses.js';
 
@@ -106,6 +106,9 @@ const wdir = (seg, v) => new THREE.Vector3(...v).transformDirection(rig.joints[s
 //   balance: centre of mass at least 3 cm inside the base of support
 //   lift:  segments held at least LIFT clear of the floor and props (feet off the mat in an arm
 //          balance: without it the balance goal is met by putting them down)
+//   touch: [segA, segB, weight?] the two segments' capsules (as the physics models body-to-body
+//          contacts) touch: their gap between −0.5 and 1 cm – a thigh on the upper arm, a hand on
+//          the knee – so a `touch` / `grip` in POSE_PROPS is active (it needs a gap ≤ 3 cm)
 const LIFT = 0.04;
 function goals(fit) {
   let e = 0;
@@ -153,6 +156,15 @@ function goals(fit) {
   for (const [j, seg, off, w = 1] of fit.at || []) {
     const target = rig.worldPoint(seg, new THREE.Vector3(...off));
     e += w * (wp(j).distanceTo(target) * 100) ** 2;
+  }
+  for (const [a, b, w = 1] of fit.touch || []) {
+    const A = physics.capsule[a];
+    const B = physics.capsule[b];
+    const p = (seg, v) => rig.worldPoint(seg, v, new THREE.Vector3());
+    const [pa, pb] = closestPoints(p(a, A.a), p(a, A.b), p(b, B.a), p(b, B.b));
+    const gap = (pa.distanceTo(pb) - A.r - B.r) * 100; // cm
+    if (gap > 1) e += w * (gap - 1) ** 2;
+    if (gap < -0.5) e += w * (gap + 0.5) ** 2;
   }
   for (const [u, l] of fit.above || []) {
     const U = wp(u);
