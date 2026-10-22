@@ -24,7 +24,7 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Chuỗi động tác | 7 | 0 | 7 |
 | **Tổng** | **116** | **2** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 14 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 14 mục P3. `Đã có` gồm 3 mục là biến thể của asana sẵn có (`ustrasana_blocks`, `viparita_karani_block`, `viparita_karani_chair`); `Cần làm` còn Quạ nghiêng (thử 2 lần, chưa đạt) và Bánh xe (⛔ thiếu số đo); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -119,7 +119,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `matsyasana` | Matsyasana | Con cá | Fish Pose | Trung bình | P2 | `supine` | đỉnh đầu chạm sàn, cẳng tay đỡ |
 | ✅ | `dhanurasana` | Dhanurasana | Cánh cung | Bow Pose | Trung bình | P2 | `prone` | 🤝 tay nắm cổ chân → biến thể 🪢 dây |
 | ✅ | `eka_pada_rajakapotasana` | Eka Pada Rajakapotasana (dạng chuẩn bị) | Bồ câu | Pigeon (prep) | Trung bình | P2 | `adho_mukha_svanasana` | 🔁 · biến thể gối ôm / chăn dưới hông 🧱 · có thể xếp nhóm Ngồi |
-| ✅ | `ustrasana_block` (biến thể) | Ustrasana | Lạc đà tay trên gạch / tay chống hông | Camel, supported | Cơ bản | P1 | `kneeling` | biến thể của `ustrasana` 🧱 |
+| ✅ | `ustrasana_blocks` (biến thể) | Ustrasana | Lạc đà tay trên gạch / tay chống hông | Camel, supported | Cơ bản | P1 | `kneeling` | biến thể của `ustrasana` 🧱 |
 | ⛔ | `urdhva_dhanurasana` | Urdhva Dhanurasana | Bánh xe | Wheel | Nâng cao | P3 | `supine_knees` | đầu chạm sàn giữa chừng · tải cổ tay / vai lớn |
 | ✅ | `camatkarasana` | Camatkarasana | Wild Thing | Wild Thing | Nâng cao | P3 | `adho_mukha_svanasana` | 🔁 |
 | ✅ | `supta_virasana` | Supta Virasana | Anh hùng nằm | Reclining Hero | Nâng cao | P3 | `virasana` | gối gập tối đa · biến thể gối ôm dưới lưng 🧱 |
@@ -222,7 +222,7 @@ Ký hiệu trong **Ghi chú**:
    `dandayamana_bharmanasana`, `forearm_plank`, `restorative_supine`.
 2. ✅ **Đợt 2 – P1 còn lại:** xong (xem ghi chú bên dưới). `parsvottanasana`, `prasarita_padottanasana`, `utkata_konasana`, `parsva_tadasana`, `virabhadrasana_3`,
    `vasisthasana`, `parighasana`, `anahatasana`, `matsyasana_supported`, `janu_sirsasana`, `upavistha_konasana`, `virasana`,
-   `supta_matsyendrasana`, biến thể `ustrasana_block`, `viparita_karani_block`.
+   `supta_matsyendrasana`, biến thể `ustrasana_blocks`, `viparita_karani_block`.
 3. **Đợt 3 – cần quyết định / tính năng:** nhóm mới + mức Nâng cao, đạo cụ dây → `supta_padangusthasana`, `sukhasana`, `baddha_konasana`, `malasana`, `apanasana`, `supta_kapotasana`.
 4. **Đợt 4 – P2:** ngửa sau trung bình, vặn xoắn đứng, đảo ngược có hỗ trợ, các chuỗi.
 5. **Đợt 5 – P3:** sau khi có tiếp xúc thân – thân.
