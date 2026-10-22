@@ -470,7 +470,8 @@ export const ASANAS = [
     steps: [
       { pose: 'tadasana' },
       { pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, via: true },
-      { pose: 'vrksasana', anchor: ['ankle_R'], move: 1.6 },
+      { pose: 'vrksasana_open', anchor: ['ankle_R'], move: 0.9, via: true },
+      { pose: 'vrksasana', anchor: ['ankle_R'], move: 1 },
     ],
     loop: 'pingpong',
     roles: {
@@ -2875,6 +2876,7 @@ export const ASANAS = [
     steps: [
       { pose: 'supine_knees' },
       { pose: 'supta_kapotasana_knee_up', anchor: SCAPULAE, move: 1.4, via: true },
+      { pose: 'supta_kapotasana_lift', anchor: SCAPULAE, move: 1, via: true },
       { pose: 'supta_kapotasana_cross', anchor: SCAPULAE, move: 1.4, hold: 0.6 },
       { pose: 'supta_kapotasana', anchor: SCAPULAE, move: 2, hold: 3 },
     ],
@@ -3376,8 +3378,8 @@ export const ASANAS = [
     en: 'Accomplished Pose',
     category: 'Ngồi & nằm',
     level: 'Trung bình',
-    steps: [{ pose: 'siddhasana', hold: 3 }],
-    loop: 'static',
+    steps: [{ pose: 'sukhasana' }, { pose: 'siddhasana', anchor: ['pelvis'], move: 2.4, hold: 3 }],
+    loop: 'pingpong',
     roles: {
       contract: ['erector_spinae'],
       stretch: ['adductors', 'gluteus_medius'],

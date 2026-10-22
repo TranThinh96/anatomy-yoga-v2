@@ -10,15 +10,20 @@
 //   between solutions were 1000–5000 °/s)
 // - hyperextension: a knee or elbow below −5° flexion (bent backwards)
 // - stepping foot: a foot that steps to a new place clearing the floor by less than 5 cm
+// - legs passing through each other: during a move, the capsules of the two legs (as the physics
+//   models body-to-body contacts) overlapping more than 3 cm deeper than at either end of the move –
+//   a foot sweeping through the standing knee, a shin through the other thigh
 // Limits were set from the sequences after the fixes in the git log (Vrksasana, Navasana, Surya
 // Namaskar stepping); see the add-asana skill for what each failure usually means.
 import * as THREE from 'three';
 import { Rig } from '../src/anatomy/rig.js';
-import { Physics } from '../src/anatomy/physics.js';
+import { Physics, closestPoints } from '../src/anatomy/physics.js';
 import { Animator } from '../src/anatomy/animator.js';
 import { ASANAS, asanaSteps } from '../src/data/asanas.js';
 
-const LIMITS = { wobble: 0.006, anchorLift: 0.015, jointSpeed: 900, hyperext: -5, clearance: 0.05 };
+const LIMITS = { wobble: 0.006, anchorLift: 0.015, jointSpeed: 900, hyperext: -5, clearance: 0.05, passThrough: 0.03 };
+const LEG_PAIRS = [];
+for (const a of ['hip_L', 'knee_L', 'ankle_L']) for (const b of ['hip_R', 'knee_R', 'ankle_R']) LEG_PAIRS.push([a, b]);
 const args = process.argv.slice(2);
 const verbose = args.includes('--verbose');
 const listSteps = args.includes('--steps'); // print when each move starts and ends (for review-poses --at)
@@ -28,6 +33,15 @@ const physics = new Physics(rig, { mass: 60, sex: 'f' });
 const dt = 1 / 60;
 const W = 3; // moving-average half window (frames)
 const flexOf = (q) => (2 * Math.atan2(q.x, q.w) * 180) / Math.PI; // single-axis joints (knee, elbow)
+const wp = (seg, v) => rig.worldPoint(seg, v, new THREE.Vector3());
+/** Gap (m) between the capsules of two segments in the current rig pose (< 0: overlapping). */
+function capsuleGap(a, b) {
+  const A = physics.capsule[a];
+  const B = physics.capsule[b];
+  const [p, q] = closestPoints(wp(a, A.a), wp(a, A.b), wp(b, B.a), wp(b, B.b));
+  return p.distanceTo(q) - A.r - B.r;
+}
+const legGaps = () => LEG_PAIRS.map(([a, b]) => capsuleGap(a, b));
 let failures = 0;
 
 for (const a of ASANAS) {
@@ -91,6 +105,25 @@ for (const a of ASANAS) {
     if (worst.jointSpeed[0] > LIMITS.jointSpeed) problems.push(`joint turns ${worst.jointSpeed[0].toFixed(0)} °/s ${at(worst.jointSpeed)}`);
     if (worst.hyperext[0] < LIMITS.hyperext) problems.push(`${worst.hyperext[2]} bent backwards to ${worst.hyperext[0].toFixed(0)}° ${at(worst.hyperext)}`);
     for (const { foot, t, y } of clear.values()) if (y < LIMITS.clearance) problems.push(`${foot} steps but clears only ${(y * 100).toFixed(1)} cm (move ending ${t.toFixed(2)} s)`);
+    // legs passing through each other, move by move (against the overlap at the move's two ends)
+    let worstPass = [0];
+    for (const st of anim.steps) {
+      if (!st.moveDur) continue;
+      const t0 = st.start;
+      const t1 = st.start + st.moveDur;
+      anim.seek(Math.max(0, t0 - 0.01));
+      const g0 = legGaps();
+      anim.seek(t1 + 0.01);
+      const g1 = legGaps();
+      for (let t = t0; t <= t1; t += 1 / 30) {
+        anim.seek(t);
+        legGaps().forEach((g, i) => {
+          const deeper = Math.min(g0[i], g1[i], 0) - g;
+          if (deeper > worstPass[0]) worstPass = [deeper, t, LEG_PAIRS[i].join('/')];
+        });
+      }
+    }
+    if (worstPass[0] > LIMITS.passThrough) problems.push(`legs pass through each other (${worstPass[2]}, ${(worstPass[0] * 100).toFixed(1)} cm deeper than at the ends of the move) ${at(worstPass)}`);
     for (const p of problems) {
       failures++;
       console.log(`✗ ${name}: ${p}`);
@@ -98,7 +131,7 @@ for (const a of ASANAS) {
     if (verbose)
       console.log(
         `  ${name.padEnd(46)} wobble ${(worst.wobble[0] * 1000).toFixed(1)} mm, anchor lift ${(worst.anchorLift[0] * 1000).toFixed(0)} mm, ` +
-          `joint ${worst.jointSpeed[0].toFixed(0)} °/s, knee/elbow ≥ ${worst.hyperext[0].toFixed(0)}°` +
+          `joint ${worst.jointSpeed[0].toFixed(0)} °/s, knee/elbow ≥ ${worst.hyperext[0].toFixed(0)}°, legs overlap +${(worstPass[0] * 100).toFixed(1)} cm` +
           [...clear.values()].map((c) => `, ${c.foot} clears ${(c.y * 100).toFixed(1)} cm`).join(''),
       );
   }

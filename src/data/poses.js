@@ -348,6 +348,15 @@ export const POSES = {
     knee_L: { flex: 100 },
     ankle_L: { dorsi: 0 },
   },
+  // On the way into Tree: the knee opened out and the foot drawn up above the standing knee, so it
+  // reaches the inner thigh from above instead of sweeping through the standing knee.
+  vrksasana_open: {
+    ...ARMS_DOWN,
+    hip_L: { flex: 85, abd: -12, rot: 60 },
+    knee_L: { flex: 150 },
+    ankle_L: { dorsi: -10 },
+    ankle_R: { dorsi: 3 },
+  },
   vrksasana: {
     root: { roll: 0 },
     hip_R: { flex: 0, abd: 2 },
@@ -1506,6 +1515,19 @@ export const POSES = {
     root: { pitch: -90 },
     hip_L: { flex: 90 },
     knee_L: { flex: 95 },
+    ankle_L: { dorsi: 5 },
+    hip_R: { flex: 47 },
+    knee_R: { flex: 103 },
+    ankle_R: { dorsi: 9 },
+    shoulder: { flex: -8, abd: 6 },
+    wrist: { pron: 90 },
+  },
+  // ... the left knee turned out and the foot lifted ~20 cm above the right knee, so the ankle comes
+  // down onto the right thigh from above instead of passing through the right leg.
+  supta_kapotasana_lift: {
+    root: { pitch: -90 },
+    hip_L: { flex: 110, abd: -60, rot: 10 },
+    knee_L: { flex: 90 },
     ankle_L: { dorsi: 5 },
     hip_R: { flex: 47 },
     knee_R: { flex: 103 },
@@ -2794,6 +2816,7 @@ export const POSE_FIT = {
     rel: [['wrist_R', 'wrist_L', [0.33, 0]], ['wrist_L', 'ankle_L', [-0.086, -0.2]]],
     params: ['root.pitch&hip.flex', 'shoulder.flex', 'shoulder.abd', 'elbow.flex'],
   },
+  vrksasana_open: { support: ['ankle_R'], flat: ['ankle_R'], params: ['ankle_R.dorsi'] },
   vrksasana: {
     support: ['ankle_R'],
     flat: ['ankle_R'],
@@ -3638,6 +3661,7 @@ export const POSE_FIT = {
     params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot'],
   },
   supta_kapotasana_knee_up: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['ankle_R.dorsi'] },
+  supta_kapotasana_lift: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['ankle_R.dorsi'] },
   supta_kapotasana_cross: { support: ['pelvis', 'scapula_L', 'scapula_R', 'ankle_R', 'wrist_L', 'wrist_R'], params: ['ankle_R.dorsi'] },
   supta_kapotasana: {
     support: ['pelvis', 'scapula_L', 'scapula_R'],
