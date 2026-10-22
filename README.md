@@ -140,7 +140,11 @@ liệu ở tư thế đang giữ, thẻ cơ hiển thị EMG đo được bên c
 cứng gây đổ của tải trọng ở mỗi khớp (tiêu chí con lắc ngược, Winter et al. 1998), như Brown & Potvin 2005 làm cho cột
 sống. Hằng số q chỉ được biết trong khoảng 1–40 (Barrett et al. 2024). Trên cả khoảng đó, kết quả lúc tốt lúc xấu tùy
 tham số (ví dụ số giá trị khớp EMG của Liu tăng, nhưng thứ hạng không tốt hơn và bài Lehecka xấu đi), nên chưa bật
-trong app. Muốn làm lại cần chiều dài sợi cơ tối ưu của từng cơ từ tài liệu (`node tools/check-emg.mjs --sweep`).
+trong app (`node tools/check-emg.mjs --sweep`). Lần thử thứ hai dùng chiều dài sợi cơ tối ưu Lf thay cho chiều dài cả
+cơ – gân ở các cơ chi dưới (Ward et al. 2009, bảng 3): vẫn không cải thiện (thứ hạng Liu 0,08–0,23, Lehecka −0,64 đến
+−0,80, Wang 0,03–0,37 với q = 1–40). Độ cứng vẫn dồn vào nhị đầu đùi trong tư thế Ghế và cơ thẳng đùi trong tư thế Cây:
+cơ hai khớp được tính độ cứng ở cả hai khớp nó bắc qua, nên bộ tối ưu luôn chọn chúng – vấn đề nằm ở cách đặt bài
+toán, không ở số liệu.
 
 ### Mô hình từ xương & cơ thật (BodyParts3D)
 Toàn bộ khung xương (117 bộ phận: sọ, từng đốt sống, 24 xương sườn, xương cổ tay, đốt ngón…)

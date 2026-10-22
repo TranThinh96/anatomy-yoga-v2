@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { baseOf, sideOf } from './rig.js';
-import { fibreStrength, MUSCLE_STRENGTH } from '../data/muscle-strength.js';
+import { fibreStrength, fibreLength, MUSCLE_STRENGTH } from '../data/muscle-strength.js';
 
 /**
  * Muscle moment arms and static optimisation.
@@ -227,6 +227,7 @@ export class MuscleForces {
     this.fibres = [];
     for (const m of system.muscles) {
       const fmax = fibreStrength(m.def);
+      const lopt = fibreLength(m.def);
       const strength = MUSCLE_STRENGTH[m.def.id];
       m.fibers.forEach((fb, f) => {
         const crosses = [];
@@ -240,6 +241,7 @@ export class MuscleForces {
           fb,
           part: strength && strength.names ? strength.names[f] : null,
           fmax: fmax[f],
+          lopt: lopt ? lopt[f] : null, // optimal fibre length (m), null = not tabulated
           crosses,
           get length() {
             return fb.length;
@@ -414,7 +416,7 @@ export class MuscleForces {
       for (const [i, r] of arms[j]) {
         A[i * N + j] = f.fmax * r;
         const k = stabOf.get(i);
-        if (k !== undefined) A[(m + k) * N + j] = (f.fmax * stab[k].q * r * r) / f.length;
+        if (k !== undefined) A[(m + k) * N + j] = (f.fmax * stab[k].q * r * r) / (f.lopt ?? f.length);
       }
     });
     const lam0 = this._lam && this._lam.length === M ? this._lam : null;
