@@ -17,14 +17,14 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Đứng | 26 | 0 | 26 |
 | Gập người | 8 | 0 | 8 |
 | Ngửa sau | 16 | 1 | 17 |
-| Chống tay & thăng bằng tay | 16 | 2 | 18 |
+| Chống tay & thăng bằng tay | 17 | 1 | 18 |
 | Đảo ngược | 6 | 0 | 6 |
 | Ngồi (gồm Balasana) | 22 | 0 | 22 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **115** | **3** | **118** |
+| **Tổng** | **116** | **2** | **118** |
 
-(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 13 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
+(`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 14 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
 ---
 
@@ -139,7 +139,7 @@ Ký hiệu trong **Ghi chú**:
 | ⬜ | `parsva_bakasana` | Parsva Bakasana | Con quạ nghiêng | Side Crow | Nâng cao | P3 | `parivrtta_utkatasana` | 🔁 ⚖ 🤝 |
 | ✅ | `tolasana` | Tolasana | Cái cân | Scale | Nâng cao | P3 | `padmasana` | 🤝 chân kiết già |
 | ✅ | `lolasana` | Lolasana | Mặt dây chuyền | Pendant | Nâng cao | P3 | `vajrasana` | ⚖ |
-| ⬜ | `astavakrasana` | Astavakrasana | Tám góc | Eight-Angle | Nâng cao | P3 | `dandasana` | 🔁 ⚖ 🤝 |
+| ✅ | `astavakrasana` | Astavakrasana | Tám góc | Eight-Angle | Nâng cao | P3 | `dandasana` | 🔁 ⚖ 🤝 |
 | ✅ | `pincha_mayurasana` | Pincha Mayurasana | Đứng cẳng tay (Lông công) | Forearm Stand | Nâng cao | P3 | `ardha_pincha_mayurasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
 | ✅ | `adho_mukha_vrksasana` | Adho Mukha Vrksasana | Trồng chuối | Handstand | Nâng cao | P3 | `adho_mukha_svanasana` | ⚖ · biến thể tựa tường 🧱 · cũng là đảo ngược |
 
@@ -301,6 +301,7 @@ Ký hiệu trong **Ghi chú**:
 - Cánh cung kéo tai (P3): dạng tĩnh, bản tay trái giữ gối. Chân phải dựng từ hình học (cổ chân cạnh tai phải, gối mở ra ngoài – lên trên), bộ fit chỉ đặt tay. Bản nắm ngón chân cái: thân phải cúi ~40°, trọng tâm rơi ra trước – phải ngoài đường ụ ngồi phải – bàn chân trái; bộ fit chỉ thăng bằng được khi tay trái chống sàn (~20 % trọng lượng) – bỏ. Ngực nghiêng trái ~6° để trọng tâm nằm trên chân đế (biên ~1 cm); chân trái hơi khép vào giữa.
 - Anh hùng nằm (P3): dạng tĩnh, ngồi gạch dựng cạnh + gối ôm dọc thảm kê dốc 21° (đầu xa trên gạch dựng đứng; đạo cụ gối ôm có thêm `tilt`). Góc háng dựng lại bằng leg2 từ hướng đùi / ống chân của Anh hùng ngồi gạch cho từng độ ngả của chậu – đổi `root.pitch&hip.flex` không giữ được đùi vì háng có dạng / xoay (thứ tự Euler). Lần trước (gối ôm nằm phẳng) gối nhấc 8–9 cm: thân ngả ~30° nhưng gối ôm phẳng nên cả người xoay quanh điểm tựa lưng. Chậu −74°, thắt lưng gập 20°, ngực ngửa 20°, háng duỗi ~10°: mông, gối, bàn chân, lưng, bả vai, đầu đều chạm. Bản nằm hẳn xuống sàn không làm được (gối mô hình gập tối đa ~157°).
 - Con rùa (P2): dạng tĩnh, bản gối gập (cách điều chỉnh thường dạy) – bản chân duỗi cần háng gập ~170°. Gối tì lên mặt sau cánh tay trên là tiếp xúc thân – thân (~86 N mỗi bên). Lưng tròn: thắt lưng gập ~46°, ngực ~20°.
+- Tám góc (P3): dạng tĩnh, chân sang trái. Góc khớp tìm bằng một bộ tìm kiếm riêng (19 góc, nhiều lần khởi động lại): bàn tay áp sàn, đùi trái tì mặt sau cánh tay trái (tiếp xúc thân – thân, ~260 N), hai cổ chân sát nhau, trọng tâm trên hai bàn tay, chân cách đường thân ≥ 40°, bàn chân không cao quá vai 15 cm. Khung chậu xoay ~49° quanh trục cột sống, cột sống xoay lại (thắt lưng 10° + ngực 33°) để ngực úp xuống sàn. Biên thăng bằng ~0,6 cm, tay trái chịu ~69 %. Tay mô hình ngắn nên ngực và đầu xuống thấp; chân chỉ chĩa ~42° so với đường thân (người tập thường mở ngang hơn) – mở thêm thì trọng tâm rơi ra ngoài hai bàn tay. Cổ chân đặt cạnh nhau, không móc.
 - Đã thử, chưa đạt: Quạ nghiêng (cần xoay chậu ~90° so với ngực quanh trục cột sống – bộ fit chưa làm được).
 - Mô hình có thêm điểm tiếp xúc (build lại từ BodyParts3D 3.0): đỉnh vai (mỏm cùng vai), mỏm gai T2, mặt sau và mặt ngoài cánh tay trên, thái dương. Không thêm điểm ở C7 (nằm ngay khớp cổ – sẽ gánh lực mỗi khi lưng trên gánh). Cây cầu được fit lại (giờ tựa lưng trên + mặt sau cánh tay).
 - Trồng cây chuối vai, Cái cày: dạng tĩnh, kê chăn gấp dưới vai và cánh tay trên, đầu trên sàn ngoài mép chăn; đầu không chịu lực. Trồng cây chuối vai thân nghiêng ~25°.
