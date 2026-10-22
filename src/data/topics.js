@@ -314,6 +314,78 @@ export const TOPICS = [
       'Cơ chỉ được mô tả bằng độ dài; mô hình không có sức căng thụ động và không đo sức mạnh cơ. Chưa có cơ mông bé và các mô mềm mặt ngoài hông (dải chậu chày chỉ đi cùng cơ căng mạc đùi).',
     ],
   },
+  {
+    id: 'shoulders_elevated',
+    title: 'Vai nhô lên (vai co về phía tai)',
+    en: 'Elevated shoulders',
+    area: 'Tư thế · Đai vai & cổ',
+    compare: [
+      { pose: 'tadasana', label: 'Vai thả lỏng' },
+      { pose: 'shoulders_elevated', label: 'Vai nhô lên' },
+    ],
+    view: [0.6, 0.2, 1],
+    joints: ['sternoclavicular', 'scapulothoracic', 'cervical_spine_joint'],
+    bones: ['clavicle', 'scapula', 'cervical_spine'],
+    shorter: ['levator_scapulae'],
+    longer: ['pectoralis_minor', 'latissimus_dorsi', 'pectoralis_major', 'serratus_anterior'],
+    intro:
+      'Khi căng thẳng, lạnh, tập trung hay gồng tay, nhiều người vô thức kéo hai vai lên về phía tai: xương đòn và xương bả vai nâng lên quanh khớp ức đòn, cổ trông ngắn lại. Trên lớp yoga đây là lý do của lời nhắc quen thuộc "hạ vai xa tai" – nhất là khi giơ tay lên cao hay chống tay.',
+    sections: [
+      {
+        title: 'Mô hình 3D cho thấy gì',
+        items: [
+          'Hai đai vai nâng 12° quanh khớp ức đòn – con số chỉ để minh hoạ.',
+          'Ngắn lại: cơ nâng vai (nối đốt sống cổ với góc trên xương bả vai) – một trong các cơ nâng vai.',
+          'Dài ra: các cơ kéo đai vai xuống – cơ ngực bé, cơ lưng rộng, phần dưới cơ ngực lớn, cơ răng cưa trước.',
+          'Phần trên cơ thang – cơ nâng vai chính cùng cơ nâng vai – không ngắn lại trên mô hình vì cơ thang ở đây là một dải duy nhất, không tách phần trên / giữa / dưới. Phần dưới cơ thang (kéo xương bả vai xuống) cũng chưa tách riêng.',
+          'Mô hình chỉ thấy độ dài cơ, không biết cơ nào đang co, căng hay mỏi.',
+        ],
+      },
+      {
+        title: 'Cần hiểu đúng',
+        items: [
+          'Nâng vai là một cử động bình thường và cần thiết (giơ tay cao qua đầu luôn kèm nâng và xoay lên xương bả vai). Vấn đề chỉ là khi vai nhô lên kéo dài lúc không cần.',
+          'Khi giơ tay thẳng lên trên đầu (Urdhva Hastasana), xương bả vai phải xoay lên và nâng một phần; ép vai xuống quá mức lúc đó lại hạn chế cử động – "hạ vai" nên hiểu là "đừng nhún vai lên tai", không phải ép vai xuống hết cỡ.',
+          'Mối liên hệ giữa vai nhô lên và đau cổ vai chưa rõ ràng; căng thẳng, giấc ngủ, thói quen làm việc đều góp phần.',
+        ],
+      },
+      {
+        title: 'Quan sát trên lớp',
+        items: [
+          'Khoảng cách giữa dái tai và đỉnh vai khi đứng, khi giơ tay, khi chống tay (Chó úp mặt, Tấm ván).',
+          'Vai có nhô lên khi học viên nín thở hay gồng sức không – thường hai việc đi cùng nhau.',
+          'Một bên vai cao hơn bên kia có thể do thói quen (đeo túi một bên) hoặc do cột sống – quan sát, không kết luận.',
+        ],
+      },
+      {
+        title: 'Hướng tiếp cận yoga cân bằng – phục hồi',
+        items: [
+          'Nhận biết: nhún vai lên thật cao khi hít vào, thở ra thả vai rơi xuống – vài lần để cảm nhận vị trí thả lỏng.',
+          'Khi giơ tay lên cao: để xương bả vai xoay lên cùng cánh tay, cổ vẫn dài; hạ tay xuống thấp hơn nếu vai nhô lên.',
+          'Khi chống tay: đẩy sàn ra xa để xương bả vai ôm lồng ngực (cơ răng cưa trước), không để vai sụp về tai.',
+          'Thở chậm, thả lỏng hàm và cổ trong tư thế nghỉ (Em bé, Savasana).',
+        ],
+      },
+    ],
+    asanas: [
+      ['tadasana', 'Tìm vị trí vai thả lỏng khi đứng'],
+      ['urdhva_hastasana', 'Giơ tay cao mà cổ vẫn dài'],
+      ['adho_mukha_svanasana', 'Đẩy sàn, giữ vai xa tai khi chống tay'],
+      ['phalakasana', 'Xương bả vai ôm lồng ngực khi chống tay'],
+      ['balasana', 'Thả lỏng vai và cổ, thở chậm'],
+    ],
+    cautions: [
+      'Đau cổ lan xuống tay, tê hoặc yếu tay: dừng tập và khuyên đi khám bác sĩ / chuyên viên vật lý trị liệu.',
+      'Đau vai khi giơ tay lên cao: giữ tay thấp hơn, không cố; khuyên đi khám nếu đau kéo dài.',
+      'Không hứa hẹn yoga "chữa" được căng vai cổ; yoga hỗ trợ nhận biết, vận động và thư giãn.',
+    ],
+    limits: [
+      'Một người mẫu nam cao 1,64 m, nửa phải là bản đối xứng của nửa trái.',
+      'Đai vai là một đoạn cứng quay quanh khớp ức đòn: chỉ nâng – hạ và đưa ra trước – sau, chưa xoay lên – xuống, chưa trượt trên lồng ngực.',
+      'Cơ thang là một dải duy nhất; chưa có các cơ sâu vùng cổ.',
+      'Cơ chỉ được mô tả bằng độ dài; mô hình không có sức căng thụ động và không đo sức mạnh cơ.',
+    ],
+  },
 ];
 
 export const TOPIC_BY_ID = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
