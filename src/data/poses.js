@@ -500,6 +500,22 @@ export const POSES = {
     elbow: { flex: 65 },
     wrist: { ext: 109, pron: 180 },
   },
+  // On the way into Garland: standing, the left foot stepped out and turned out to where it rests in
+  // the squat (the right foot still in Tadasana).
+  malasana_step_L: {
+    ...ARMS_DOWN,
+    hip_L: { abd: 8, rot: 48 },
+    ankle_L: { dorsi: -7 },
+    ankle_R: { dorsi: 3 },
+  },
+  // Standing with both feet where they rest in the squat (turned out ~50°), palms together at the chest.
+  malasana_stand: {
+    hip: { abd: 9, rot: 49 },
+    shoulder: { flex: 26, abd: 27, rot: -40 },
+    elbow: { flex: 103 },
+    wrist: { ext: 70 },
+    ankle: { dorsi: -6 },
+  },
   malasana: {
     root: { pitch: 42 },
     hip: { flex: 145, abd: -42, rot: 30 },
@@ -3344,6 +3360,21 @@ export const POSE_FIT = {
     balance: true,
     rel: [['wrist_R', 'wrist_L', [0.3, 0]]],
     params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
+  },
+  malasana_step_L: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    rel: [['ankle_R', 'ankle_L', [0.24, 0]]], // where the left foot rests in the squat, once the right foot has stepped out too
+    dir: [['ankle_L', [0, 0, 1], [0.76, 0, 0.65]]], // turned out like in the squat
+    params: ['hip_L.abd', 'hip_L.rot', 'ankle_L.dorsi', 'ankle_R.dorsi'],
+  },
+  malasana_stand: {
+    support: ['ankle_L', 'ankle_R'],
+    flat: ['ankle_L', 'ankle_R'],
+    rel: [['ankle_R', 'ankle_L', [0.322, 0]]], // the squat's stance (ankles 32 cm apart)
+    dir: [['ankle_L', [0, 0, 1], [0.76, 0, 0.65]], ['ankle_R', [0, 0, 1], [-0.76, 0, 0.65]]],
+    at: [['wrist_L', 'thorax', [0.03, 0.12, 0.2]], ['wrist_R', 'thorax', [-0.03, 0.12, 0.2]]], // palms together at the chest
+    params: ['hip.abd', 'hip.rot', 'ankle.dorsi', 'shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex'],
   },
   malasana: {
     support: ['ankle_L', 'ankle_R'],

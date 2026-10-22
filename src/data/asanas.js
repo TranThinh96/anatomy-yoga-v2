@@ -728,8 +728,13 @@ export const ASANAS = [
     en: 'Garland / Yogi Squat',
     category: 'Đứng',
     level: 'Cơ bản',
-    steps: [{ pose: 'malasana', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'malasana_step_L', anchor: ['ankle_R'], move: 1.2 },
+      { pose: 'malasana_stand', anchor: ['ankle_L'], move: 1.4, hold: 0.5 },
+      { pose: 'malasana', anchor: FEET, move: 2.6, hold: 3 },
+    ],
+    loop: 'pingpong',
     roles: {
       contract: ['tibialis_anterior', 'erector_spinae', 'adductors'],
       stretch: ['soleus', 'gluteus_maximus'],
