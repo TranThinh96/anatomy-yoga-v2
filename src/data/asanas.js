@@ -2425,8 +2425,13 @@ export const ASANAS = [
     en: 'Thread the Needle',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [{ pose: 'parsva_balasana', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'tabletop' },
+      { pose: 'parsva_balasana_lift', anchor: [...KNEES, 'wrist_L'], move: 1.2, via: true },
+      { pose: 'parsva_balasana_thread', anchor: [...KNEES, 'wrist_L'], move: 1.2, via: true },
+      { pose: 'parsva_balasana', anchor: [...KNEES, 'wrist_L'], move: 1.8, hold: 2.5 },
+    ],
+    loop: 'pingpong',
     roles: {
       contract: ['external_oblique_L'],
       stretch: ['rhomboids_R', 'trapezius_R', 'infraspinatus_R'],
@@ -2630,8 +2635,12 @@ export const ASANAS = [
     en: 'Constructive Rest',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [{ pose: 'supine_knees', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'supine' },
+      { pose: 'supine_heels_slide', anchor: SCAPULAE, move: 1.2, via: true },
+      { pose: 'supine_knees', anchor: SCAPULAE, move: 1.2, hold: 3 },
+    ],
+    loop: 'pingpong',
     roles: { contract: [], stretch: [], stabilize: [] },
     joints: [
       ['hip', 'Háng gập ~45°'],

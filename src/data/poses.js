@@ -101,6 +101,38 @@ export const POSES = {
     elbow_R: { flex: 5 },
     wrist_R: { pron: 0 },
   },
+  // On the way into Thread the needle: tabletop with the right hand lifted off the mat, the elbow
+  // bent and the hand drawn in under the chest (so it does not sweep through the mat).
+  parsva_balasana_lift: {
+    root: { pitch: 78 },
+    hip: { flex: 83 },
+    knee: { flex: 90 },
+    ankle: { dorsi: -70 },
+    shoulder: { flex: 75 },
+    wrist: { ext: 101, pron: 180 },
+    shoulder_R: { flex: 60, abd: -15 },
+    elbow_R: { flex: 70 },
+    wrist_R: { ext: 0, pron: 90 },
+    neck: { rot: 30, side: -15 },
+    head: { flex: -10 },
+  },
+  // ... then the right arm threaded across under the chest, the hand still off the mat, the chest half
+  // turned, before the right shoulder comes down.
+  parsva_balasana_thread: {
+    root: { pitch: 99, roll: -1 },
+    hip: { flex: 104 },
+    knee: { flex: 90 },
+    ankle: { dorsi: -70 },
+    lumbar: { rot: 8 },
+    thorax: { rot: 20, side: 4 },
+    scapula_R: { protract: 25 },
+    shoulder_L: { flex: 122, abd: 22 },
+    wrist_L: { ext: 94, pron: 180 },
+    shoulder_R: { flex: 104, abd: 56 },
+    elbow_R: { flex: 11 },
+    wrist_R: { pron: 0 },
+    neck: { rot: 30, side: -15 },
+  },
   tabletop: {
     root: { pitch: 78 },
     hip: { flex: 83 },
@@ -2714,6 +2746,21 @@ export const POSE_FIT = {
     flat: ['wrist_L'],
     above: [['hip_L', 'knee_L'], ['hip_R', 'knee_R']], // hips stay over the knees
     params: ['root.pitch&hip.flex', 'root.roll', 'thorax.side', 'thorax.rot', 'neck.rot', 'scapula_R.protract', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.flex', 'shoulder_R.abd'],
+  },
+  parsva_balasana_lift: {
+    support: ['wrist_L', 'hip_L|knee_L', 'hip_R|knee_R'],
+    flat: ['wrist_L'],
+    lift: ['wrist_R'],
+    above: [['hip_L', 'knee_L'], ['hip_R', 'knee_R']],
+    params: ['root.pitch&hip.flex', 'shoulder_L.flex', 'wrist_L.ext', 'shoulder_R.flex', 'elbow_R.flex'],
+  },
+  parsva_balasana_thread: {
+    support: ['wrist_L', 'hip_L|knee_L', 'hip_R|knee_R'],
+    flat: ['wrist_L'],
+    lift: ['wrist_R', 'elbow_R'],
+    balance: true,
+    above: [['hip_L', 'knee_L'], ['hip_R', 'knee_R']],
+    params: ['root.pitch&hip.flex', 'root.roll', 'thorax.side', 'shoulder_L.flex', 'shoulder_L.abd', 'wrist_L.ext', 'shoulder_R.flex', 'shoulder_R.abd', 'elbow_R.flex'],
   },
   tabletop: {
     support: ['wrist_L', 'wrist_R', 'hip_L|knee_L', 'hip_R|knee_R'],
