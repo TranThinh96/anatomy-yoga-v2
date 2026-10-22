@@ -242,7 +242,8 @@ export const ASANAS = [
       { pose: 'janu_sirsasana_knee_mid', anchor: ['hip_L', ...HANDS], move: 0.7, via: true },
       { pose: 'janu_sirsasana_knee_out', anchor: ['hip_L', ...HANDS], move: 0.7, via: true },
       { pose: 'janu_sirsasana_up', anchor: ['hip_L', ...HANDS], move: 0.9, hold: 0.6 },
-      { pose: 'janu_sirsasana', anchor: ['hip_L'], move: 2.4, hold: 2.5 },
+      { pose: 'janu_sirsasana_arms_up', anchor: ['hip_L'], move: 1.2, via: true },
+      { pose: 'janu_sirsasana', anchor: ['hip_L'], move: 2.0, hold: 2.5 },
     ],
     loop: 'pingpong',
     roles: {

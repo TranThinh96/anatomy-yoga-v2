@@ -1836,6 +1836,19 @@ export const POSES = {
     shoulder: { flex: -16, abd: 10 },
     wrist: { ext: 80 },
   },
+  // Janu Sirsasana legs, sitting tall with the arms raised overhead (inhale up, exhale fold): the
+  // hands leave the mat beside the hips before the fold, so the right arm does not sweep through the
+  // bent right thigh.
+  janu_sirsasana_arms_up: {
+    hip_L: { flex: 91 },
+    ankle_L: { dorsi: 2 },
+    hip_R: { flex: 134, abd: -93, rot: 1 },
+    knee_R: { flex: 153 },
+    ankle_R: { dorsi: 0 },
+    lumbar: { flex: -4 },
+    shoulder: { flex: 170, abd: -6 },
+    scapula: { elev: 8 },
+  },
   // A third and two thirds of the way from ardha_matsyendrasana_knee_up to janu_sirsasana_up: the right foot sliding along the
   // mat toward the left thigh while the knee lowers out to the side. Interpolating straight between
   // the two swept the foot under the mat and lifted the body 10 cm.
@@ -3939,4 +3952,5 @@ export const POSE_FIT = {
     at: [['wrist_L', 'pelvis', [0.2, 0.6, 0.1]]], // the left hand high above the left hip
     params: ['shoulder_L.flex', 'shoulder_L.abd', 'shoulder_L.rot', 'elbow_L.flex'],
   },
+  janu_sirsasana_arms_up: { support: ['pelvis', 'ankle_L', 'hip_R|knee_R'], params: ['ankle_L.dorsi'] },
 };
