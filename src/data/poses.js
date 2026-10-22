@@ -623,6 +623,22 @@ export const POSES = {
     shoulder_L: { abd: 167, rot: -90, flex: -7 },
     shoulder_R: { abd: 39, rot: -60, flex: 4 },
   },
+  // On the way into Extended side angle: Warrior II with the lower (left) elbow already bent, so the
+  // forearm is folded before the trunk tips over the thigh.
+  utthita_parsvakonasana_elbow: {
+    root: { yaw: 33 },
+    hip_L: { flex: 78, abd: 2, rot: 46 },
+    knee_L: { flex: 86 },
+    ankle_L: { dorsi: 7 },
+    hip_R: { flex: -24, abd: 51, rot: 10 },
+    ankle_R: { dorsi: 5 },
+    lumbar: { rot: -12 },
+    thorax: { rot: -20 },
+    neck: { rot: 44 },
+    shoulder: { abd: 90, rot: -90 },
+    shoulder_L: { abd: 90, flex: -29, rot: -92 },
+    elbow_L: { flex: 120 },
+  },
   // Extended side angle, forearm on the front thigh: Warrior II legs, the trunk tipped over the
   // front (left) thigh, top arm reaching over the ear on the line of the back leg, gaze up.
   utthita_parsvakonasana: {

@@ -1038,7 +1038,8 @@ export const ASANAS = [
     steps: [
       { pose: 'tadasana' },
       { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2 },
-      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 2.0 },
+      { pose: 'utthita_parsvakonasana_elbow', anchor: FEET, move: 0.8, via: true },
+      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 1.6 },
     ],
     loop: 'pingpong',
     variants: [
@@ -3515,8 +3516,10 @@ export const ASANAS = [
       { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2, hold: 1.2, label: 'Bước chân rộng – Chiến binh II', roles: 'virabhadrasana_2' },
       { pose: 'viparita_virabhadrasana', anchor: FEET, move: 1.8, hold: 1.2, label: 'Hít vào – Chiến binh đảo ngược', roles: 'viparita_virabhadrasana' },
       { pose: 'virabhadrasana_2', anchor: FEET, move: 1.8, hold: 0.6, label: 'Thở ra – về Chiến binh II', roles: 'virabhadrasana_2' },
-      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 2.0, hold: 1.2, label: 'Góc nghiêng mở rộng', roles: 'utthita_parsvakonasana' },
-      { pose: 'virabhadrasana_2', anchor: FEET, move: 2.0, hold: 0.6, label: 'Hít vào – về Chiến binh II', roles: 'virabhadrasana_2' },
+      { pose: 'utthita_parsvakonasana_elbow', anchor: FEET, move: 0.8, via: true, label: 'Góc nghiêng mở rộng' },
+      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 1.4, hold: 1.2, label: 'Góc nghiêng mở rộng', roles: 'utthita_parsvakonasana' },
+      { pose: 'utthita_parsvakonasana_elbow', anchor: FEET, move: 1.4, via: true, label: 'Hít vào – về Chiến binh II' },
+      { pose: 'virabhadrasana_2', anchor: FEET, move: 0.8, hold: 0.6, label: 'Hít vào – về Chiến binh II', roles: 'virabhadrasana_2' },
       { pose: 'tadasana', anchor: ['ankle_R'], move: 2.2, hold: 0.8, label: 'Bước chân về – Tadasana', roles: 'tadasana' },
     ],
     loop: 'cycle',
