@@ -3315,7 +3315,7 @@ export const ASANAS = [
       'Giữ 3–5 hơi thở, về giữa rồi đổi bên.',
     ],
     benefits: ['Xoay cột sống nhẹ nhàng, thả lỏng lưng trên', 'Hợp cho khởi động hoặc cuối buổi'],
-    cautions: ['Thoát vị đĩa đệm, loãng xương: xoay nhẹ; hỏi ý kiến bác sĩ.', 'Mô hình: tay đặt trên gối không truyền lực (chưa có tiếp xúc tay – chân).'],
+    cautions: ['Thoát vị đĩa đệm, loãng xương: xoay nhẹ; hỏi ý kiến bác sĩ.', 'Mô hình: tay phải nắm mặt ngoài gối trái truyền lực (~20 N – trong lời giải ít tốn sức nhất, gối đỡ sức nặng cánh tay chứ không kéo xoay thêm).'],
   },
   {
     id: 'baddha_konasana',
