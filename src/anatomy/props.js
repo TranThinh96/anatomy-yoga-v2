@@ -16,6 +16,9 @@ import * as THREE from 'three';
 //   { type: 'touch', a: 'knee_L', b: 'shoulder_L', at? } body-to-body contact: segment a rests on b
 //                                                         (a push between them, no friction), see Physics;
 //                                                         at = where along a (0 proximal … 1 distal)
+//   { type: 'grip', a: 'wrist_L', b: 'ankle_L' }        a hand (a) holds a body part (b): any force between
+//                                                         them (pull, push, sideways – a closed chain),
+//                                                         active while they are within reach, see Physics
 // yaw (degrees) turns a prop about the vertical axis; at yaw 0 its long side runs along X.
 export const PROP_SIZES = {
   // block 23 × 15 × 7.5 cm, standing on its broad face (flat), long edge (side) or end
@@ -37,6 +40,7 @@ const SINK = 0.04;
 function resolve(prop, offset = { x: 0, z: 0 }) {
   if (prop.type === 'strap') return { ...prop, kind: 'strap' };
   if (prop.type === 'touch') return { ...prop, kind: 'touch' };
+  if (prop.type === 'grip') return { ...prop, kind: 'grip' };
   const yaw = ((prop.yaw || 0) * Math.PI) / 180;
   const c = new THREE.Vector3(prop.at[0] + offset.x, prop.y || 0, prop.at[1] + offset.z);
   const u = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)); // long axis
@@ -80,6 +84,11 @@ export class Env {
   /** Body-to-body contacts (pushes between two segments), not surfaces. */
   get touches() {
     return this.props.filter((p) => p.kind === 'touch');
+  }
+
+  /** Hands holding a body part (a free force between the palm and that segment), not surfaces. */
+  get grips() {
+    return this.props.filter((p) => p.kind === 'grip');
   }
 
   /** The straps (tensions between body points), not surfaces. */
@@ -217,7 +226,7 @@ export function propMeshes(env) {
   const webbing = new THREE.MeshStandardMaterial({ color: 0x4f9a7a, roughness: 0.8 });
   const steel = new THREE.MeshStandardMaterial({ color: 0x6f7780, roughness: 0.5, metalness: 0.4 });
   for (const p of env.props) {
-    if (p.kind === 'touch') continue;
+    if (p.kind === 'touch' || p.kind === 'grip') continue;
     if (p.kind === 'strap') {
       // one strand per hand, a unit-length band stretched and placed by updateStraps
       p.hands.forEach((_, i) => {

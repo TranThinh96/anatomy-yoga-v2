@@ -2632,6 +2632,45 @@ export const POSE_PROPS = {
   pincha_mayurasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
   viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
   viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
+  // hands laced behind the right thigh
+  supta_kapotasana: [{ type: 'grip', a: 'wrist_L', b: 'hip_R' }, { type: 'grip', a: 'wrist_R', b: 'hip_R' }],
+  // hands holding the feet
+  baddha_konasana: [{ type: 'grip', a: 'wrist_L', b: 'ankle_L' }, { type: 'grip', a: 'wrist_R', b: 'ankle_R' }],
+  // hands resting on the knees, each shin resting on the opposite foot
+  sukhasana: [
+    { type: 'touch', a: 'wrist_L', b: 'hip_L' },
+    { type: 'touch', a: 'wrist_R', b: 'hip_R' },
+    { type: 'touch', a: 'knee_L', b: 'ankle_R' },
+    { type: 'touch', a: 'knee_R', b: 'ankle_L' },
+  ],
+  // hands resting on the knees
+  siddhasana: [{ type: 'touch', a: 'wrist_L', b: 'hip_L' }, { type: 'touch', a: 'wrist_R', b: 'hip_R' }],
+  // feet resting on the thighs, hands on the knees
+  padmasana: [
+    { type: 'touch', a: 'ankle_L', b: 'hip_R' },
+    { type: 'touch', a: 'ankle_R', b: 'hip_L' },
+    { type: 'touch', a: 'wrist_L', b: 'hip_L' },
+    { type: 'touch', a: 'wrist_R', b: 'hip_R' },
+  ],
+  // left foot on the right thigh, left shin on the right foot, hands on the knees
+  ardha_padmasana: [
+    { type: 'touch', a: 'ankle_L', b: 'hip_R' },
+    { type: 'touch', a: 'knee_L', b: 'ankle_R' },
+    { type: 'touch', a: 'wrist_L', b: 'hip_L' },
+    { type: 'touch', a: 'wrist_R', b: 'hip_R' },
+  ],
+  // left ankle on the right knee, left shin on the right ankle, left hand on the left knee
+  agnistambhasana: [
+    { type: 'touch', a: 'ankle_L', b: 'knee_R' },
+    { type: 'touch', a: 'knee_L', b: 'ankle_R' },
+    { type: 'touch', a: 'wrist_L', b: 'hip_L' },
+  ],
+  // right thigh resting on the left
+  gomukhasana: [{ type: 'touch', a: 'hip_R', b: 'hip_L' }],
+  // left thigh resting on the right, left foot hooked behind the right calf
+  garudasana: [{ type: 'touch', a: 'hip_L', b: 'hip_R' }, { type: 'touch', a: 'ankle_L', b: 'knee_R' }],
+  // left hand holding the inner left shin
+  parivrtta_janu_sirsasana: [{ type: 'grip', a: 'wrist_L', b: 'knee_L' }],
 };
 
 // Floor-contact constraints used by tools/fit-poses.mjs: `support` lists the

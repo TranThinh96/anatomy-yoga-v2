@@ -112,6 +112,10 @@ Data files:
   endpoints, rough radii CAPSULE_R in physics.js), active only while the capsules are within 3 cm; like a
   strap it is internal (joint moments only) and chosen with the floor forces. Use `at` for neighbouring
   segments (thigh on calf), whose axes meet at the joint.
+  A hand holding a body part (`{ type: 'grip', a: hand, b: segment }`: hands on the feet in Baddha Konasana,
+  behind the thigh in reclined pigeon, on the shin) carries a force in any direction (three free ties along
+  the world axes at the contact point), active while the capsules are within 3 cm; internal, chosen with the
+  floor forces like a touch. Nothing limits its size (no grip-strength source) – check the card's numbers.
   A wall is frictionless (no source for skin / clothing on a wall – do not add a coefficient without one),
   and a body leaning on it may have its centre of mass outside the feet (`r.leaning`, wall chair).
 - The model is one 1.64 m male scan with the right side mirrored; the muscle model has no passive

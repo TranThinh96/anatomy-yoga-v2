@@ -194,6 +194,10 @@ viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }], // normal p
   lists it. Place a so it lies on the side of b the push comes from (the knees *outside and above* the
   upper arms in Crow – with the thigh inside the arm the push would pull the leg down and comes out 0).
   Without it, limbs resting on limbs carry no force: say so in the cautions.
+- A hand holding a body part: `{ type: 'grip', a: 'wrist_L', b: 'ankle_L' }` – a force in any direction
+  (pull, push, sideways) between the palm and that segment, only while their capsules are within 3 cm (a
+  hand *resting* on a knee is a `touch` with the hand as a). Measure the gap first; a grip whose force comes
+  out ~0 N adds nothing – leave it out rather than list a 0 N row in the card.
 - A chair: `{ type: 'chair', at: [x, z], yaw }` – only the seat (42 × 40 cm, top 45 cm high) is a surface;
   the backrest stands on the seat's +v edge (yaw 0: the far side in +Z). The back-of-calf points lean on
   walls only, so lower legs on a chair rest on the heels (`viparita_karani_chair`).

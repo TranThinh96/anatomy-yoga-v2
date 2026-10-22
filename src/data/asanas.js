@@ -225,7 +225,7 @@ export const ASANAS = [
       'Đau vai: tay trên đặt sau đầu thay vì vươn qua tai.',
       'Gân kheo ngắn: chùng gối chân duỗi, ngồi trên chăn gấp.',
       'Thoát vị đĩa đệm: nghiêng và xoay nhẹ.',
-      'Mô hình chưa có lực tiếp xúc giữa tay và ống chân hay bàn chân và đùi: chỉ đặt sát, không truyền lực.',
+      'Mô hình: tay trái nắm ống chân trái truyền lực (đỡ một phần thân đang nghiêng – thắt lưng nhẹ hơn ~30 %); lòng bàn chân phải áp đùi trái chưa truyền lực.',
     ],
   },
   {
@@ -525,7 +525,7 @@ export const ASANAS = [
       'Đau gối: không móc bàn chân sau bắp chân – để mũi chân chạm sàn.',
       'Đau vai: hai tay ôm vai đối diện thay vì quấn.',
       'Mất thăng bằng: tựa lưng vào tường.',
-      'Mô hình: dạng tĩnh; chân quấn chân và tay quấn tay chỉ đặt sát, không truyền lực. Xương bả vai đưa ra trước 15° (cơ trám dài thêm ~23 %); mô hình chưa có động tác xoay lên / xoay xuống của xương bả vai.',
+      'Mô hình: dạng tĩnh; đùi trái tì lên đùi phải và bàn chân trái móc sau bắp chân phải là lực ép (không tính ma sát); tay quấn tay chỉ đặt sát, không truyền lực. Xương bả vai đưa ra trước 15° (cơ trám dài thêm ~23 %); mô hình chưa có động tác xoay lên / xoay xuống của xương bả vai.',
     ],
   },
   {
@@ -2885,7 +2885,7 @@ export const ASANAS = [
     benefits: ['Kéo giãn cơ mông, cơ hình lê mà lưng được đỡ – thay cho Bồ câu khi gối nhạy cảm', 'Thả lỏng hông và lưng dưới'],
     cautions: [
       'Đau gối trái: gập mu bàn chân, giữ chân phải trên sàn; dừng nếu đau ở gối thay vì căng ở mông.',
-      'Mô hình: cổ chân trên đùi và tay sau đùi chưa truyền lực (chưa có tiếp xúc thân – thân), nên chân phải được giữ bởi cơ gập háng.',
+      'Mô hình: hai tay nắm sau đùi phải giữ một phần sức nặng của chân (lực tay – đùi ~10–20 N), nên cơ gập háng phải đỡ ít hơn; cổ chân trái gác trên đùi phải không cần lực trong lời giải này.',
     ],
   },
   {
@@ -3060,7 +3060,7 @@ export const ASANAS = [
     benefits: ['Tư thế ngồi dễ cho thở và thiền', 'Mở háng nhẹ nhàng'],
     cautions: [
       'Đau gối: ngồi cao hơn, cẳng chân bắt chéo xa hơn (bàn chân dưới gối).',
-      'Mô hình: bàn chân nằm sát cẳng chân bên kia nhưng không truyền lực (chưa có tiếp xúc chân – chân); tay đặt trên gối không truyền lực.',
+      'Mô hình: mỗi cẳng chân tì lên bàn chân bên kia và tay đặt trên gối là lực ép (không tính ma sát), chọn cùng lực sàn sao cho các khớp tốn ít sức nhất.',
     ],
   },
   {
@@ -3093,7 +3093,7 @@ export const ASANAS = [
     cautions: [
       'Đau gối: duỗi chân dưới thẳng ra trước hoặc ngồi xếp bằng.',
       'Chấn thương vai, đau khớp cùng vai – đòn: dùng dây, không cố cho hai tay chạm nhau.',
-      'Mô hình chưa có tiếp xúc giữa các phần cơ thể: gối chồng gối, hai bàn tay chỉ đặt gần nhau, không truyền lực. Đai vai mô hình cứng nên tầm vai lấy từ khớp vai – cánh tay.',
+      'Mô hình: đùi phải tì lên đùi trái là lực ép (~100 N, gần bằng sức nặng chân phải); hai bàn tay chỉ đặt gần nhau, không truyền lực. Đai vai mô hình cứng nên tầm vai lấy từ khớp vai – cánh tay.',
     ],
   },
   {
@@ -3125,7 +3125,7 @@ export const ASANAS = [
     cautions: [
       'Đau gối, đặc biệt mặt trong gối: dừng ngay – háng chưa đủ xoay ngoài nên gối bị xoắn. Ngồi xếp bằng thay thế.',
       'Không dùng tay ép gối xuống sàn.',
-      'Mô hình chưa có tiếp xúc giữa các phần cơ thể: bàn chân trái chỉ đặt sát trên đùi phải, không truyền lực; gối trái cách sàn ~12 cm (thường gặp – kê chăn).',
+      'Mô hình: bàn chân trái tì trên đùi phải, cẳng chân trái tì trên bàn chân phải và tay đặt trên gối là lực ép (không tính ma sát); gối trái cách sàn ~12 cm (thường gặp – kê chăn).',
     ],
   },
   {
@@ -3157,7 +3157,7 @@ export const ASANAS = [
     cautions: [
       'Đau gối (nhất là mặt trong gối): dừng ngay – háng không đủ xoay ngoài nên gối bị xoắn. Ngồi Bán kiết già hoặc xếp bằng.',
       'Không dùng tay ép gối xuống sàn, không cố giữ lâu khi chân tê.',
-      'Mô hình: dạng tĩnh; bàn chân chỉ đặt sát trên đùi, không truyền lực; hai cẳng chân bắt chéo có thể chạm vào nhau trên hình.',
+      'Mô hình: dạng tĩnh; bàn chân tì trên đùi và tay đặt trên gối là lực ép (không tính ma sát); hai cẳng chân bắt chéo có thể chạm vào nhau trên hình.',
     ],
   },
   {
@@ -3258,7 +3258,7 @@ export const ASANAS = [
     cautions: [
       'Đau gối hoặc gối trên cao hơn cổ chân nhiều: kê chăn gấp / gạch dưới gối trên, hoặc ngồi xếp bằng.',
       'Đau ở gối (không phải ở mông) là dấu hiệu dừng: háng chưa đủ xoay ngoài, lực dồn lên gối.',
-      'Mô hình chưa có tiếp xúc giữa các phần cơ thể: cẳng chân trên chỉ đặt sát cẳng chân dưới, không truyền lực; tay đặt trên gối và bàn chân không truyền lực.',
+      'Mô hình: cổ chân trái tì trên gối phải, cẳng chân trái tì trên cổ chân phải và tay trái đặt trên gối trái là lực ép (không tính ma sát); tay phải đặt trên bàn chân chưa truyền lực.',
     ],
   },
   {
@@ -3348,7 +3348,7 @@ export const ASANAS = [
     benefits: ['Kéo giãn cơ khép (đùi trong), mở háng', 'Tư thế ngồi thoải mái cho thở'],
     cautions: [
       'Đau gối, háng: đặt bàn chân xa chậu hơn, kê đỡ dưới đùi.',
-      'Mô hình: cổ chân không có chuyển động lật trong nên hai lòng bàn chân chỉ áp một phần; tay nắm bàn chân và chân áp chân không truyền lực (chưa có tiếp xúc thân – thân).',
+      'Mô hình: cổ chân không có chuyển động lật trong nên hai lòng bàn chân chỉ áp một phần; tay nắm bàn chân truyền lực (tay kéo bàn chân ~35 N mỗi bên, lưng dưới nhẹ hơn); hai lòng bàn chân áp nhau chưa truyền lực.',
     ],
   },
   {
@@ -3379,7 +3379,7 @@ export const ASANAS = [
     benefits: ['Tư thế ngồi vững cho thở và thiền', 'Mở háng, kéo giãn cơ khép'],
     cautions: [
       'Đau gối, mắt cá: ngồi trên chăn cao hơn, kê đỡ dưới gối; đổi sang ngồi xếp bằng đơn giản.',
-      'Mô hình: hai bàn chân chưa tì lên nhau (chưa có tiếp xúc chân – chân), tay đặt trên gối không truyền lực; gối cách sàn ~5 cm như ở người hông chưa mở.',
+      'Mô hình: hai bàn chân chưa tì lên nhau (chưa có tiếp xúc chân – chân), tay đặt trên gối là lực ép (không tính ma sát); gối cách sàn ~5 cm như ở người hông chưa mở.',
     ],
   },
   {
