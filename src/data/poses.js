@@ -1478,7 +1478,10 @@ export const POSES = {
     lumbar: { rot: 10 },
     thorax: { rot: 35 },
     neck: { rot: 30 },
-    shoulder: { abd: 28, flex: 38, rot: -100 },
+    // arms out in a T on the mat (the left one angled down to the mat from the lifted left shoulder)
+    shoulder: { abd: 90 },
+    shoulder_L: { abd: 67, flex: -40, rot: -25 },
+    shoulder_R: { flex: 12, rot: 40 },
   },
   // Reclined mountain (Supta Tadasana): lying on the back, arms overhead on the mat, palms facing
   // each other, legs together and long, feet flexed (heels pressing away).
@@ -3603,7 +3606,8 @@ export const POSE_FIT = {
     // the left shoulder blade lifts a few cm: the spine cannot turn back the whole pelvis turn
     support: ['scapula_R', 'hip_R', 'wrist_L', 'wrist_R'],
     onProp: ['hip_R'], // the outer right thigh on the bolster
-    params: ['root.pitch', 'shoulder.abd', 'shoulder.flex', 'shoulder.rot', 'hip.flex', 'knee.flex'],
+    dir: [['shoulder_L', [0, -1, 0], [0.95, -0.3, 0]], ['shoulder_R', [0, -1, 0], [-1, 0, 0]]], // arms out in a T on the mat
+    params: ['shoulder_L.abd', 'shoulder_L.flex', 'shoulder_L.rot', 'shoulder_R.abd', 'shoulder_R.flex', 'shoulder_R.rot', 'elbow_L.flex'],
   },
   ustrasana_blocks: {
     support: ['hip_L|knee_L', 'hip_R|knee_R', 'ankle_L', 'ankle_R', 'wrist_L', 'wrist_R'],

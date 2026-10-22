@@ -2732,7 +2732,11 @@ export const ASANAS = [
       'Thở chậm vào sườn trái; đổi bên.',
     ],
     benefits: ['Xoay cột sống nhẹ nhàng, thả lỏng lưng', 'Kéo giãn cơ chéo bụng, cơ mông, ngực'],
-    cautions: ['Đau thắt lưng, thoát vị đĩa đệm: xoay ít, kê đỡ gối cao; hỏi ý kiến bác sĩ.', 'Thai kỳ: tránh xoay sâu ở bụng.'],
+    cautions: [
+      'Đau thắt lưng, thoát vị đĩa đệm: xoay ít, kê đỡ gối cao; hỏi ý kiến bác sĩ.',
+      'Thai kỳ: tránh xoay sâu ở bụng.',
+      'Mô hình: cột sống xoay tối đa ~45° nên khi khung chậu xoay hết, bả vai trái nhấc khỏi thảm và lưng trên chỉ tựa ở bả vai phải – tải cột sống và háng trên mô hình cao hơn ở người tập thật (lưng nằm trên thảm).',
+    ],
   },
   {
     id: 'supta_padangusthasana',
