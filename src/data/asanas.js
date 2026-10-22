@@ -747,14 +747,14 @@ export const ASANAS = [
       ['lumbar_spine_joint', 'Lưng dài, không tròn'],
     ],
     cues: [
-      'Đứng chân rộng hơn hông, mũi chân xoay ra ngoài; hạ hông xuống giữa hai gối.',
+      'Từ Tadasana bước chân trái ra, xoay mũi chân phải ra ngoài: chân rộng hơn hông, mũi chân hướng ra ngoài; chắp tay trước ngực rồi hạ hông xuống giữa hai gối.',
       'Gót ấn xuống sàn – gót không chạm thì kê chăn gấp dưới gót, hoặc ngồi lên gạch.',
       'Chắp tay trước ngực, khuỷu đặt phía trong gối, nhẹ nhàng đẩy gối ra; kéo dài cột sống.',
     ],
     benefits: ['Tăng tầm vận động cổ chân, háng, gối', 'Kéo giãn bắp chân, cơ mông; mở háng'],
     cautions: [
       'Đau gối, mổ thay khớp gối: ngồi trên gạch cao, không hạ sâu.',
-      'Mô hình: cổ chân gập mu ~45° để gót chạm sàn – nhiều người không đạt, cần kê gót; khuỷu ép gối không truyền lực (chưa có tiếp xúc tay – chân). Chưa có chuyển động vào tư thế.',
+      'Mô hình: cổ chân gập mu ~45° để gót chạm sàn – nhiều người không đạt, cần kê gót; khuỷu ép gối không truyền lực (chưa có tiếp xúc tay – chân). Chân phải trượt / xoay trên sàn (~9 cm) thay vì nhấc lên.',
     ],
   },
   {
