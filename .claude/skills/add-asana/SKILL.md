@@ -62,6 +62,8 @@ my_pose: {
   balance: true,                         // COM ≥ 3 cm inside the base of support (kneeling, one leg,
                                          // folds with the hands down – hands don't auto-balance)
   lift: ['ankle_L', 'ankle_R'],          // keep these ≥ 4 cm off the floor / props (arm balances)
+  touch: [['hip_L', 'shoulder_L']],      // the two segments' capsules touch (gap −0.5…1 cm): thigh on the
+                                         // upper arm, hand on the knee – so a POSE_PROPS touch / grip is active
 },
 ```
 
