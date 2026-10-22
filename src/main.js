@@ -905,7 +905,7 @@ function renderPhysicsLive() {
         (g) =>
           `<div class="bar-row"><span>${esc(g.label)}${g.shear >= 3 ? ` <small class="shear" title="Lực ngang (ma sát) tính theo % trọng lượng">↔ ${Math.round(g.shear)}%</small>` : ''}</span><span class="bar"><i style="width:${Math.min(g.pct, 100)}%;background:var(--stabilize)"></i></span><b>${Math.round(g.pct)}%</b></div>`,
       )
-      .join('') + strapRows(r) + touchRows(r);
+      .join('') + strapRows(r) + touchRows(r) + gripRows(r);
   $('#ph-loads').innerHTML = r.joints
     .filter((j) => j.total >= 3 && j.demands.length)
     .slice(0, 8)
@@ -1010,14 +1010,29 @@ function touchRows(r) {
     .join('');
 }
 
+/** Force of each hand's grip on a body part (any direction), under the support rows. */
+function gripRows(r) {
+  return (r.grips || [])
+    .filter((g) => g.T > 0.5)
+    .map((g) => {
+      const pct = (g.T / r.W) * 100;
+      return `<div class="bar-row" title="Lực giữa bàn tay và phần cơ thể nó nắm (kéo, đẩy hay sang bên)"><span>${esc(segVi(g.segA))} nắm ${esc(segVi(g.segB))}</span><span class="bar"><i style="width:${Math.min(pct, 100)}%;background:#b5835a"></i></span><b>${Math.round(g.T)} N</b></div>`;
+    })
+    .join('');
+}
+
 /** The props of the current sequence ("2 gạch tập, tường"), with the model's limits. */
 function propsNote() {
   if (anim.env.empty) return '';
   const count = new Map();
-  for (const p of anim.env.props) if (p.type !== 'touch') count.set(p.type, (count.get(p.type) || 0) + 1);
-  const touch = anim.env.touches.length
-    ? '<p class="hint"><b>Tiếp xúc thân – thân:</b> phần cơ thể tì lên nhau (vd. gối lên cánh tay) được tính là một lực ép vuông góc, chọn cùng lực sàn sao cho các khớp tốn ít sức nhất; không tính ma sát giữa da và da, mô mềm coi như cứng.</p>'
-    : '';
+  for (const p of anim.env.props) if (p.type !== 'touch' && p.type !== 'grip') count.set(p.type, (count.get(p.type) || 0) + 1);
+  const touch =
+    (anim.env.touches.length
+      ? '<p class="hint"><b>Tiếp xúc thân – thân:</b> phần cơ thể tì lên nhau (vd. gối lên cánh tay) được tính là một lực ép vuông góc, chọn cùng lực sàn sao cho các khớp tốn ít sức nhất; không tính ma sát giữa da và da, mô mềm coi như cứng.</p>'
+      : '') +
+    (anim.env.grips.length
+      ? '<p class="hint"><b>Tay nắm:</b> bàn tay nắm một phần cơ thể (bàn chân, mặt sau đùi) truyền một lực theo mọi hướng – kéo, đẩy hay sang bên – chọn cùng lực sàn sao cho các khớp tốn ít sức nhất; mô hình không giới hạn sức nắm của bàn tay.</p>'
+      : '');
   if (!count.size) return touch;
   const list = [...count].map(([t, n]) => (n > 1 ? `${n} ${PROP_NAMES[t]}` : PROP_NAMES[t])).join(', ');
   const wall = count.has('wall') ? ' Tường chỉ đẩy vuông góc với mặt tường (không tính ma sát giữa lưng / chân và tường).' : '';

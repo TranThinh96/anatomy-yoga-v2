@@ -276,8 +276,8 @@ export class Animator {
       for (const k of from) {
         for (const p of POSE_PROPS[k.pose] || []) {
           // a strap is held by the body, not placed on the floor
-          if (p.type === 'strap' || p.type === 'touch') {
-            const key = p.type === 'strap' ? `strap|${p.hands.join(',')}|${p.foot}` : `touch|${p.a}|${p.b}`;
+          if (p.type === 'strap' || p.type === 'touch' || p.type === 'grip') {
+            const key = p.type === 'strap' ? `strap|${p.hands.join(',')}|${p.foot}` : `${p.type}|${p.a}|${p.b}`;
             if (!keys.has(key)) props.push(p);
             keys.add(key);
             continue;

@@ -63,6 +63,9 @@ Trong chế độ Asana, mỗi tư thế được phân tích cân bằng tĩnh 
   trong Con quạ) là một lực ép vuông góc giữa hai phần cơ thể, chọn cùng lực sàn như dây tập: mỗi đoạn cơ thể
   là một ống tròn quanh trục của nó (bán kính ước lượng trên mô hình, không từ nguồn), không tính ma sát da – da,
   mô mềm coi như cứng. Tư thế em bé: tải gối 37 → 13 N·m; Con quạ: mỗi gối ép ~150 N lên cánh tay.
+  **Tay nắm** một phần cơ thể (tay nắm bàn chân trong Góc cố định, tay đan sau đùi trong Bồ câu nằm ngửa, tay
+  giữ ống chân khi nghiêng người) truyền một lực theo mọi hướng – kéo, đẩy hay sang bên – cũng chọn cùng lực sàn;
+  mô hình không giới hạn sức nắm của bàn tay. Góc cố định: tay kéo mỗi bàn chân ~35 N, mô-men thắt lưng 16 → 4 N·m.
 - Nhập **cân nặng** và **tỷ lệ cơ thể nam/nữ**; bật/tắt **ma sát với thảm**.
 
 Phương pháp:

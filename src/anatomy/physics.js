@@ -78,6 +78,10 @@ const TOUCH = 0.02; // a contact closer than 2 cm to the floor (or a prop) count
 // within TOUCH_GAP of touching.
 const CAPSULE_R = { hip: 0.07, knee: 0.05, ankle: 0.035, shoulder: 0.045, elbow: 0.035, wrist: 0.025, pelvis: 0.11, lumbar: 0.1, thorax: 0.11, head: 0.08 };
 const TOUCH_GAP = 0.03;
+// A hand holds a segment (POSE_PROPS { type: 'grip', a: hand, b: segment }) while the palm's capsule
+// is within GRIP_GAP of that segment's capsule; the grip carries a force in any direction.
+const GRIP_GAP = 0.03;
+const AXES = [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1)];
 const UP = new THREE.Vector3(0, 1, 0);
 // relative willingness of each body part to carry weight (see solveSupport / solveContacts)
 const SUPPORT_WEIGHT = {
@@ -278,7 +282,8 @@ function contactBasis(n) {
  *   points: [{p, w}], rows: [{J, sub: Set(pointIndex), segs: Set(segment), grav: Vector3, c}]
  * `ties` are straps: a tension T ≥ 0 between two body points, a (on segment segA) pulled toward b
  * (on segB) and b toward a – or, with a unit normal `u`, body-to-body contacts: a push T ≥ 0 on a
- * along u and on b along −u (no friction). Internal to the body, they do not enter the equilibrium
+ * along u and on b along −u (no friction). A `free` tie (a hand's grip: three ties along the world axes) has
+ * a T of either sign, so together they carry a force in any direction. Internal to the body, they do not enter the equilibrium
  * of the whole body, only the joint moments, and they are chosen with the floor forces (least joint
  * effort).
  * Returns [[Fx, Fy, Fz]] per point (with .tension = [T] per tie), or null if no pushing forces can
@@ -412,8 +417,8 @@ export function solveContacts(points, com, W, rows, friction = true, ties = []) 
       active = active.filter((i) => i !== worst);
       continue;
     }
-    // a strap only pulls: drop one that would have to push and re-solve
-    const pushing = tieIdx.findIndex((_, q) => x[nc + q] < -1e-6 * W);
+    // a strap only pulls: drop one that would have to push and re-solve (a grip may do either)
+    const pushing = tieIdx.findIndex((ti, q) => !ties[ti].free && x[nc + q] < -1e-6 * W);
     if (pushing >= 0) {
       tieOn = tieOn.map((on, i) => on && i !== tieIdx[pushing]);
       continue;
@@ -452,11 +457,22 @@ export function solveContacts(points, com, W, rows, friction = true, ties = []) 
     });
     out.tension = ties.map((_, i) => {
       const q = tieIdx.indexOf(i);
-      return q >= 0 ? Math.max(x[nc + q], 0) : 0;
+      return q >= 0 ? (ties[i].free ? x[nc + q] : Math.max(x[nc + q], 0)) : 0;
     });
     return out;
   }
   return null;
+}
+
+/** The force of each hand's grip (sum of its three axis ties): [{ segA, segB, F (on the hand), T = |F| }]. */
+function gripForces(ties) {
+  const by = new Map();
+  for (const t of ties) {
+    if (!t.grip) continue;
+    if (!by.has(t.grip)) by.set(t.grip, { segA: t.segA, segB: t.segB, p: t.a, F: new THREE.Vector3() });
+    by.get(t.grip).F.add(t.F);
+  }
+  return [...by.values()].map((g) => ({ ...g, T: g.F.length() }));
 }
 
 export class Physics {
@@ -569,6 +585,27 @@ export class Physics {
     return out;
   }
 
+  /**
+   * Hands holding a body part (env grips whose capsules are within GRIP_GAP): three free ties per
+   * grip, along the world axes, at the contact point – [{ a, b, segA, segB, u, free, grip }].
+   */
+  grips() {
+    const out = [];
+    for (const t of this.rig.env.grips || []) {
+      const A = this.capsule[t.a];
+      const B = this.capsule[t.b];
+      if (!A || !B) continue;
+      const w = (seg, v) => this.rig.worldPoint(seg, v, new THREE.Vector3());
+      const [pa, pb] = closestPoints(w(t.a, A.a), w(t.a, A.b), w(t.b, B.a), w(t.b, B.b));
+      const d = pa.distanceTo(pb);
+      if (d - A.r - B.r > GRIP_GAP) continue;
+      // the contact point: halfway between the two surfaces along the line of centres
+      const p = d > 1e-6 ? pb.clone().addScaledVector(pa.clone().sub(pb), (d - A.r + B.r) / (2 * d)) : pa.clone();
+      for (const u of AXES) out.push({ a: p, b: p.clone(), segA: t.a, segB: t.b, u, free: true, grip: `${t.a}|${t.b}` });
+    }
+    return out;
+  }
+
   /** Full static analysis of the current rig pose. */
   compute() {
     const rig = this.rig;
@@ -602,6 +639,8 @@ export class Physics {
     for (const s of rig.env.straps || []) for (const st of strapStrands(rig, s)) ties.push({ a: st.a, b: st.b, segA: st.hand, segB: s.foot });
     // body-to-body contacts (a knee on the upper arm, a foot on the thigh): pushes, chosen the same way
     ties.push(...this.touches());
+    // hands holding a body part (a foot, the back of a thigh): a force in any direction
+    ties.push(...this.grips());
     // floor forces: equilibrium with the least joint effort; if the centre of mass is not
     // over the supports (between two poses) fall back to vertical forces near the COM
     // over the base of support – or held by a wall even when it is not (sitting back against it)
@@ -711,7 +750,7 @@ export class Physics {
       });
     }
     joints.sort((a, b) => b.total - a.total);
-    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos, straps: ties.filter((t) => !t.touch), touches: ties.filter((t) => t.touch) };
+    return { W, com, contacts, hull, margin, stable: margin > 0 || (leaning && !!F3), leaning: leaning && !!F3, support, joints, moments, segPos, straps: ties.filter((t) => !t.touch && !t.grip), touches: ties.filter((t) => t.touch), grips: gripForces(ties) };
   }
 
   /**

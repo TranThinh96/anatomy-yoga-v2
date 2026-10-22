@@ -208,7 +208,7 @@ Ký hiệu trong **Ghi chú**:
 
 | ✓ | Việc | Mở khoá | Ghi chú |
 |---|---|---|---|
-| ✅ | Tiếp xúc thân – thân trong vật lý (tay–chân, gối–cánh tay, chân–đùi) | mọi tư thế 🤝 (≈ 30) | đã có: `{ type: 'touch', a, b, at? }` trong POSE_PROPS – lực ép không ma sát giữa hai đoạn (Con quạ, Em bé, Cái cây). Chưa dùng cho tay nắm chân (Paschimottanasana): cần lực kéo, không phải ép |
+| ✅ | Tiếp xúc thân – thân trong vật lý (tay–chân, gối–cánh tay, chân–đùi) | mọi tư thế 🤝 (≈ 30) | đã có: `{ type: 'touch', a, b, at? }` trong POSE_PROPS – lực ép không ma sát giữa hai đoạn (Con quạ, Em bé, Cái cây). Tay nắm một phần cơ thể: `{ type: 'grip', a, b }` – lực theo mọi hướng (Baddha Konasana, Bồ câu nằm ngửa, Vặn mình chạm gối) |
 | ✅ | Đạo cụ **dây** (strap) | Supta Padangusthasana, Dhanurasana, Natarajasana, Gomukhasana… | thêm loại prop mới; lực kéo dây cần mô hình riêng |
 | ✅ | Đạo cụ **ghế** | chân gác ghế, Halasana có ghế, tư thế ngồi ghế | chỉ mặt ghế là bề mặt đỡ; bắp chân chưa tựa được lên đạo cụ (điểm tiếp xúc bắp chân chỉ dùng cho tường) |
 | ✅ | Nhóm mới trong `CATEGORIES`: `Thăng bằng tay`, `Đảo ngược` | lọc danh sách gọn hơn | Tấm ván nghiêng → Thăng bằng tay, Gác chân lên tường → Đảo ngược |
