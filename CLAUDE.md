@@ -104,6 +104,8 @@ Data files:
   the others meet the floor only.
   A strap (`{ type: 'strap', hands: [...], foot }`) is not a surface: a tension T ≥ 0 between body points,
   internal to the body (joint moments only), chosen with the floor forces by solveContacts.
+  A bolster may be tilted (`tilt`: degrees, its +long-axis end raised – one end propped on a block,
+  Supta Virasana); its other end stays at `y`.
   A chair (`{ type: 'chair', at, yaw }`) is a surface only at its seat (45 cm); the calf points rest on
   walls only, so legs on a chair rest on the heels.
   Contacts with `only: 'wall'` (back of the calf) lean on walls but never rest on the floor.

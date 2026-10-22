@@ -15,14 +15,14 @@ Cập nhật cột **Trạng thái** mỗi khi bắt đầu / xong một tư th�
 | Nhóm | Đã có | Cần làm | Tổng |
 |---|---:|---:|---:|
 | Đứng | 26 | 0 | 26 |
-| Gập người | 7 | 1 | 8 |
-| Ngửa sau | 15 | 2 | 17 |
-| Chống tay & thăng bằng tay | 16 | 3 | 19 |
+| Gập người | 8 | 0 | 8 |
+| Ngửa sau | 16 | 1 | 17 |
+| Chống tay & thăng bằng tay | 16 | 2 | 18 |
 | Đảo ngược | 6 | 0 | 6 |
-| Ngồi (gồm Balasana) | 21 | 0 | 21 |
+| Ngồi (gồm Balasana) | 22 | 0 | 22 |
 | Nằm (ngửa / sấp) | 14 | 0 | 14 |
 | Chuỗi động tác | 7 | 0 | 7 |
-| **Tổng** | **112** | **6** | **118** |
+| **Tổng** | **115** | **3** | **118** |
 
 (`Đã có` = 29 mục ban đầu + 13 mục Đợt 1 + 15 mục Đợt 2 + 5 tư thế dùng dây + 20 mục Đợt 4 + 7 mục P1 còn lại + 4 mục P2 cần tiếp xúc thân – thân (đặt sát, không truyền lực) + 13 mục P3. `Cần làm` có 3 mục là biến thể của asana sẵn có (`ustrasana_block`, `viparita_karani_block`, `viparita_karani_chair`); các biến thể khác ghi trong cột Ghi chú không được đếm riêng.)
 
@@ -104,7 +104,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `upavistha_konasana` | Upavistha Konasana | Gập người dang chân ngồi | Wide-Angle Seated Fold | Cơ bản | P1 | `dandasana` | biến thể tựa gối ôm / chăn gấp 🧱 |
 | ✅ | `padangusthasana` | Padangusthasana | Gập đứng nắm ngón chân cái | Big Toe Pose | Trung bình | P3 | `uttanasana` | 🤝 ngón tay móc ngón chân |
 | ✅ | `parivrtta_janu_sirsasana` | Parivrtta Janu Sirsasana | Gập chạm gối vặn mình | Revolved Head-to-Knee | Trung bình | P3 | `janu_sirsasana` | 🔁 nghiêng bên + vặn |
-| ⬜ | `kurmasana` | Kurmasana | Con rùa | Tortoise | Trung bình | P3 | `upavistha_konasana` | 🤝 cánh tay dưới đùi |
+| ✅ | `kurmasana` | Kurmasana | Con rùa | Tortoise | Trung bình | P3 | `upavistha_konasana` | 🤝 cánh tay dưới đùi |
 
 ### 2.3 Ngửa sau
 
@@ -122,7 +122,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `ustrasana_block` (biến thể) | Ustrasana | Lạc đà tay trên gạch / tay chống hông | Camel, supported | Cơ bản | P1 | `kneeling` | biến thể của `ustrasana` 🧱 |
 | ⛔ | `urdhva_dhanurasana` | Urdhva Dhanurasana | Bánh xe | Wheel | Nâng cao | P3 | `supine_knees` | đầu chạm sàn giữa chừng · tải cổ tay / vai lớn |
 | ✅ | `camatkarasana` | Camatkarasana | Wild Thing | Wild Thing | Nâng cao | P3 | `adho_mukha_svanasana` | 🔁 |
-| ⬜ | `supta_virasana` | Supta Virasana | Anh hùng nằm | Reclining Hero | Nâng cao | P3 | `virasana` | gối gập tối đa · biến thể gối ôm dưới lưng 🧱 |
+| ✅ | `supta_virasana` | Supta Virasana | Anh hùng nằm | Reclining Hero | Nâng cao | P3 | `virasana` | gối gập tối đa · biến thể gối ôm dưới lưng 🧱 |
 
 ### 2.4 Chống tay & thăng bằng tay
 
@@ -173,7 +173,7 @@ Ký hiệu trong **Ghi chú**:
 | ✅ | `ardha_padmasana` | Ardha Padmasana | Bán kiết già | Half Lotus | Trung bình | P3 | `sukhasana` | 🔁 🤝 bàn chân trên đùi · cảnh báo gối |
 | ✅ | `padmasana` | Padmasana | Kiết già (Hoa sen) | Lotus | Nâng cao | P3 | `ardha_padmasana` | 🤝 · xoay háng ngoài lớn, cảnh báo gối |
 | ✅ | `krounchasana` | Krounchasana | Con diệc | Heron | Nâng cao | P3 | `virasana` | 🔁 🤝 tay nắm chân → 🪢 dây |
-| ⬜ | `akarna_dhanurasana` | Akarna Dhanurasana | Cánh cung kéo tai | Archer Pose | Nâng cao | P3 | `dandasana` | 🔁 🤝 |
+| ✅ | `akarna_dhanurasana` | Akarna Dhanurasana | Cánh cung kéo tai | Archer Pose | Nâng cao | P3 | `dandasana` | 🔁 🤝 |
 | ✅ | `hanumanasana` | Hanumanasana | Xoạc dọc | Splits | Nâng cao | P3 | `anjaneyasana` | 🔁 · biến thể gạch dưới hông 🧱 |
 
 ### 2.7 Nằm (ngửa / sấp)
@@ -298,7 +298,10 @@ Ký hiệu trong **Ghi chú**:
 - Trồng chuối đầu (P3): dạng tĩnh, tay đan tam giác như bản chuẩn bị, đỉnh đầu chạm sàn. Bộ giải lực chia ~25 % trọng lượng lên đầu, ~52 % lên cẳng tay (cách ít tốn sức khớp nhất, không phải mục tiêu tập) – lưu ý ghi rõ. Cổ gập ~29° để đỉnh đầu (không phải trán) chạm sàn với hình học đầu của mô hình. Chưa có bản tựa tường.
 - Cái cân (P3): bản kê hai viên gạch nằm sát ngoài hông. Duỗi thẳng tay trên sàn chỉ nhấc mông ~3 cm (tay mô hình ngắn so với thân khi ngồi); trên gạch mông cách sàn ~12 cm, biên thăng bằng ~3 cm, hai tay chịu 50/50. Có bước ngồi ấn tay → nhấc.
 - Mặt dây chuyền (P3): bản kê hai viên gạch nằm cạnh gối, dạng tĩnh, cẳng chân song song (không bắt chéo). Bộ fit có thêm mục tiêu `lift` (giữ bộ phận cách sàn ≥ 4 cm) – không có nó bộ fit luôn hạ bàn chân xuống để đạt thăng bằng. Trên sàn: chỉ thăng bằng được khi chúi đầu thấp hơn hông → dùng gạch. Biên thăng bằng ~3 cm, bàn chân cách sàn ~4 cm.
-- Đã thử, chưa đạt: Cánh cung kéo tai (bộ fit gù lưng ~36° để bàn chân tới tai, chân phải rối), Anh hùng nằm có gạch + gối ôm (gối mô hình gập tối đa ~157° nên khi ngả lưng gối nhấc khỏi sàn 8–9 cm), Quạ nghiêng (cần xoay chậu ~90° so với ngực quanh trục cột sống – bộ fit chưa làm được).
+- Cánh cung kéo tai (P3): dạng tĩnh, bản tay trái giữ gối. Chân phải dựng từ hình học (cổ chân cạnh tai phải, gối mở ra ngoài – lên trên), bộ fit chỉ đặt tay. Bản nắm ngón chân cái: thân phải cúi ~40°, trọng tâm rơi ra trước – phải ngoài đường ụ ngồi phải – bàn chân trái; bộ fit chỉ thăng bằng được khi tay trái chống sàn (~20 % trọng lượng) – bỏ. Ngực nghiêng trái ~6° để trọng tâm nằm trên chân đế (biên ~1 cm); chân trái hơi khép vào giữa.
+- Anh hùng nằm (P3): dạng tĩnh, ngồi gạch dựng cạnh + gối ôm dọc thảm kê dốc 21° (đầu xa trên gạch dựng đứng; đạo cụ gối ôm có thêm `tilt`). Góc háng dựng lại bằng leg2 từ hướng đùi / ống chân của Anh hùng ngồi gạch cho từng độ ngả của chậu – đổi `root.pitch&hip.flex` không giữ được đùi vì háng có dạng / xoay (thứ tự Euler). Lần trước (gối ôm nằm phẳng) gối nhấc 8–9 cm: thân ngả ~30° nhưng gối ôm phẳng nên cả người xoay quanh điểm tựa lưng. Chậu −74°, thắt lưng gập 20°, ngực ngửa 20°, háng duỗi ~10°: mông, gối, bàn chân, lưng, bả vai, đầu đều chạm. Bản nằm hẳn xuống sàn không làm được (gối mô hình gập tối đa ~157°).
+- Con rùa (P2): dạng tĩnh, bản gối gập (cách điều chỉnh thường dạy) – bản chân duỗi cần háng gập ~170°. Gối tì lên mặt sau cánh tay trên là tiếp xúc thân – thân (~86 N mỗi bên). Lưng tròn: thắt lưng gập ~46°, ngực ~20°.
+- Đã thử, chưa đạt: Quạ nghiêng (cần xoay chậu ~90° so với ngực quanh trục cột sống – bộ fit chưa làm được).
 - Mô hình có thêm điểm tiếp xúc (build lại từ BodyParts3D 3.0): đỉnh vai (mỏm cùng vai), mỏm gai T2, mặt sau và mặt ngoài cánh tay trên, thái dương. Không thêm điểm ở C7 (nằm ngay khớp cổ – sẽ gánh lực mỗi khi lưng trên gánh). Cây cầu được fit lại (giờ tựa lưng trên + mặt sau cánh tay).
 - Trồng cây chuối vai, Cái cày: dạng tĩnh, kê chăn gấp dưới vai và cánh tay trên, đầu trên sàn ngoài mép chăn; đầu không chịu lực. Trồng cây chuối vai thân nghiêng ~25°.
 - Ép tai (P3): dạng tĩnh, kê chăn như Cái cày; thắt lưng gập ~55°, gối cách sàn ~3 cm, mu bàn chân chạm sàn; gối – đầu không truyền lực.
