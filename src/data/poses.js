@@ -2202,6 +2202,23 @@ export const POSES = {
     elbow: { flex: 5 },
     wrist: { pron: 90 },
   },
+  // On the way into the seated side bend: still upright, the left hand down on the mat beside the hip,
+  // the right arm swung out to the side (so it rises sideways, not across the face).
+  parsva_sukhasana_reach: {
+    hip_L: { flex: 117, abd: -95, rot: -1 },
+    knee_L: { flex: 130 },
+    ankle_L: { dorsi: -20 },
+    hip_R: { flex: 117, abd: -99, rot: -3 },
+    knee_R: { flex: 120 },
+    ankle_R: { dorsi: -20 },
+    root: { pitch: 5 },
+    lumbar: { flex: -5 },
+    shoulder_L: { flex: -7, abd: 2 },
+    elbow_L: { flex: 2 },
+    wrist_L: { ext: 85 },
+    shoulder_R: { flex: 0, abd: 100, rot: -45 },
+    wrist_R: { pron: 90 },
+  },
   // Seated side bend (Parsva Sukhasana) to the left: left hand on the mat beside the hip, right arm
   // up and over, the trunk bending to the left, both sit bones down.
   parsva_sukhasana: {
@@ -3662,6 +3679,11 @@ export const POSE_FIT = {
     params: ['shoulder.flex', 'shoulder.abd', 'shoulder.rot', 'elbow.flex', 'ankle_R.dorsi'],
   },
   sukhasana: { support: ['pelvis', 'hip_L', 'hip_R'], params: ['ankle.dorsi'] },
+  parsva_sukhasana_reach: {
+    support: ['pelvis', 'hip_L', 'hip_R', 'wrist_L'],
+    flat: ['wrist_L'],
+    params: ['shoulder_L.flex', 'shoulder_L.abd', 'elbow_L.flex', 'wrist_L.ext', 'ankle.dorsi'],
+  },
   parsva_sukhasana: {
     support: ['pelvis', 'hip_L', 'hip_R', 'wrist_L'],
     flat: ['wrist_L'],

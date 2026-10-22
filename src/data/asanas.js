@@ -3268,8 +3268,12 @@ export const ASANAS = [
     en: 'Seated Side Bend',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [{ pose: 'parsva_sukhasana', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'sukhasana' },
+      { pose: 'parsva_sukhasana_reach', anchor: ['pelvis'], move: 1.6, via: true },
+      { pose: 'parsva_sukhasana', anchor: ['pelvis', 'wrist_L'], move: 1.8, hold: 2.5 },
+    ],
+    loop: 'pingpong',
     roles: {
       contract: ['external_oblique_L', 'quadratus_lumborum_L', 'deltoid_R', 'trapezius_R', 'serratus_anterior_R'],
       stretch: ['latissimus_dorsi_R', 'quadratus_lumborum_R', 'external_oblique_R'],
