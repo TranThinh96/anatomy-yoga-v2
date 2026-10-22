@@ -500,6 +500,26 @@ export const POSES = {
     elbow: { flex: 65 },
     wrist: { ext: 109, pron: 180 },
   },
+  // Eight-angle (Astavakrasana), legs to the model's left (static): hands on the floor, elbows bent
+  // over the wrists, the left thigh resting on the back of the left upper arm, the right leg under
+  // the arm, ankles crossed, legs extended to the left. The pelvis turns ~49° about the spine axis
+  // (root) and the spine turns it back (lumbar + thorax rot) so the chest faces the floor. Found by a
+  // search over 19 angles (hands flat, thigh on the arm, ankles together, COM over the palms, legs
+  // ≥ 40° from the trunk line, feet near shoulder height); the margin is ~0.6 cm, like Crow.
+  astavakrasana: {
+    root: { pitch: 33.7, yaw: 64.4, roll: -49.2 },
+    lumbar: { flex: 20.7, rot: -10 },
+    thorax: { flex: 38.6, rot: -33.3 },
+    neck: { flex: -24.2 },
+    hip_L: { flex: 140, rot: 3.6, abd: -30.3 },
+    hip_R: { flex: 130.2, rot: -40.2, abd: -4.6 },
+    knee: { flex: 10.3 },
+    ankle: { dorsi: -20 },
+    shoulder_L: { flex: 29.3, abd: 40 },
+    shoulder_R: { flex: 28.9, abd: -20.3 },
+    elbow: { flex: 85 },
+    wrist: { ext: 98.1, pron: 180 },
+  },
   malasana: {
     root: { pitch: 42 },
     hip: { flex: 145, abd: -42, rot: 30 },
@@ -2685,6 +2705,7 @@ export const POSE_PROPS = {
   // the backs of the knees resting on the upper arms (tortoise)
   kurmasana_bent: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L', at: 0.9 }, { type: 'touch', a: 'hip_R', b: 'shoulder_R', at: 0.9 }],
   bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
+  astavakrasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }],
   // a block on its long edge under the front-leg sit bone, along the leg
   hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
   // the wall in front of the chest, the toes resting on it
@@ -3386,6 +3407,13 @@ export const POSE_FIT = {
     flat: ['wrist_L', 'wrist_R'],
     balance: true,
     rel: [['wrist_R', 'wrist_L', [0.3, 0]]],
+    params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
+  },
+  astavakrasana: {
+    support: ['wrist_L', 'wrist_R'],
+    flat: ['wrist_L', 'wrist_R'],
+    balance: true,
+    lift: ['ankle_L', 'ankle_R', 'knee_L', 'knee_R', 'hip_L', 'hip_R', 'pelvis'],
     params: ['shoulder.flex', 'elbow.flex', 'wrist.ext'],
   },
   malasana: {
