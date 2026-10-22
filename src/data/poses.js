@@ -2434,6 +2434,9 @@ export const POSES = {
   // by 25° so the eyes stay level (net head orientation unchanged).
   thoracic_kyphosis: { ...ARMS_DOWN, thorax: { flex: 15 }, scapula: { protract: 15 }, neck: { flex: 10 }, head: { flex: -25 } },
 
+  // Shoulders drawn up toward the ears (illustrative): both shoulder girdles elevated 12° about the
+  // sternoclavicular joints, arms hanging.
+  shoulders_elevated: { ...ARMS_DOWN, scapula: { elev: 12 } },
   // Standing with the weight on the right leg, "hanging" on the right hip (illustrative): the pelvis
   // drops 6° on the left (root roll), so the right hip adducts and the left hip abducts to keep the
   // thighs vertical; the left knee softens; the lumbar spine bends 6° to the right so the trunk stays
