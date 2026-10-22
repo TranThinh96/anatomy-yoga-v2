@@ -2625,6 +2625,13 @@ export const POSE_PROPS = {
     { type: 'block', stand: 'flat', at: [-0.16, 0.18], yaw: 90 },
   ],
   bakasana: [{ type: 'touch', a: 'hip_L', b: 'shoulder_L' }, { type: 'touch', a: 'hip_R', b: 'shoulder_R' }],
+  // a block on its long edge under the front-leg sit bone, along the leg
+  hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
+  // the wall in front of the chest, the toes resting on it
+  adho_mukha_vrksasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
+  pincha_mayurasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
+  viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
+  viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
   // hands laced behind the right thigh
   supta_kapotasana: [{ type: 'grip', a: 'wrist_L', b: 'hip_R' }, { type: 'grip', a: 'wrist_R', b: 'hip_R' }],
   // hands holding the feet
@@ -2664,13 +2671,6 @@ export const POSE_PROPS = {
   garudasana: [{ type: 'touch', a: 'hip_L', b: 'hip_R' }, { type: 'touch', a: 'ankle_L', b: 'knee_R' }],
   // left hand holding the inner left shin
   parivrtta_janu_sirsasana: [{ type: 'grip', a: 'wrist_L', b: 'knee_L' }],
-  // a block on its long edge under the front-leg sit bone, along the leg
-  hanumanasana: [{ type: 'block', stand: 'side', at: [0.04, 0.02], yaw: 90 }],
-  // the wall in front of the chest, the toes resting on it
-  adho_mukha_vrksasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
-  pincha_mayurasana_wall: [{ type: 'wall', at: [0, -0.14], normal: [0, 1] }],
-  viparita_karani_bent: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
-  viparita_karani: [{ type: 'wall', at: [0, 0.15], normal: [0, -1] }],
 };
 
 // Floor-contact constraints used by tools/fit-poses.mjs: `support` lists the
