@@ -242,7 +242,8 @@ export const ASANAS = [
       { pose: 'janu_sirsasana_knee_mid', anchor: ['hip_L', ...HANDS], move: 0.7, via: true },
       { pose: 'janu_sirsasana_knee_out', anchor: ['hip_L', ...HANDS], move: 0.7, via: true },
       { pose: 'janu_sirsasana_up', anchor: ['hip_L', ...HANDS], move: 0.9, hold: 0.6 },
-      { pose: 'janu_sirsasana', anchor: ['hip_L'], move: 2.4, hold: 2.5 },
+      { pose: 'janu_sirsasana_arms_up', anchor: ['hip_L'], move: 1.2, via: true },
+      { pose: 'janu_sirsasana', anchor: ['hip_L'], move: 2.0, hold: 2.5 },
     ],
     loop: 'pingpong',
     roles: {
@@ -470,7 +471,8 @@ export const ASANAS = [
     steps: [
       { pose: 'tadasana' },
       { pose: 'vrksasana_knee_up', anchor: ['ankle_R'], move: 1.2, via: true },
-      { pose: 'vrksasana', anchor: ['ankle_R'], move: 1.6 },
+      { pose: 'vrksasana_open', anchor: ['ankle_R'], move: 0.9, via: true },
+      { pose: 'vrksasana', anchor: ['ankle_R'], move: 1 },
     ],
     loop: 'pingpong',
     roles: {
@@ -728,8 +730,13 @@ export const ASANAS = [
     en: 'Garland / Yogi Squat',
     category: 'Đứng',
     level: 'Cơ bản',
-    steps: [{ pose: 'malasana', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'malasana_step_L', anchor: ['ankle_R'], move: 1.2 },
+      { pose: 'malasana_stand', anchor: ['ankle_L'], move: 1.4, hold: 0.5 },
+      { pose: 'malasana', anchor: FEET, move: 2.6, hold: 3 },
+    ],
+    loop: 'pingpong',
     roles: {
       contract: ['tibialis_anterior', 'erector_spinae', 'adductors'],
       stretch: ['soleus', 'gluteus_maximus'],
@@ -742,14 +749,14 @@ export const ASANAS = [
       ['lumbar_spine_joint', 'Lưng dài, không tròn'],
     ],
     cues: [
-      'Đứng chân rộng hơn hông, mũi chân xoay ra ngoài; hạ hông xuống giữa hai gối.',
+      'Từ Tadasana bước chân trái ra, xoay mũi chân phải ra ngoài: chân rộng hơn hông, mũi chân hướng ra ngoài; chắp tay trước ngực rồi hạ hông xuống giữa hai gối.',
       'Gót ấn xuống sàn – gót không chạm thì kê chăn gấp dưới gót, hoặc ngồi lên gạch.',
       'Chắp tay trước ngực, khuỷu đặt phía trong gối, nhẹ nhàng đẩy gối ra; kéo dài cột sống.',
     ],
     benefits: ['Tăng tầm vận động cổ chân, háng, gối', 'Kéo giãn bắp chân, cơ mông; mở háng'],
     cautions: [
       'Đau gối, mổ thay khớp gối: ngồi trên gạch cao, không hạ sâu.',
-      'Mô hình: cổ chân gập mu ~45° để gót chạm sàn – nhiều người không đạt, cần kê gót; khuỷu ép gối không truyền lực (chưa có tiếp xúc tay – chân). Chưa có chuyển động vào tư thế.',
+      'Mô hình: cổ chân gập mu ~45° để gót chạm sàn – nhiều người không đạt, cần kê gót; khuỷu ép gối không truyền lực (chưa có tiếp xúc tay – chân). Chân phải trượt / xoay trên sàn (~9 cm) thay vì nhấc lên.',
     ],
   },
   {
@@ -1031,7 +1038,8 @@ export const ASANAS = [
     steps: [
       { pose: 'tadasana' },
       { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2 },
-      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 2.0 },
+      { pose: 'utthita_parsvakonasana_elbow', anchor: FEET, move: 0.8, via: true },
+      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 1.6 },
     ],
     loop: 'pingpong',
     variants: [
@@ -1079,7 +1087,11 @@ export const ASANAS = [
     en: 'Triangle Pose',
     category: 'Đứng',
     level: 'Cơ bản',
-    steps: [{ pose: 'tadasana' }, { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4 }],
+    steps: [
+      { pose: 'tadasana' },
+      { pose: 'trikonasana_stance', anchor: ['ankle_R'], move: 1.8, hold: 0.4 },
+      { pose: 'trikonasana', anchor: FEET, move: 1.8 },
+    ],
     loop: 'pingpong',
     variants: [
       {
@@ -1089,7 +1101,8 @@ export const ASANAS = [
         pose: 'trikonasana_block',
         steps: [
           { pose: 'tadasana' },
-          { pose: 'trikonasana', anchor: ['ankle_R'], move: 2.4, hold: 0.6 },
+          { pose: 'trikonasana_stance', anchor: ['ankle_R'], move: 1.8, hold: 0.4 },
+          { pose: 'trikonasana', anchor: FEET, move: 1.8, hold: 0.6 },
           { pose: 'trikonasana_block_reach', anchor: FEET, move: 0.9, via: true },
           { pose: 'trikonasana_block_above', anchor: FEET, move: 1.0, via: true },
           { pose: 'trikonasana_block', anchor: FEET, move: 0.6 },
@@ -2235,7 +2248,9 @@ export const ASANAS = [
       { pose: 'ardha_matsyendrasana_crossed', anchor: ['hip_L', 'ankle_L', ...HANDS], move: 1.0 },
       { pose: 'ardha_matsyendrasana_hand_off', anchor: [...HIPS, ...FEET], move: 0.4, via: true },
       { pose: 'ardha_matsyendrasana_hand_up', anchor: [...HIPS, ...FEET], move: 0.6, via: true },
-      { pose: 'ardha_matsyendrasana', anchor: [...HIPS, ...FEET], move: 1.6, hold: 2.5 },
+      { pose: 'ardha_matsyendrasana_raise', anchor: [...HIPS, ...FEET], move: 0.8, via: true },
+      { pose: 'ardha_matsyendrasana_over', anchor: [...HIPS, ...FEET], move: 1.0, via: true },
+      { pose: 'ardha_matsyendrasana', anchor: [...HIPS, ...FEET], move: 1.0, hold: 2.5 },
     ],
     thumbStep: 6,
     loop: 'pingpong',
@@ -2420,8 +2435,13 @@ export const ASANAS = [
     en: 'Thread the Needle',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [{ pose: 'parsva_balasana', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'tabletop' },
+      { pose: 'parsva_balasana_lift', anchor: [...KNEES, 'wrist_L'], move: 1.2, via: true },
+      { pose: 'parsva_balasana_thread', anchor: [...KNEES, 'wrist_L'], move: 1.2, via: true },
+      { pose: 'parsva_balasana', anchor: [...KNEES, 'wrist_L'], move: 1.8, hold: 2.5 },
+    ],
+    loop: 'pingpong',
     roles: {
       contract: ['external_oblique_L'],
       stretch: ['rhomboids_R', 'trapezius_R', 'infraspinatus_R'],
@@ -2625,8 +2645,12 @@ export const ASANAS = [
     en: 'Constructive Rest',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [{ pose: 'supine_knees', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'supine' },
+      { pose: 'supine_heels_slide', anchor: SCAPULAE, move: 1.2, via: true },
+      { pose: 'supine_knees', anchor: SCAPULAE, move: 1.2, hold: 3 },
+    ],
+    loop: 'pingpong',
     roles: { contract: [], stretch: [], stabilize: [] },
     joints: [
       ['hip', 'Háng gập ~45°'],
@@ -2717,7 +2741,11 @@ export const ASANAS = [
       'Thở chậm vào sườn trái; đổi bên.',
     ],
     benefits: ['Xoay cột sống nhẹ nhàng, thả lỏng lưng', 'Kéo giãn cơ chéo bụng, cơ mông, ngực'],
-    cautions: ['Đau thắt lưng, thoát vị đĩa đệm: xoay ít, kê đỡ gối cao; hỏi ý kiến bác sĩ.', 'Thai kỳ: tránh xoay sâu ở bụng.'],
+    cautions: [
+      'Đau thắt lưng, thoát vị đĩa đệm: xoay ít, kê đỡ gối cao; hỏi ý kiến bác sĩ.',
+      'Thai kỳ: tránh xoay sâu ở bụng.',
+      'Mô hình: cột sống xoay tối đa ~45° nên khi khung chậu xoay hết, bả vai trái nhấc khỏi thảm và lưng trên chỉ tựa ở bả vai phải – tải cột sống và háng trên mô hình cao hơn ở người tập thật (lưng nằm trên thảm).',
+    ],
   },
   {
     id: 'supta_padangusthasana',
@@ -2861,6 +2889,7 @@ export const ASANAS = [
     steps: [
       { pose: 'supine_knees' },
       { pose: 'supta_kapotasana_knee_up', anchor: SCAPULAE, move: 1.4, via: true },
+      { pose: 'supta_kapotasana_lift', anchor: SCAPULAE, move: 1, via: true },
       { pose: 'supta_kapotasana_cross', anchor: SCAPULAE, move: 1.4, hold: 0.6 },
       { pose: 'supta_kapotasana', anchor: SCAPULAE, move: 2, hold: 3 },
     ],
@@ -3268,8 +3297,12 @@ export const ASANAS = [
     en: 'Seated Side Bend',
     category: 'Ngồi & nằm',
     level: 'Cơ bản',
-    steps: [{ pose: 'parsva_sukhasana', hold: 3 }],
-    loop: 'static',
+    steps: [
+      { pose: 'sukhasana' },
+      { pose: 'parsva_sukhasana_reach', anchor: ['pelvis'], move: 1.6, via: true },
+      { pose: 'parsva_sukhasana', anchor: ['pelvis', 'wrist_L'], move: 1.8, hold: 2.5 },
+    ],
+    loop: 'pingpong',
     roles: {
       contract: ['external_oblique_L', 'quadratus_lumborum_L', 'deltoid_R', 'trapezius_R', 'serratus_anterior_R'],
       stretch: ['latissimus_dorsi_R', 'quadratus_lumborum_R', 'external_oblique_R'],
@@ -3358,8 +3391,8 @@ export const ASANAS = [
     en: 'Accomplished Pose',
     category: 'Ngồi & nằm',
     level: 'Trung bình',
-    steps: [{ pose: 'siddhasana', hold: 3 }],
-    loop: 'static',
+    steps: [{ pose: 'sukhasana' }, { pose: 'siddhasana', anchor: ['pelvis'], move: 2.4, hold: 3 }],
+    loop: 'pingpong',
     roles: {
       contract: ['erector_spinae'],
       stretch: ['adductors', 'gluteus_medius'],
@@ -3488,8 +3521,10 @@ export const ASANAS = [
       { pose: 'virabhadrasana_2', anchor: ['ankle_R'], move: 2.2, hold: 1.2, label: 'Bước chân rộng – Chiến binh II', roles: 'virabhadrasana_2' },
       { pose: 'viparita_virabhadrasana', anchor: FEET, move: 1.8, hold: 1.2, label: 'Hít vào – Chiến binh đảo ngược', roles: 'viparita_virabhadrasana' },
       { pose: 'virabhadrasana_2', anchor: FEET, move: 1.8, hold: 0.6, label: 'Thở ra – về Chiến binh II', roles: 'virabhadrasana_2' },
-      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 2.0, hold: 1.2, label: 'Góc nghiêng mở rộng', roles: 'utthita_parsvakonasana' },
-      { pose: 'virabhadrasana_2', anchor: FEET, move: 2.0, hold: 0.6, label: 'Hít vào – về Chiến binh II', roles: 'virabhadrasana_2' },
+      { pose: 'utthita_parsvakonasana_elbow', anchor: FEET, move: 0.8, via: true, label: 'Góc nghiêng mở rộng' },
+      { pose: 'utthita_parsvakonasana', anchor: FEET, move: 1.4, hold: 1.2, label: 'Góc nghiêng mở rộng', roles: 'utthita_parsvakonasana' },
+      { pose: 'utthita_parsvakonasana_elbow', anchor: FEET, move: 1.4, via: true, label: 'Hít vào – về Chiến binh II' },
+      { pose: 'virabhadrasana_2', anchor: FEET, move: 0.8, hold: 0.6, label: 'Hít vào – về Chiến binh II', roles: 'virabhadrasana_2' },
       { pose: 'tadasana', anchor: ['ankle_R'], move: 2.2, hold: 0.8, label: 'Bước chân về – Tadasana', roles: 'tadasana' },
     ],
     loop: 'cycle',

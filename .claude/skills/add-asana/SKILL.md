@@ -251,6 +251,7 @@ far was one of these:
 | joint > 900 °/s | stepping IK jumping between "leg straight back" and "knee bent" solutions | look at the frames around the time; usually a missing via pose |
 | knee / elbow bent backwards | stepping IK with an unconstrained knee | keep solvers inside the joint range |
 | stepping foot clears < 5 cm | both feet sliding at once; a foot dragging along the mat | step one foot at a time, anchor the other |
+| legs pass through each other (> 3 cm deeper overlap than at the move's ends) | Tree: the lifted foot swept through the standing knee; reclined pigeon: the left shin crossed through the right leg; seated leg rearrangements (Easy seat → Lotus / Fire log / Cow face) | a via pose with the limb lifted clear (knee opened, foot above the other leg) before it comes down |
 
 `node tools/check-transitions.mjs my_asana --verbose --steps` prints the numbers and when each move
 runs. Passing is necessary, not sufficient: also look at frames in the middle of each move
