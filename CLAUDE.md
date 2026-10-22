@@ -83,10 +83,13 @@ Data files:
   Over q = 1–40 (the literature range, Barrett 2024) and slack weights 1–10 it moved values into 1 SD of the
   EMG for Liu (4 → up to 11 of 30) but did not improve rank correlation, made Lehecka worse (−0.38 → −0.75)
   and changed with every parameter: no robust gain, so it stays off. It routes stiffness to whichever fibre
-  has the largest r²/L (biceps femoris in Utkatasana, rectus femoris instead of the vasti in Vrksasana) because
-  L is the whole muscle–tendon length; a retry needs optimal fibre lengths per muscle from a cited table
-  (Ward et al. 2009, Clin Orthop Relat Res 467:1074 – full text not reachable here, ask the user for the PDF).
-  Never pick q or the slack weight to fit the EMG.
+  has the largest r²/L (biceps femoris in Utkatasana, rectus femoris instead of the vasti in Vrksasana).
+  A retry with optimal fibre lengths Lf instead of the muscle–tendon length (`FIBRE_LENGTH` in
+  muscle-strength.js: lower limb from Ward et al. 2009 Table 3, PMC2650051; trunk and arm muscles still use L)
+  changed little (ρ Liu 0.08–0.23, Lehecka −0.64 to −0.80, Wang 0.03–0.37 over q = 1–40) and still routes the
+  stiffness to biceps femoris / rectus femoris: a two-joint muscle earns stiffness at both joints it crosses
+  (r² > 0 whatever the moment's sign), so the min Σa² solution prefers it. The formulation, not the data, is
+  the limit. Never pick q or the slack weight to fit the EMG.
 - Passive muscle tension is deliberately NOT modelled. A ROM-based version (slack at standing
   length, Thelen 2003 passive curve up to the textbook range end) was tried and made results worse
   (muscles pinned at 90–100 % went from 5 to 9–14 across the 33 poses): the dominant errors in
@@ -140,7 +143,9 @@ Data files:
 - `.claude/hooks/session-start.sh` runs `npm install` in remote sessions.
 - Chromium for Playwright is at `/opt/pw-browsers/chromium`; Playwright is installed globally, not in package.json.
 - The environment has open network access. PubMed, PMC full text, eScholarship and the Europe PMC REST API
-  (`www.ebi.ac.uk/europepmc/webservices/rest/…`) are reachable. europepmc.org, Wiley and ResearchGate answer
+  (`www.ebi.ac.uk/europepmc/webservices/rest/…`) are reachable. PMC article pages load from
+  `www.ncbi.nlm.nih.gov/pmc/articles/PMC…/` (tables inline as HTML); `pmc.ncbi.nlm.nih.gov` answers a reCAPTCHA page,
+  and the Europe PMC `fullTextXML` endpoint fails for articles that are not open access. europepmc.org, Wiley and ResearchGate answer
   403 (a Cloudflare bot challenge from the site, not the proxy): look for the PMC copy or the Europe PMC API,
   otherwise ask the user for the PDF. Never guess numbers.
 - BodyParts3D: use the 3.0 git mirror (github.com/Kevin-Mattheus-Moerman/BodyParts3D) – `build-model` expects it;

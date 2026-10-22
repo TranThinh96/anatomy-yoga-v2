@@ -47,6 +47,40 @@ export const MUSCLE_STRENGTH = {
   tibialis_anterior: { fan: 910 },
 };
 
+// Optimal fibre length (cm, one value per part or one for the whole muscle) – used only by the
+// stability constraint (muscleForces.js), where a fibre's short-range stiffness is q·F/Lf.
+// Lower limb: Ward SR, Eng CM, Smallwood LH, Lieber RL (2009) Clin Orthop Relat Res 467:1074–1082,
+// Table 3 ("fiber length", normalised to a sarcomere length of 2.7 μm; 21 cadaver legs; full
+// text PMC2650051). Piriformis and tensor fasciae latae are not in Ward's table: taken from the
+// Rajagopal et al. (2016) IEEE Trans Biomed Eng 63:2068 model file (Rajagopal2016.osim,
+// github.com/opensim-org/opensim-models), whose other lower-limb values equal Ward's.
+// Trunk, shoulder and arm muscles have no entry yet (their stiffness keeps the whole
+// muscle–tendon length).
+export const FIBRE_LENGTH = {
+  iliopsoas: [11.69, 10.66], // psoas, iliacus
+  gluteus_maximus: 15.69,
+  gluteus_medius: 7.33,
+  piriformis: 2.6, // Rajagopal2016.osim
+  tfl_itb: 9.5, // Rajagopal2016.osim
+  rectus_femoris: 7.59,
+  vastus_lateralis: 9.94,
+  vastus_medialis: 9.68,
+  hamstrings: [9.76, 19.3, 6.9], // biceps femoris long head, semitendinosus, semimembranosus
+  adductors: [10.82, 10.31, 14.44], // longus, brevis, magnus
+  sartorius: 40.3,
+  gastrocnemius: [5.1, 5.88], // medial, lateral head
+  soleus: 4.4,
+  tibialis_anterior: 6.83,
+};
+
+/** Optimal fibre length (m) of every fibre of a muscle definition, or null if not tabulated. */
+export function fibreLength(def) {
+  const v = FIBRE_LENGTH[def.id];
+  if (v == null) return null;
+  if (Array.isArray(v)) return v.length === def.fibers ? v.map((x) => x / 100) : null;
+  return new Array(def.fibers).fill(v / 100);
+}
+
 /** Muscles with a real role that are not in the model (shown in the notes). */
 export const NOT_MODELLED =
   'cơ ngang bụng, cơ chéo bụng trong, cơ nhiều chân và các cơ sâu cột sống, cơ dưới vai, cơ tròn lớn, cơ cánh tay, cơ cánh tay quay, cơ gập/duỗi ngón dài, cơ mông bé, cơ mác, cơ chày sau, các cơ gập ngón chân và cơ sâu vùng cổ';
